@@ -8,8 +8,9 @@
   </div>
   <nav style="display:flex; align-items:center; gap:1.2rem; position:relative;">
     <span id="profileSection" style="display:inline-flex; align-items:center; gap:0.5rem;">
-      <a href="profile.html" id="profileIcon" style="color:#8B5C2A; font-size:2rem; border:2px solid #8B5C2A; border-radius:50%; padding:0.2rem; background:#f3ede5; display:inline-flex; align-items:center; justify-content:center; text-decoration:none;">
-        <span style="font-size:1.7rem;">&#128100;</span>
+      <a href="#" id="profileIcon" style="color:#8B5C2A; font-size:2rem; border:2px solid #8B5C2A; border-radius:50%; padding:0.2rem; background:#f3ede5; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; width:48px; height:48px; overflow:hidden;">
+        <img id="profileImage" src="/our/jquery/img/logo.png" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;">
+        <span id="profileDefaultIcon" style="font-size:1.7rem;">&#128100;</span>
       </a>
       <span id="roleLabel" style="font-size:1.05rem; color:#6d7a6d; font-weight:600; margin-left:0.3em;"></span>
       <button id="logoutBtn" style="display:none; background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; cursor:pointer; margin-left:0.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.08);">Logout</button>
@@ -27,6 +28,59 @@ $(function() {
   const token = localStorage.getItem('jwt_token');
   const userRole = localStorage.getItem('user_role');
   
+  // Function to load user profile image
+  async function loadProfileImage() {
+    if (!token) {
+      console.log('No token found, skipping profile image load');
+      return;
+    }
+    
+    try {
+      console.log('Loading profile image...');
+      const response = await fetch('http://localhost:4000/api/v1/profile', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      });
+      
+      console.log('Profile API response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Profile data:', data);
+        
+        if (data.success && data.profile && data.profile.profile_image) {
+          const profileImage = document.getElementById('profileImage');
+          const profileDefaultIcon = document.getElementById('profileDefaultIcon');
+          
+          if (!profileImage || !profileDefaultIcon) {
+            console.error('Profile image elements not found');
+            return;
+          }
+          
+          // Set the profile image
+          const imagePath = data.profile.profile_image.startsWith('http') ? 
+            data.profile.profile_image : `/our${data.profile.profile_image}`;
+          
+          console.log('Setting profile image to:', imagePath);
+          profileImage.src = imagePath;
+          
+          // Show image, hide default icon
+          profileImage.style.display = 'block';
+          profileDefaultIcon.style.display = 'none';
+          
+          console.log('Profile image loaded successfully');
+        } else {
+          console.log('No profile image found in response');
+        }
+      } else {
+        console.error('Profile API request failed:', response.status);
+      }
+    } catch (error) {
+      console.error('Error loading profile image:', error);
+    }
+  }
+  
   // Show/hide elements based on authentication status
   if (token && userRole) {
     // User is logged in
@@ -35,6 +89,24 @@ $(function() {
     $('#profileIcon').show();
     $('#logoutBtn').show();
     $('#dropdownBtn').show();
+    
+    // Set profile link based on user role
+    let profileLink = '';
+    if (userRole === 'seller') {
+      profileLink = '/our/jquery/sellers/profile-sellers.html';
+    } else if (userRole === 'customer') {
+      profileLink = '/our/jquery/customer/profile.html';
+    } else if (userRole === 'admin') {
+      profileLink = '/our/jquery/admin/profile.html';
+    } else {
+      profileLink = '/our/jquery/profile.html';
+    }
+    $('#profileIcon').attr('href', profileLink);
+    
+    // Load profile image with a small delay to ensure DOM is ready
+    setTimeout(() => {
+      loadProfileImage();
+    }, 100);
     
     let roleText = '';
     if (userRole === 'seller') roleText = 'Seller';
@@ -98,44 +170,43 @@ $(function() {
       $('#dropdownMenu').toggle();
     });
     
-    // Logout functionality for dropdown
-    $('#dropdownMenu').on('click', '#logoutBtnDropdown', function() {
+    // Logout functionality
+    $('#logoutBtn, #logoutBtnDropdown').off('click').on('click', function() {
       localStorage.removeItem('jwt_token');
       localStorage.removeItem('user_role');
       localStorage.removeItem('user_name');
-      localStorage.removeItem('cart');
-      localStorage.removeItem('wishlist');
-      window.location.href = '/our/jquery/login.html';
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('login_time');
+      window.location.href = '/our/jquery/index.html';
     });
     
-    // Logout functionality for desktop button
-    $('#logoutBtn').off('click').on('click', function() {
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      localStorage.removeItem('user_name');
-      localStorage.removeItem('cart');
-      localStorage.removeItem('wishlist');
-      window.location.href = '/our/jquery/login.html';
+    // Listen for profile updates
+    window.addEventListener('profileUpdated', function() {
+      console.log('Profile updated, reloading profile image...');
+      setTimeout(() => {
+        loadProfileImage();
+      }, 500);
     });
     
+    // Expose reload function globally
+    window.reloadProfileImage = loadProfileImage;
   } else {
-    // User is not logged in - show login/signup buttons
+    // User is not logged in
     $('#profileIcon').hide();
     $('#logoutBtn').hide();
     $('#dropdownBtn').hide();
-    $('#roleLabel').hide();
     $('#loginBtn').show();
     $('#signupBtn').show();
+    $('#roleLabel').text('');
     
-    // Add Products button for guests
+    // Add Products link for guests
     $('<a href="/our/jquery/product_catalog.html" style="background:#bfa77a; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; text-decoration:none; margin-right:0.5rem;">Products</a>').insertBefore('#loginBtn');
     
-    // Login button functionality
+    // Add click handlers for login and signup buttons
     $('#loginBtn').off('click').on('click', function() {
       window.location.href = '/our/jquery/login.html';
     });
     
-    // Signup button functionality
     $('#signupBtn').off('click').on('click', function() {
       window.location.href = '/our/jquery/signup.html';
     });

@@ -305,8 +305,29 @@
         const p = data.product;
         // Images: support comma-separated or single image
         // BACKEND: To show multiple images, store image field as comma-separated URLs in DB
-        images = p.image ? p.image.split(',').map(s=>s.trim()).filter(Boolean) : [];
-        if (!images.length) images = ['/jquery/img/logo.png'];
+        let rawImages = [];
+        if (p.image) {
+          if (Array.isArray(p.image)) {
+            rawImages = p.image;
+          } else if (typeof p.image === 'string') {
+            try {
+              rawImages = JSON.parse(p.image);
+            } catch (e) {
+              rawImages = p.image.split(',').map(s => s.trim()).filter(Boolean);
+            }
+          }
+        }
+        
+        // Process image paths
+        images = rawImages.map(img => {
+          if (img.startsWith('http')) {
+            return img;
+          } else {
+            return `/our${img}`;
+          }
+        });
+        
+        if (!images.length) images = ['/our/jquery/img/logo.png'];
         currentImgIdx = 0;
         renderCarousel();
         // Title, desc, price, etc

@@ -136,18 +136,20 @@
       font-weight: 500;
     }
     .product-list {
-      display: flex;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 320px));
+      gap: 40px;
+      margin: 20px auto 60px auto;
+      padding: 0 20px;
       justify-content: center;
-      gap: 60px;
-      margin-top: 10px;
-      margin-bottom: 60px;
+      max-width: 1400px;
     }
     .product-card {
       background: #fff;
       border-radius: 16px;
       padding: 24px;
       box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-      width: 280px;
+      width: 100%;
       text-align: center;
       transition: transform 0.2s;
     }
@@ -160,6 +162,49 @@
       border-radius: 12px;
       margin: 0 auto 16px auto;
       background: #f0f0f0;
+    }
+    .product-img-carousel {
+      position: relative;
+      width: 200px;
+      height: 200px;
+      margin: 0 auto 16px auto;
+      overflow: hidden;
+      border-radius: 12px;
+      background: #f0f0f0;
+    }
+    .carousel-slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.5s ease-in-out;
+    }
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .carousel-slide.active {
+      transform: translateX(0);
+    }
+    .carousel-dots {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 5px;
+    }
+    .carousel-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: #ccc;
+      cursor: pointer;
+    }
+    .carousel-dot.active {
+      background-color: #444;
     }
     .product-title {
       font-size: 1.4rem;
@@ -223,6 +268,14 @@
     .error-message {
       color: #d32f2f;
     }
+    @media (max-width: 1200px) {
+      .product-list {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 300px));
+        gap: 30px;
+        max-width: 1000px;
+      }
+    }
+    
     @media (max-width: 768px) {
       .hero {
         flex-direction: column;
@@ -232,31 +285,24 @@
       .hero-content {
         text-align: center;
         padding-left: 0;
-        margin-top: 20px;
-      }
-      .hero-title {
-        font-size: 2.5rem;
-      }
-      .hero-desc {
-        font-size: 1.1rem;
-      }
-      .hero-btn {
-        font-size: 1.5rem;
-        padding: 12px 24px;
-      }
-      .tabs {
-        margin-left: 20px;
-        font-size: 1.5rem;
-        gap: 20px;
       }
       .product-list {
-        flex-direction: column;
-        align-items: center;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 280px));
         gap: 20px;
+        padding: 0 15px;
+        max-width: 600px;
       }
       .product-card {
-        width: 90%;
-        max-width: 300px;
+        width: 100%;
+        padding: 20px;
+      }
+    }
+    
+    @media (max-width: 480px) {
+      .product-list {
+        grid-template-columns: 1fr;
+        max-width: 320px;
+        gap: 20px;
       }
     }
   </style>
@@ -478,21 +524,62 @@
           // Randomize the products array
           const shuffledProducts = data.products.sort(() => Math.random() - 0.5);
           
-          productList.innerHTML = shuffledProducts.map(product => `
-            <div class="product-card">
-              <div class="product-img" style="background-image:url('../img/products/${product.image || 'default.jpg'}'); background-size:cover; background-position:center;"></div>
-              <div class="product-title">${product.name || 'Product Name'}</div>
-              <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
-              <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
-              <div class="product-rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          productList.innerHTML = shuffledProducts.map(product => {
+            // Parse images
+            let images = [];
+            if (product.image) {
+              if (Array.isArray(product.image)) {
+                images = product.image;
+              } else if (typeof product.image === 'string') {
+                try {
+                  images = JSON.parse(product.image);
+                } catch (e) {
+                  images = product.image.split(',').map(img => img.trim());
+                }
+              }
+            }
+            
+            // Create image HTML
+            let imageHtml = '';
+            if (images.length > 1) {
+              // Carousel for multiple images
+              imageHtml = `<div class="product-img-carousel" data-product-id="${product.item_id}">
+                <div class="carousel-slides">`;
+              images.forEach((img, index) => {
+                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                imageHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                  <div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>
+                </div>`;
+              });
+              imageHtml += `</div>
+                <div class="carousel-dots">`;
+              images.forEach((img, index) => {
+                imageHtml += `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`;
+              });
+              imageHtml += `</div>
+              </div>`;
+            } else {
+              // Single image
+              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+              imageHtml = `<div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>`;
+            }
+            
+            return `
+              <div class="product-card">
+                ${imageHtml}
+                <div class="product-title">${product.name || 'Product Name'}</div>
+                <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
+                <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
+                <div class="product-rating">
+                  <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <div class="product-actions">
+                  <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
+                  <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
+                </div>
               </div>
-              <div class="product-actions">
-                <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
-                <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         })
         .catch(err => {
           console.error('Error loading products:', err);
@@ -527,21 +614,62 @@
           // Randomize the products array for best sellers too
           const shuffledProducts = data.products.sort(() => Math.random() - 0.5);
           
-          productList.innerHTML = shuffledProducts.map(product => `
-            <div class="product-card">
-              <div class="product-img" style="background-image:url('../img/products/${product.image || 'default.jpg'}'); background-size:cover; background-position:center;"></div>
-              <div class="product-title">${product.name || 'Product Name'}</div>
-              <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
-              <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
-              <div class="product-rating">
-                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+          productList.innerHTML = shuffledProducts.map(product => {
+            // Parse images
+            let images = [];
+            if (product.image) {
+              if (Array.isArray(product.image)) {
+                images = product.image;
+              } else if (typeof product.image === 'string') {
+                try {
+                  images = JSON.parse(product.image);
+                } catch (e) {
+                  images = product.image.split(',').map(img => img.trim());
+                }
+              }
+            }
+            
+            // Create image HTML
+            let imageHtml = '';
+            if (images.length > 1) {
+              // Carousel for multiple images
+              imageHtml = `<div class="product-img-carousel" data-product-id="${product.item_id}">
+                <div class="carousel-slides">`;
+              images.forEach((img, index) => {
+                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                imageHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                  <div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>
+                </div>`;
+              });
+              imageHtml += `</div>
+                <div class="carousel-dots">`;
+              images.forEach((img, index) => {
+                imageHtml += `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`;
+              });
+              imageHtml += `</div>
+              </div>`;
+            } else {
+              // Single image
+              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+              imageHtml = `<div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>`;
+            }
+            
+            return `
+              <div class="product-card">
+                ${imageHtml}
+                <div class="product-title">${product.name || 'Product Name'}</div>
+                <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
+                <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
+                <div class="product-rating">
+                  <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+                </div>
+                <div class="product-actions">
+                  <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
+                  <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
+                </div>
               </div>
-              <div class="product-actions">
-                <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
-                <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
-              </div>
-            </div>
-          `).join('');
+            `;
+          }).join('');
         })
         .catch(err => {
           console.error('Error loading best sellers:', err);
@@ -579,9 +707,54 @@
       })
       .catch(err => {
         console.error('Error adding to cart:', err);
-        alert('Error adding item to cart');
+        alert('Failed to add item to cart. Please try again.');
       });
     }
+
+    // Carousel navigation function
+    function changeProductSlide(productId, direction) {
+      const container = document.querySelector(`[data-product-id="${productId}"]`);
+      if (!container) return;
+      
+      const slides = container.querySelectorAll('.carousel-slide');
+      const dots = container.querySelectorAll('.carousel-dot');
+      const currentSlide = container.querySelector('.carousel-slide.active');
+      const currentDot = container.querySelector('.carousel-dot.active');
+      
+      if (!currentSlide) return;
+      
+      let newIndex;
+      
+      // If direction is a number, it's a direct index
+      if (typeof direction === 'number' && direction >= 0) {
+        newIndex = direction;
+      } else {
+        // Otherwise it's a direction (-1 for prev, 1 for next)
+        const currentIndex = parseInt(currentSlide.dataset.index);
+        newIndex = currentIndex + direction;
+      }
+      
+      // Loop around
+      if (newIndex < 0) newIndex = slides.length - 1;
+      if (newIndex >= slides.length) newIndex = 0;
+      
+      // Update active slide and dot
+      currentSlide.classList.remove('active');
+      if (currentDot) currentDot.classList.remove('active');
+      
+      slides[newIndex].classList.add('active');
+      if (dots[newIndex]) dots[newIndex].classList.add('active');
+    }
+
+    // Add carousel event listeners
+    document.addEventListener('click', function(e) {
+      if (e.target.classList.contains('carousel-dot')) {
+        const container = e.target.closest('.product-img-carousel');
+        const productId = container.dataset.productId;
+        const targetIndex = parseInt(e.target.dataset.index);
+        changeProductSlide(productId, targetIndex);
+      }
+    });
 
     // View product function
     function viewProduct(itemId) {

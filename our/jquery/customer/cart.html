@@ -514,9 +514,9 @@ async function loadCart() {
     
     html += `<div class="cart-item" data-product-id="${product.item_id}" data-stock="${product.stock_quantity}">
       <div class="cart-item-img">
-        ${Array.isArray(product.image) && product.image[0] ? 
-          `<img src="${product.image[0].startsWith('http') ? product.image[0] : `http://localhost:4000${product.image[0]}`}" alt="${product.name}">` : 
-          '<span>🛋️</span>'
+        ${Array.isArray(product.image) && product.image[0] ?
+          `<img src="${product.image[0].startsWith('http') ? product.image[0] : `/our${product.image[0]}`}" alt="${product.name}">` :
+          `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`
         }
       </div>
       <div class="cart-item-main">

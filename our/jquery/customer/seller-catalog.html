@@ -439,7 +439,7 @@
         }
         
         if (imgSrc) {
-          const imagePath = imgSrc.startsWith('http') ? imgSrc : `http://localhost:4000${imgSrc}`;
+          const imagePath = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
           imageHtml = `<img src="${imagePath}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`;
         }
       }

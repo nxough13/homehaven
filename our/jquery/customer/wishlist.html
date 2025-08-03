@@ -606,7 +606,7 @@
         
         // Fix image path
         if (img && !img.startsWith('http')) {
-          img = img.startsWith('/') ? `http://localhost:4000${img}` : `http://localhost:4000/${img}`;
+          img = `/our${img}`;
         }
         
         const sellerName = p.seller_name || 'Home Haven';

@@ -557,6 +557,160 @@
         margin: 20px;
       }
     }
+    .img-thumb-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .existing-images-carousel {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+    }
+    .existing-images-carousel .carousel-slides {
+      display: flex;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .existing-images-carousel .carousel-slide {
+      position: relative;
+      flex-shrink: 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .existing-images-carousel .carousel-slide:not(.active) {
+      display: none;
+    }
+    .existing-images-carousel .carousel-dots {
+      display: flex;
+      justify-content: center;
+      gap: 4px;
+      margin-top: 8px;
+    }
+    .existing-images-carousel .carousel-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #ccc;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .existing-images-carousel .carousel-dot.active {
+      background: #8B5C2A;
+    }
+    .remove-image-btn {
+      position: absolute;
+      top: 2px;
+      right: 2px;
+      background: #dc3545;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      font-size: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .remove-image-btn:hover {
+      background: #c82333;
+    }
+    /* Table carousel styles */
+    .carousel-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      overflow: hidden;
+      border-radius: 8px;
+    }
+    .carousel-container .carousel-slides {
+      display: flex;
+      width: 100%;
+      height: 100%;
+    }
+    .carousel-container .carousel-slide {
+      position: relative;
+      flex-shrink: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    .carousel-container .carousel-slide:not(.active) {
+      display: none;
+    }
+    .carousel-container .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+    .carousel-container .carousel-dots {
+      position: absolute;
+      bottom: 4px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 2px;
+      background: rgba(0,0,0,0.5);
+      padding: 2px 4px;
+      border-radius: 10px;
+    }
+    .carousel-container .carousel-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.6);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .carousel-container .carousel-dot.active {
+      background: #fff;
+    }
+    .carousel-container .carousel-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(0,0,0,0.5);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 24px;
+      height: 24px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s;
+    }
+    .carousel-container .carousel-nav:hover {
+      background: rgba(0,0,0,0.7);
+    }
+    .carousel-container .carousel-nav.prev {
+      left: 4px;
+    }
+    .carousel-container .carousel-nav.next {
+      right: 4px;
+    }
+    /* Hover effects for table carousels */
+    .carousel-container:hover .carousel-nav {
+      opacity: 1;
+    }
+    .carousel-container .carousel-nav {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .carousel-container:hover .carousel-dots {
+      opacity: 1;
+    }
+    .carousel-container .carousel-dots {
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
   </style>
 </head>
 <body>
@@ -620,6 +774,7 @@
           <div class="mb-3">
             <label for="productImages" class="form-label">Product Images</label>
             <input type="file" class="form-control" id="productImages" name="images" accept="image/*" multiple>
+            <input type="hidden" id="removeImages" value="[]">
             <div id="existingImagesSection" class="mt-2" style="display:none;">
               <div class="existing-imgs-label">Existing Images:</div>
               <div id="existingImages" class="img-thumb-wrapper"></div>
@@ -1122,7 +1277,7 @@
       if (!images || images.length === 0) return '<div class="img-thumb" style="background:#f5f3f0;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>';
       
       if (images.length === 1) {
-        const imgPath = images[0].startsWith('http') ? images[0] : `http://localhost:4000${images[0]}`;
+        const imgPath = images[0].startsWith('http') ? images[0] : `/our${images[0]}`;
         return `<img src="${imgPath}" class="img-thumb" alt="Product Image">`;
       }
       
@@ -1130,20 +1285,28 @@
       carouselHtml += '<div class="carousel-slides">';
       
       images.forEach((img, index) => {
-        const imgPath = img.startsWith('http') ? img : `http://localhost:4000${img}`;
+        const imgPath = img.startsWith('http') ? img : `/our${img}`;
         carouselHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
           <img src="${imgPath}" class="img-thumb" alt="Product Image ${index + 1}">
         </div>`;
       });
       
       carouselHtml += '</div>';
-      carouselHtml += '<div class="carousel-dots">';
       
-      images.forEach((img, index) => {
-        carouselHtml += `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`;
-      });
+      // Add navigation arrows if more than 1 image
+      if (images.length > 1) {
+        carouselHtml += '<button class="carousel-nav prev" onclick="changeSlide(' + productId + ', -1)">‹</button>';
+        carouselHtml += '<button class="carousel-nav next" onclick="changeSlide(' + productId + ', 1)">›</button>';
+        carouselHtml += '<div class="carousel-dots">';
+        
+        images.forEach((img, index) => {
+          carouselHtml += `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}" onclick="changeSlide(' + productId + ', ${index})"></span>`;
+        });
+        
+        carouselHtml += '</div>';
+      }
       
-      carouselHtml += '</div></div>';
+      carouselHtml += '</div>';
       return carouselHtml;
     }
 
@@ -1159,8 +1322,16 @@
       
       if (!currentSlide) return;
       
-      const currentIndex = parseInt(currentSlide.dataset.index);
-      let newIndex = currentIndex + direction;
+      let newIndex;
+      
+      // If direction is a number, it's a direct index
+      if (typeof direction === 'number' && direction >= 0) {
+        newIndex = direction;
+      } else {
+        // Otherwise it's a direction (-1 for prev, 1 for next)
+        const currentIndex = parseInt(currentSlide.dataset.index);
+        newIndex = currentIndex + direction;
+      }
       
       // Loop around
       if (newIndex < 0) newIndex = slides.length - 1;
@@ -1168,10 +1339,10 @@
       
       // Update active slide and dot
       currentSlide.classList.remove('active');
-      currentDot.classList.remove('active');
+      if (currentDot) currentDot.classList.remove('active');
       
       slides[newIndex].classList.add('active');
-      dots[newIndex].classList.add('active');
+      if (dots[newIndex]) dots[newIndex].classList.add('active');
     }
 
     // Function to show reviews for a specific product
@@ -1265,6 +1436,14 @@
         formData.append('stock', stock);
         formData.append('status', status);
         formData.append('description', description);
+        
+        // Add remove_images parameter if updating
+        if (productId) {
+          const removeImages = $('#removeImages').val();
+          if (removeImages && removeImages !== '[]') {
+            formData.append('remove_images', removeImages);
+          }
+        }
         
         // Add images if provided
         if (images && images.length > 0) {
@@ -1361,7 +1540,7 @@
       if (imageArray.length > 1) {
         imgs = createCarousel(imageArray, product.item_id);
       } else if (imageArray.length === 1) {
-        const imagePath = imageArray[0].startsWith('http') ? imageArray[0] : `http://localhost:4000${imageArray[0]}`;
+        const imagePath = imageArray[0].startsWith('http') ? imageArray[0] : `/our${imageArray[0]}`;
         imgs = `<img src="${imagePath}" class="img-thumb" alt="Product Image">`;
       } else {
         imgs = `<div class="img-thumb" style="background:#f5f3f0;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>`;
@@ -1600,14 +1779,33 @@
           // Handle existing images
           if (product.image && product.image.length > 0) {
             $('#existingImagesSection').show();
-            // Populate existing images display
+            // Populate existing images display with carousel
             const existingImages = $('#existingImages');
             existingImages.empty();
+            
             if (Array.isArray(product.image)) {
-              product.image.forEach(img => {
-                const imgPath = img.startsWith('http') ? img : `http://localhost:4000${img}`;
-                existingImages.append(`<img src="${imgPath}" class="img-thumb" style="width:60px;height:60px;object-fit:cover;margin:5px;">`);
+              let carouselHtml = '<div class="existing-images-carousel" data-product-id="' + product.item_id + '">';
+              carouselHtml += '<div class="carousel-slides">';
+              
+              product.image.forEach((img, index) => {
+                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                carouselHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
+                  <img src="${imgPath}" class="img-thumb" style="width:80px;height:80px;object-fit:cover;margin:5px;">
+                  <button type="button" class="remove-image-btn" data-image-path="${img}" style="position:absolute;top:2px;right:2px;background:red;color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;">×</button>
+                </div>`;
               });
+              
+              carouselHtml += '</div>';
+              if (product.image.length > 1) {
+                carouselHtml += '<div class="carousel-dots">';
+                product.image.forEach((img, index) => {
+                  carouselHtml += `<span class="carousel-dot ${index === 0 ? 'active' : ''}" data-index="${index}"></span>`;
+                });
+                carouselHtml += '</div>';
+              }
+              carouselHtml += '</div>';
+              
+              existingImages.html(carouselHtml);
             }
           } else {
             $('#existingImagesSection').hide();
@@ -1618,6 +1816,7 @@
           $('#productId').val('');
           $('#productStock').val('');
           $('#productDescription').val('');
+          $('#removeImages').val('[]');
           $('#existingImagesSection').hide();
         }
       }
@@ -1701,6 +1900,49 @@
         
         container.find(`.carousel-slide[data-index="${targetIndex}"]`).addClass('active');
         $(this).addClass('active');
+      });
+
+      // Existing images carousel navigation
+      $(document).off('click.existing-carousel-dot').on('click.existing-carousel-dot', '.existing-images-carousel .carousel-dot', function() {
+        const container = $(this).closest('.existing-images-carousel');
+        const targetIndex = parseInt($(this).data('index'));
+        
+        // Update active slide and dot
+        container.find('.carousel-slide.active').removeClass('active');
+        container.find('.carousel-dot.active').removeClass('active');
+        
+        container.find(`.carousel-slide[data-index="${targetIndex}"]`).addClass('active');
+        $(this).addClass('active');
+      });
+
+      // Remove image button handlers
+      $(document).off('click.remove-image-btn').on('click.remove-image-btn', '.remove-image-btn', function() {
+        const imagePath = $(this).data('image-path');
+        const productId = $('#productId').val();
+        
+        if (confirm('Are you sure you want to remove this image?')) {
+          // Add to remove list
+          let removeList = $('#removeImages').val() ? JSON.parse($('#removeImages').val()) : [];
+          removeList.push(imagePath);
+          $('#removeImages').val(JSON.stringify(removeList));
+          
+          // Remove from display
+          $(this).closest('.carousel-slide').remove();
+          
+          // Update carousel
+          const container = $(this).closest('.existing-images-carousel');
+          const remainingSlides = container.find('.carousel-slide');
+          
+          if (remainingSlides.length === 0) {
+            $('#existingImagesSection').hide();
+          } else {
+            // Reset carousel to first slide
+            container.find('.carousel-slide').removeClass('active');
+            container.find('.carousel-dot').removeClass('active');
+            remainingSlides.first().addClass('active');
+            container.find('.carousel-dot').first().addClass('active');
+          }
+        }
       });
       
       // Load footer

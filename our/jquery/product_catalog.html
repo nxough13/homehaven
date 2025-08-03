@@ -939,6 +939,23 @@
       const stockText = stock === 0 ? 'Out of Stock' : stock <= 10 ? `Only ${stock} left` : 'In Stock';
       const isWishlisted = wishlist.includes(product.item_id);
       
+      // Parse images
+      let images = [];
+      if (product.image) {
+        if (Array.isArray(product.image)) {
+          images = product.image;
+        } else if (typeof product.image === 'string') {
+          try {
+            images = JSON.parse(product.image);
+          } catch (e) {
+            images = product.image.split(',').map(img => img.trim());
+          }
+        }
+      }
+      
+      // Get the first image or fallback
+      const firstImage = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+      
       return `
         <div class="product-card" data-id="${product.item_id}">
           <button class="wishlist-heart" data-id="${product.item_id}" title="${isWishlisted ? 'Remove from Wishlist' : 'Add to Wishlist'}">
@@ -955,10 +972,7 @@
             </button>
           </div>
           <div class="product-image">
-            ${product.image ? 
-              `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-couch\\'></i></div>'">` :
-              `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`
-            }
+            <img src="${firstImage}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-couch\\'></i></div>'">
           </div>
           <div class="product-content">
             <div class="product-category">${product.category_name || 'Uncategorized'}</div>
@@ -988,13 +1002,27 @@
       const stockText = stock === 0 ? 'Out of Stock' : stock <= 10 ? `Only ${stock} left` : 'In Stock';
       const isWishlisted = wishlist.includes(product.item_id);
       
+      // Parse images
+      let images = [];
+      if (product.image) {
+        if (Array.isArray(product.image)) {
+          images = product.image;
+        } else if (typeof product.image === 'string') {
+          try {
+            images = JSON.parse(product.image);
+          } catch (e) {
+            images = product.image.split(',').map(img => img.trim());
+          }
+        }
+      }
+      
+      // Get the first image or fallback
+      const firstImage = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+      
       return `
         <div class="product-item-list" data-id="${product.item_id}">
           <div class="product-image" style="width: 120px; height: 120px; border-radius: 10px;">
-            ${product.image ? 
-              `<img src="${product.image}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-couch\\'></i></div>'">` :
-              `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`
-            }
+            <img src="${firstImage}" alt="${product.name}" onerror="this.parentElement.innerHTML='<div class=\\'product-image-placeholder\\'><i class=\\'fas fa-couch\\'></i></div>'">
           </div>
           <div style="flex: 1;">
             <div class="product-category">${product.category_name || 'Uncategorized'}</div>

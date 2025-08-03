@@ -460,7 +460,7 @@
           
           // Handle profile image display
           if (seller.profile_image) {
-            const imagePath = seller.profile_image.startsWith('http') ? seller.profile_image : `http://localhost:4000${seller.profile_image}`;
+            const imagePath = seller.profile_image.startsWith('http') ? seller.profile_image : `/our${seller.profile_image}`;
             $('#profileImgCircle').css('background-image', 'url(' + imagePath + ')');
             $('#profileImgCircle').css('background-size', 'cover');
             $('#profileImgIcon').css('opacity', 0);
@@ -517,7 +517,7 @@
         
         if (imgSrc) {
           // Fix image path
-          const imagePath = imgSrc.startsWith('http') ? imgSrc : `http://localhost:4000${imgSrc}`;
+          const imagePath = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
           imageHtml = `<img src="${imagePath}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;">`;
         } else {
           imageHtml = `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`;
@@ -579,6 +579,9 @@
         success: function(res) {
           if (res.success) {
             console.log('Profile image uploaded successfully');
+            
+            // Trigger event to update header profile image
+            window.dispatchEvent(new Event('profileUpdated'));
           }
         },
         error: function(xhr) {

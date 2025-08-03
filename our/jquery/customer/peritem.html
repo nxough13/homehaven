@@ -44,7 +44,7 @@
   </style>
   <script>
     function injectHeader() {
-      fetch('header_customer.html')
+      fetch('../header.html')
         .then(res => res.text())
         .then(html => {
           const headerDiv = document.createElement('div');

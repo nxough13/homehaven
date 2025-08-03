@@ -5,6 +5,7 @@
   <title>Product Details - Home Haven</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <link rel="stylesheet" href="/our/jquery/css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <style>
     body { background: #f7f4f0; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -117,8 +118,8 @@
       </div>
     </div>
   </div>
-  <div id="reviewsContainer" style="max-width:1100px;margin:32px auto 0 auto;background:#fff;border-radius:14px;box-shadow:0 2px 12px rgba(0,0,0,0.07);padding:24px 18px 18px 18px;">
-    <h2 style="font-size:1.3rem;color:#8B5C2A;margin-bottom:0.7em;">Customer Reviews</h2>
+  <div id="reviewsContainer">
+    <h2>Customer Reviews</h2>
     <div id="reviewsList">No reviews yet.</div>
     <div id="reviewFormContainer"></div>
   </div>
@@ -276,14 +277,29 @@
         if (!data.success) throw new Error('Product not found');
         const p = data.product;
         // Images: support array or JSON string
-        if (Array.isArray(p.image)) {
-          images = p.image;
-        } else if (typeof p.image === 'string') {
-          try { images = JSON.parse(p.image); } catch { images = [p.image]; }
-        } else {
-          images = [];
+        let rawImages = [];
+        if (p.image) {
+          if (Array.isArray(p.image)) {
+            rawImages = p.image;
+          } else if (typeof p.image === 'string') {
+            try {
+              rawImages = JSON.parse(p.image);
+            } catch (e) {
+              rawImages = p.image.split(',').map(s => s.trim()).filter(Boolean);
+            }
+          }
         }
-        if (!images.length) images = ['../img/logo.png'];
+        
+        // Process image paths
+        images = rawImages.map(img => {
+          if (img.startsWith('http')) {
+            return img;
+          } else {
+            return `/our${img}`;
+          }
+        });
+        
+        if (!images.length) images = ['/our/jquery/img/logo.png'];
         currentImgIdx = 0;
         renderCarousel();
         // Title, desc, price, etc
@@ -449,10 +465,10 @@
         html = '<div style="color:#888;">No reviews yet for this product.</div>';
       } else {
         reviews.forEach(r => {
-          html += `<div class='review-box' style='border-bottom:1px solid #eee;padding:10px 0;'>
-            <div style='font-weight:600;'>${r.fname} ${r.lname} <span style='color:#f5b301;'>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
-            <div style='margin:4px 0 0 0;'>${r.review_text ? r.review_text.replace(/</g,'&lt;') : ''}</div>
-            <div style='font-size:0.95em;color:#aaa;'>${new Date(r.created_at).toLocaleString()}</div>`;
+          html += `<div class='review-box'>
+            <div>${r.fname} ${r.lname} <span>${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</span></div>
+            <div>${r.review_text ? r.review_text.replace(/</g,'&lt;') : ''}</div>
+            <div>${new Date(r.created_at).toLocaleString()}</div>`;
           if (r.is_own_review) {
             html += `<button class='edit-review-btn' data-review-id='${r.review_id}' data-rating='${r.rating}' data-text='${r.review_text}'>Edit</button>
             <button class='delete-review-btn' data-review-id='${r.review_id}'>Delete</button>`;
@@ -475,44 +491,64 @@
         $('#reviewFormContainer').html('<div style="color:#888;">Log in as a customer to leave a review.</div>');
         return;
       }
-      // Always show the review form for eligible users (multiple reviews allowed)
-      $('#reviewFormContainer').html(`<form id='reviewForm'>
-        <label for='reviewRating'>Your Rating:</label>
-        <select id='reviewRating' required>
-          <option value=''>Select</option>
-          <option value='5'>★★★★★</option>
-          <option value='4'>★★★★</option>
-          <option value='3'>★★★</option>
-          <option value='2'>★★</option>
-          <option value='1'>★</option>
-        </select><br>
-        <label for='reviewText'>Your Review:</label><br>
-        <textarea id='reviewText' rows='3' style='width:100%;'></textarea><br>
-        <button type='submit'>Submit Review</button>
-      </form>`);
-      $('#reviewForm').on('submit', async function(e) {
-        e.preventDefault();
-        const rating = parseInt($('#reviewRating').val());
-        const review_text = $('#reviewText').val();
-        if (!rating) return alert('Please select a rating.');
-        try {
-          const resp = await fetch(`${API_BASE}/products/${item_id}/reviews`, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify({ rating, review_text })
+      
+      try {
+        // Check if customer has a delivered order for this product
+        const eligibilityCheck = await fetch(`${API_BASE}/products/${item_id}/reviews`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify({ rating: 5, review_text: '__eligibility_check__' })
+        });
+        
+        const eligibilityData = await eligibilityCheck.json();
+        
+        if (eligibilityData.success && eligibilityData.eligible) {
+          // Customer is eligible - show review form
+          $('#reviewFormContainer').html(`<form id='reviewForm'>
+            <label for='reviewRating'>Your Rating:</label>
+            <select id='reviewRating' required>
+              <option value=''>Select</option>
+              <option value='5'>★★★★★</option>
+              <option value='4'>★★★★</option>
+              <option value='3'>★★★</option>
+              <option value='2'>★★</option>
+              <option value='1'>★</option>
+            </select><br>
+            <label for='reviewText'>Your Review:</label><br>
+            <textarea id='reviewText' rows='3' style='width:100%;'></textarea><br>
+            <button type='submit'>Submit Review</button>
+          </form>`);
+          
+          $('#reviewForm').on('submit', async function(e) {
+            e.preventDefault();
+            const rating = parseInt($('#reviewRating').val());
+            const review_text = $('#reviewText').val();
+            if (!rating) return alert('Please select a rating.');
+            try {
+              const resp = await fetch(`${API_BASE}/products/${item_id}/reviews`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ rating, review_text })
+              });
+              const data = await resp.json();
+              if (data.success) {
+                alert('Review submitted!');
+                loadReviews(item_id);
+                $('#reviewFormContainer').html('<div style="color:#27ae60;">Thank you for your review!</div>');
+              } else {
+                alert(data.message || 'Could not submit review.');
+              }
+            } catch {
+              alert('Could not submit review.');
+            }
           });
-          const data = await resp.json();
-          if (data.success) {
-            alert('Review submitted!');
-            loadReviews(item_id);
-            $('#reviewFormContainer').html('<div style="color:#27ae60;">Thank you for your review!</div>');
-          } else {
-            alert(data.message || 'Could not submit review.');
-          }
-        } catch {
-          alert('Could not submit review.');
+        } else {
+          // Customer is not eligible
+          $('#reviewFormContainer').html('<div style="color:#888;">You can only review products you have purchased and received (delivered status).</div>');
         }
-      });
+      } catch (error) {
+        $('#reviewFormContainer').html('<div style="color:#888;">Unable to check review eligibility. Please try again later.</div>');
+      }
     }
     // On page load, fetch wishlist and product details
     $(document).ready(async function() {

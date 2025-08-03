@@ -1269,7 +1269,7 @@
                 <h4><i class="fas fa-images"></i> Product Images</h4>
                 <div class="image-gallery">
                   ${imageData.map((img, index) => {
-                    const imgUrl = img.startsWith('http') ? img : `http://localhost:4000${img}`;
+                    const imgUrl = img.startsWith('http') ? img : `/our${img}`;
                     return `<img src="${imgUrl}" alt="Product Image ${index + 1}" onerror="this.src='https://via.placeholder.com/150x150?text=Image+${index + 1}'">`;
                   }).join('')}
                 </div>
@@ -1278,7 +1278,7 @@
           }
           // Handle single image
           else if (typeof imageData === 'string') {
-            const imgUrl = imageData.startsWith('http') ? imageData : `http://localhost:4000${imageData}`;
+            const imgUrl = imageData.startsWith('http') ? imageData : `/our${imageData}`;
             imageHtml = `
               <div class="item-images">
                 <h4><i class="fas fa-image"></i> Product Image</h4>

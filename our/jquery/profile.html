@@ -571,6 +571,9 @@
           // Reload the profile to get the updated image
           loadProfile();
           showCustomModal('Success', 'Profile image updated!', '✅');
+          
+          // Trigger event to update header profile image
+          window.dispatchEvent(new Event('profileUpdated'));
         } else {
           showCustomModal('Error', data.message || 'Failed to update image', '❌');
         }
@@ -693,7 +696,7 @@
           const imgSrc = profile.profile_image || profile.image_path;
           console.log('Image source:', imgSrc); // Debug log
           if (imgSrc && imgSrc.trim() !== '' && imgSrc !== 'null') {
-            const fullImgSrc = imgSrc.startsWith('http') ? imgSrc : `http://localhost:4000${imgSrc}`;
+            const fullImgSrc = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
             console.log('Full image source:', fullImgSrc); // Debug log
             document.getElementById('profileAvatarImg').innerHTML = `<img src="${fullImgSrc}" alt="Profile">`;
           } else {

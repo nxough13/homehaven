@@ -1153,6 +1153,9 @@
           showNotification('Profile picture updated successfully!', 'success');
           // Reload profile to get updated image
           loadProfile();
+          
+          // Trigger event to update header profile image
+          window.dispatchEvent(new Event('profileUpdated'));
         } else {
           showNotification(data.message || 'Failed to upload profile picture', 'error');
         }

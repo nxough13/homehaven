@@ -455,9 +455,9 @@
         left.append(`
           <div class="checkout-item">
             <div class="checkout-item-img">
-              ${Array.isArray(product.image) && product.image[0] ? 
-                `<img src="${product.image[0].startsWith('http') ? product.image[0] : `http://localhost:4000${product.image[0]}`}" alt="${product.name}">` : 
-                '<span>🛋️</span>'
+              ${Array.isArray(product.image) && product.image[0] ?
+                `<img src="${product.image[0].startsWith('http') ? product.image[0] : `/our${product.image[0]}`}" alt="${product.name}">` :
+                `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`
               }
             </div>
             <div class="checkout-item-details">
