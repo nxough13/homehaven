@@ -820,9 +820,12 @@ router.get('/sellers/:sellerId/products', async (req, res) => {
       });
     }
     
-    // First, get the user_id for this seller
+    // First, get the user_id for this seller and check if seller is active
     const [sellerRows] = await db.query(`
-      SELECT user_id FROM sellers WHERE seller_id = ?
+      SELECT s.user_id, u.status as user_status, u.state as user_state
+      FROM sellers s
+      JOIN users u ON s.user_id = u.id
+      WHERE s.seller_id = ?
     `, [sellerId]);
     
     if (!sellerRows.length) {
@@ -832,7 +835,16 @@ router.get('/sellers/:sellerId/products', async (req, res) => {
       });
     }
     
-    const userId = sellerRows[0].user_id;
+    // Check if seller is active
+    const seller = sellerRows[0];
+    if (seller.user_status !== 'active' || seller.user_state !== 'active') {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Seller is inactive.' 
+      });
+    }
+    
+    const userId = seller.user_id;
     
     // Get products with pagination
     const [products] = await db.query(`
@@ -897,9 +909,12 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
       });
     }
     
-    // Get the user_id for this seller
+    // First, check if seller is active
     const [sellerRows] = await db.query(`
-      SELECT user_id FROM sellers WHERE seller_id = ?
+      SELECT s.user_id, u.status as user_status, u.state as user_state
+      FROM sellers s
+      JOIN users u ON s.user_id = u.id
+      WHERE s.seller_id = ?
     `, [sellerId]);
     
     if (!sellerRows.length) {
@@ -909,18 +924,27 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
       });
     }
     
-    const userId = sellerRows[0].user_id;
+    // Check if seller is active
+    const seller = sellerRows[0];
+    if (seller.user_status !== 'active' || seller.user_state !== 'active') {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Seller is inactive.' 
+      });
+    }
     
-    // Get total count of products for this seller
-    const [countResult] = await db.query(`
+    const userId = seller.user_id;
+    
+    // Get count of active products
+    const [countRows] = await db.query(`
       SELECT COUNT(*) as total
-      FROM item i
-      WHERE i.seller_id = ? AND i.status = 'active'
+      FROM item
+      WHERE seller_id = ? AND status = 'active'
     `, [userId]);
     
     res.json({ 
       success: true, 
-      total: countResult[0].total
+      count: countRows[0].total 
     });
   } catch (err) {
     console.error('Error fetching seller products count:', err);

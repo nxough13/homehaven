@@ -64,9 +64,14 @@ router.get('/test-db', async (req, res) => {
 // GET /products/featured - fetch up to 3 active products
 router.get('/products/featured', async (req, res) => {
   try {
-    const [rows] = await db.query(
-      'SELECT item_id, name, description, sell_price, image FROM item WHERE status = "active" LIMIT 3'
-    );
+    const [rows] = await db.query(`
+      SELECT i.item_id, i.name, i.description, i.sell_price, i.image, u.status as seller_status, u.state as seller_state
+      FROM item i
+      LEFT JOIN users u ON i.seller_id = u.id
+      WHERE i.status = 'active' 
+        AND (i.seller_id IS NULL OR (u.status = 'active' AND u.state = 'active'))
+      LIMIT 3
+    `);
     res.json({ success: true, products: rows });
   } catch (err) {
     console.error(err);
@@ -79,10 +84,13 @@ router.get('/products/featured', async (req, res) => {
 router.get('/products', async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT i.*, c.name AS category_name, st.quantity AS stock_quantity
+      SELECT i.*, c.name AS category_name, st.quantity AS stock_quantity, u.status as seller_status, u.state as seller_state
       FROM item i
       LEFT JOIN categories c ON i.category_id = c.category_id
       LEFT JOIN stock st ON i.item_id = st.item_id
+      LEFT JOIN users u ON i.seller_id = u.id
+      WHERE i.status = 'active' 
+        AND (i.seller_id IS NULL OR (u.status = 'active' AND u.state = 'active'))
     `);
     // Parse image JSON for each product if needed
     rows.forEach(row => { try { row.image = JSON.parse(row.image); } catch {} });
@@ -112,7 +120,14 @@ router.get('/products/wishlist', async (req, res) => {
     if (typeof ids === 'string') ids = ids.split(',').map(x => parseInt(x)).filter(x => !isNaN(x));
     if (!Array.isArray(ids) || !ids.length) return res.json({ success: true, products: [] });
     const placeholders = ids.map(() => '?').join(',');
-    const [rows] = await db.query(`SELECT * FROM item WHERE item_id IN (${placeholders})`, ids);
+    const [rows] = await db.query(`
+      SELECT i.*, u.status as seller_status, u.state as seller_state
+      FROM item i
+      LEFT JOIN users u ON i.seller_id = u.id
+      WHERE i.item_id IN (${placeholders})
+        AND i.status = 'active' 
+        AND (i.seller_id IS NULL OR (u.status = 'active' AND u.state = 'active'))
+    `, ids);
     // Parse image JSON for each product
     rows.forEach(row => { try { row.image = JSON.parse(row.image); } catch {} });
     res.json({ success: true, products: rows });
@@ -125,7 +140,14 @@ router.get('/products/wishlist', async (req, res) => {
 // GET /products/:id - get one product
 router.get('/products/:id', async (req, res) => {
   try {
-    const [rows] = await db.query('SELECT * FROM item WHERE item_id = ?', [req.params.id]);
+    const [rows] = await db.query(`
+      SELECT i.*, u.status as seller_status, u.state as seller_state
+      FROM item i
+      LEFT JOIN users u ON i.seller_id = u.id
+      WHERE i.item_id = ?
+        AND i.status = 'active' 
+        AND (i.seller_id IS NULL OR (u.status = 'active' AND u.state = 'active'))
+    `, [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ success: false, error: 'Product not found' });
     res.json({ success: true, product: rows[0] });
   } catch (err) {
@@ -138,12 +160,15 @@ router.get('/products/:id', async (req, res) => {
 router.get('/products/details/:id', async (req, res) => {
   try {
     const [rows] = await db.query(`
-      SELECT i.*, c.name AS category_name, s.business_name, s.business_description, s.business_email, s.seller_id, st.quantity AS stock_quantity
+      SELECT i.*, c.name AS category_name, s.business_name, s.business_description, s.business_email, s.seller_id, st.quantity AS stock_quantity, u.status as seller_status, u.state as seller_state
       FROM item i
       LEFT JOIN categories c ON i.category_id = c.category_id
       LEFT JOIN sellers s ON i.seller_id = s.user_id
       LEFT JOIN stock st ON i.item_id = st.item_id
+      LEFT JOIN users u ON i.seller_id = u.id
       WHERE i.item_id = ?
+        AND i.status = 'active' 
+        AND (i.seller_id IS NULL OR (u.status = 'active' AND u.state = 'active'))
     `, [req.params.id]);
     if (rows.length === 0) return res.status(404).json({ success: false, error: 'Product not found' });
     try { rows[0].image = JSON.parse(rows[0].image); } catch {}

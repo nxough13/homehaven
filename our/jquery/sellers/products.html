@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
   <style>
     body {
       background: #f5f3f0;
@@ -149,7 +151,65 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
+      z-index: 9999;
+    }
+    
+    /* Form Validation Styles */
+    .form-group {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    .form-group.error input,
+    .form-group.error select,
+    .form-group.error textarea {
+      border-color: #e74c3c !important;
+      box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+    }
+    
+    .form-group.success input,
+    .form-group.success select,
+    .form-group.success textarea {
+      border-color: #27ae60 !important;
+      box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .form-group.error .error-message {
+      display: block;
+    }
+    
+    .success-message {
+      color: #27ae60;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .form-group.success .success-message {
+      display: block;
+    }
+    
+    .validation-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+    
+    .form-group.error .validation-icon {
+      color: #e74c3c;
+    }
+    
+    .form-group.success .validation-icon {
+      color: #27ae60;
     }
     .custom-modal {
       background: #f8f5f2;
@@ -751,29 +811,49 @@
         </div>
         <div class="custom-modal-body">
           <input type="hidden" id="productId">
-          <div class="mb-3">
+          <div class="form-group mb-3">
             <label for="productName" class="form-label">Name</label>
-            <input type="text" class="form-control" id="productName" name="name" required>
-    </div>
-          <div class="mb-3">
+            <input type="text" class="form-control" id="productName" name="name" required minlength="3" maxlength="100">
+            <div class="error-message"></div>
+            <div class="success-message">✓ Valid product name</div>
+            <span class="validation-icon"></span>
+          </div>
+          <div class="form-group mb-3">
             <label for="productCategory" class="form-label">Category</label>
-            <select class="form-control" id="productCategory" name="category_id" required></select>
-  </div>
-          <div class="mb-3">
+            <select class="form-control" id="productCategory" name="category_id" required>
+              <option value="">Select a category</option>
+            </select>
+            <div class="error-message"></div>
+            <div class="success-message">✓ Category selected</div>
+            <span class="validation-icon"></span>
+          </div>
+          <div class="form-group mb-3">
             <label for="productSKU" class="form-label">SKU</label>
-            <input type="text" class="form-control" id="productSKU" name="sku" required>
+            <input type="text" class="form-control" id="productSKU" name="sku" required minlength="3" maxlength="50" pattern="^[A-Za-z0-9\-_]+$">
+            <div class="error-message"></div>
+            <div class="success-message">✓ Valid SKU</div>
+            <span class="validation-icon"></span>
           </div>
-          <div class="mb-3">
+          <div class="form-group mb-3">
             <label for="productPrice" class="form-label">Price</label>
-            <input type="number" class="form-control" id="productPrice" name="sell_price" required min="0" step="0.01">
+            <input type="number" class="form-control" id="productPrice" name="sell_price" required min="0.01" step="0.01" max="999999.99">
+            <div class="error-message"></div>
+            <div class="success-message">✓ Valid price</div>
+            <span class="validation-icon"></span>
           </div>
-          <div class="mb-3">
+          <div class="form-group mb-3">
             <label for="productStock" class="form-label">Stock</label>
-            <input type="number" class="form-control" id="productStock" name="stock" required min="0" step="1">
+            <input type="number" class="form-control" id="productStock" name="stock" required min="0" step="1" max="999999">
+            <div class="error-message"></div>
+            <div class="success-message">✓ Valid stock quantity</div>
+            <span class="validation-icon"></span>
           </div>
-          <div class="mb-3">
+          <div class="form-group mb-3">
             <label for="productImages" class="form-label">Product Images</label>
             <input type="file" class="form-control" id="productImages" name="images" accept="image/*" multiple>
+            <div class="error-message"></div>
+            <div class="success-message">✓ Images selected</div>
+            <span class="validation-icon"></span>
             <input type="hidden" id="removeImages" value="[]">
             <div id="existingImagesSection" class="mt-2" style="display:none;">
               <div class="existing-imgs-label">Existing Images:</div>
@@ -1947,7 +2027,175 @@
       
       // Load footer
       $('#footer').load('footer.html');
+      
+      // Form Validation Setup
+      initializeFormValidation();
     });
+    
+    // Form Validation Functions
+    function initializeFormValidation() {
+      // Custom validation methods
+      $.validator.addMethod("skuFormat", function(value, element) {
+        return this.optional(element) || /^[A-Za-z0-9\-_]+$/.test(value);
+      }, "SKU can only contain letters, numbers, hyphens, and underscores");
+      
+      $.validator.addMethod("priceRange", function(value, element) {
+        const price = parseFloat(value);
+        return this.optional(element) || (price >= 0.01 && price <= 999999.99);
+      }, "Price must be between ₱0.01 and ₱999,999.99");
+      
+      $.validator.addMethod("stockRange", function(value, element) {
+        const stock = parseInt(value);
+        return this.optional(element) || (stock >= 0 && stock <= 999999);
+      }, "Stock must be between 0 and 999,999");
+      
+      // Initialize form validation
+      $("#productForm").validate({
+        rules: {
+          name: {
+            required: true,
+            minlength: 3,
+            maxlength: 100
+          },
+          category_id: {
+            required: true
+          },
+          sku: {
+            required: true,
+            minlength: 3,
+            maxlength: 50,
+            skuFormat: true
+          },
+          sell_price: {
+            required: true,
+            priceRange: true
+          },
+          stock: {
+            required: true,
+            stockRange: true
+          },
+          images: {
+            required: function() {
+              // Only required for new products
+              return $('#productId').val() === '';
+            }
+          }
+        },
+        messages: {
+          name: {
+            required: "Product name is required",
+            minlength: "Product name must be at least 3 characters",
+            maxlength: "Product name cannot exceed 100 characters"
+          },
+          category_id: {
+            required: "Please select a category"
+          },
+          sku: {
+            required: "SKU is required",
+            minlength: "SKU must be at least 3 characters",
+            maxlength: "SKU cannot exceed 50 characters",
+            skuFormat: "SKU can only contain letters, numbers, hyphens, and underscores"
+          },
+          sell_price: {
+            required: "Price is required",
+            priceRange: "Price must be between ₱0.01 and ₱999,999.99"
+          },
+          stock: {
+            required: "Stock quantity is required",
+            stockRange: "Stock must be between 0 and 999,999"
+          },
+          images: {
+            required: "At least one product image is required"
+          }
+        },
+        errorPlacement: function(error, element) {
+          const formGroup = element.closest('.form-group');
+          const errorContainer = formGroup.find('.error-message');
+          errorContainer.text(error.text());
+        },
+        highlight: function(element) {
+          const formGroup = $(element).closest('.form-group');
+          formGroup.removeClass('success').addClass('error');
+        },
+        unhighlight: function(element) {
+          const formGroup = $(element).closest('.form-group');
+          formGroup.removeClass('error').addClass('success');
+        },
+        submitHandler: function(form) {
+          // Validate form before submission
+          if (!$(form).valid()) {
+            showNotification('error', 'Validation Error', 'Please fix the errors before submitting.');
+            return false;
+          }
+          
+          // Get form data
+          const productId = $('#productId').val();
+          const name = $('#productName').val().trim();
+          const category = $('#productCategory').val();
+          const sku = $('#productSKU').val().trim();
+          const price = parseFloat($('#productPrice').val());
+          const stock = parseInt($('#productStock').val());
+          const status = $('#productStatus').val();
+          const description = $('#productDescription').val().trim();
+          const images = $('#productImages')[0].files;
+          
+          // Submit form
+          submitProductForm(productId, name, sku, price, category, stock, status, description, images);
+          return false; // Prevent default form submission
+        }
+      });
+      
+      // Real-time validation feedback
+      $('#productName').on('input blur', function() {
+        $(this).valid();
+      });
+      
+      $('#productCategory').on('change blur', function() {
+        $(this).valid();
+      });
+      
+      $('#productSKU').on('input blur', function() {
+        $(this).valid();
+      });
+      
+      $('#productPrice').on('input blur', function() {
+        $(this).valid();
+      });
+      
+      $('#productStock').on('input blur', function() {
+        $(this).valid();
+      });
+      
+      $('#productImages').on('change', function() {
+        $(this).valid();
+      });
+      
+      // Clear validation on modal close
+      $('#closeProductModalBtn, #cancelProductBtn').on('click', function() {
+        $('#productForm').trigger('reset');
+        $('#productForm .form-group').removeClass('error success');
+        $('#productForm .error-message, #productForm .success-message').hide();
+      });
+    }
+    
+    // Validation helper functions
+    function showFieldError(field, message) {
+      const formGroup = field.closest('.form-group');
+      formGroup.removeClass('success').addClass('error');
+      const errorMsg = formGroup.find('.error-message');
+      errorMsg.text(message).show();
+    }
+    
+    function showFieldSuccess(field) {
+      const formGroup = field.closest('.form-group');
+      formGroup.removeClass('error').addClass('success');
+    }
+    
+    function clearFieldValidation(field) {
+      const formGroup = field.closest('.form-group');
+      formGroup.removeClass('error success');
+      formGroup.find('.error-message, .success-message').hide();
+    }
   </script>
   
   <!-- Footer -->

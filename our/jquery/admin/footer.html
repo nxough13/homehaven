@@ -378,8 +378,14 @@ function populateAdminInfo() {
   console.log('  login_time:', loginTime);
   
   // Set admin name and email
-  document.getElementById('currentAdmin').textContent = adminName || 'Administrator';
-  document.getElementById('currentAdminEmail').textContent = adminEmail || 'admin@homehaven.com';
+  const currentAdminElement = document.getElementById('currentAdmin');
+  const currentAdminEmailElement = document.getElementById('currentAdminEmail');
+  if (currentAdminElement) {
+    currentAdminElement.textContent = adminName || 'Administrator';
+  }
+  if (currentAdminEmailElement) {
+    currentAdminEmailElement.textContent = adminEmail || 'admin@homehaven.com';
+  }
   
   // Set session info - show session duration
   if (loginTime) {
@@ -392,21 +398,30 @@ function populateAdminInfo() {
     console.log('  Current time:', now);
     console.log('  Session duration (minutes):', sessionDuration);
     
-    if (sessionDuration < 60) {
-      document.getElementById('sessionTime').textContent = `${sessionDuration} min`;
-    } else {
-      const hours = Math.floor(sessionDuration / 60);
-      const minutes = sessionDuration % 60;
-      document.getElementById('sessionTime').textContent = `${hours}h ${minutes}m`;
+    const sessionTimeElement = document.getElementById('sessionTime');
+    if (sessionTimeElement) {
+      if (sessionDuration < 60) {
+        sessionTimeElement.textContent = `${sessionDuration} min`;
+      } else {
+        const hours = Math.floor(sessionDuration / 60);
+        const minutes = sessionDuration % 60;
+        sessionTimeElement.textContent = `${hours}h ${minutes}m`;
+      }
     }
   } else {
     console.log('🔍 FOOTER DEBUG: No login_time found, showing "Active"');
-    document.getElementById('sessionTime').textContent = 'Active';
+    const sessionTimeElement = document.getElementById('sessionTime');
+    if (sessionTimeElement) {
+      sessionTimeElement.textContent = 'Active';
+    }
   }
   
   // Set last updated time
   const now = new Date();
-  document.getElementById('lastUpdated').textContent = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+  const lastUpdatedElement = document.getElementById('lastUpdated');
+  if (lastUpdatedElement) {
+    lastUpdatedElement.textContent = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+  }
   
   console.log('🔍 FOOTER DEBUG: populateAdminInfo() completed');
 }
@@ -423,20 +438,29 @@ function updateFooterStats() {
   .then(data => {
     if (data.success) {
       // Update server status
-      document.getElementById('serverStatus').textContent = '🟢 Online';
-      document.getElementById('serverStatus').style.color = 'var(--success-color)';
+      const serverStatusElement = document.getElementById('serverStatus');
+      if (serverStatusElement) {
+        serverStatusElement.textContent = '🟢 Online';
+        serverStatusElement.style.color = 'var(--success-color)';
+      }
     }
   })
   .catch(() => {
-    document.getElementById('serverStatus').textContent = '🔴 Offline';
-    document.getElementById('serverStatus').style.color = 'var(--danger-color)';
+    const serverStatusElement = document.getElementById('serverStatus');
+    if (serverStatusElement) {
+      serverStatusElement.textContent = '🔴 Offline';
+      serverStatusElement.style.color = 'var(--danger-color)';
+    }
   });
 }
 
 function updateCurrentTime() {
   const now = new Date();
   const timeString = now.toLocaleTimeString();
-  document.getElementById('currentTime').textContent = timeString;
+  const currentTimeElement = document.getElementById('currentTime');
+  if (currentTimeElement) {
+    currentTimeElement.textContent = timeString;
+  }
 }
 
 // Footer link functions

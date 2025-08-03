@@ -373,43 +373,6 @@
       color: white;
     }
     
-    .action-btn {
-      background: var(--primary-color);
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 6px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: var(--transition-fast);
-      font-size: 0.8rem;
-      text-decoration: none;
-      display: inline-block;
-      margin: 0.25rem;
-    }
-    
-    .action-btn:hover {
-      background: var(--primary-dark);
-      transform: translateY(-1px);
-      box-shadow: 0 4px 12px rgba(139, 92, 42, 0.3);
-    }
-    
-    .action-btn.verify {
-      background: var(--success-color);
-    }
-    
-    .action-btn.verify:hover {
-      background: #218838;
-    }
-    
-    .action-btn.deactivate {
-      background: var(--danger-color);
-    }
-    
-    .action-btn.deactivate:hover {
-      background: #c82333;
-    }
-    
     .back-btn {
       background: var(--primary-color);
       color: white;
@@ -692,7 +655,6 @@
               <th><i class="fas fa-phone"></i> Phone</th>
               <th><i class="fas fa-map-marker-alt"></i> Address</th>
               <th><i class="fas fa-shield-alt"></i> Status</th>
-              <th><i class="fas fa-cogs"></i> Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -724,16 +686,6 @@
             <td>
               <span class="status-badge ${status}">${statusText}</span>
             </td>
-            <td>
-              ${seller.is_verified === 0 ? 
-                `<button class="action-btn verify" onclick="verifySeller(${seller.seller_id})">
-                  <i class="fas fa-check"></i> Verify
-                </button>` : 
-                `<button class="action-btn deactivate" onclick="deactivateSeller(${seller.seller_id})">
-                  <i class="fas fa-ban"></i> Deactivate
-                </button>`
-              }
-            </td>
           </tr>
         `;
       });
@@ -744,62 +696,6 @@
       `;
       
       container.innerHTML = html;
-    }
-    
-    // Verify seller
-    async function verifySeller(sellerId) {
-      if (!confirm('Are you sure you want to verify this seller?')) return;
-      
-      try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${sellerId}/verify`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ is_verified: 1 })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          alert('Seller verified successfully!');
-          loadSellers();
-        } else {
-          alert('Failed to verify seller: ' + data.message);
-        }
-      } catch (error) {
-        console.error('Error verifying seller:', error);
-        alert('Error verifying seller');
-      }
-    }
-    
-    // Deactivate seller
-    async function deactivateSeller(sellerId) {
-      if (!confirm('Are you sure you want to deactivate this seller?')) return;
-      
-      try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${sellerId}/deactivate`, {
-          method: 'PATCH',
-          headers: {
-            'Authorization': 'Bearer ' + token,
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({ is_verified: 0 })
-        });
-        
-        const data = await response.json();
-        
-        if (data.success) {
-          alert('Seller deactivated successfully!');
-          loadSellers();
-        } else {
-          alert('Failed to deactivate seller: ' + data.message);
-        }
-      } catch (error) {
-        console.error('Error deactivating seller:', error);
-        alert('Error deactivating seller');
-      }
     }
     
     // Filter functionality

@@ -306,8 +306,7 @@
     .orders-table td {
       padding: 1rem;
       border-bottom: 1px solid rgba(139, 92, 42, 0.1);
-      color: var(--text-dark);
-      font-size: 0.9rem;
+      vertical-align: top;
     }
     
     .orders-table tr:last-child td {
@@ -315,12 +314,25 @@
     }
     
     .orders-table tr:nth-child(even) {
-      background: var(--background-light);
+      background: rgba(139, 92, 42, 0.02);
     }
     
     .orders-table tr:hover {
       background: rgba(139, 92, 42, 0.05);
       transition: var(--transition-fast);
+    }
+    
+    /* Items column styling for long product names */
+    .orders-table td:nth-child(3) {
+      max-width: 300px;
+      word-wrap: break-word;
+      white-space: normal;
+      line-height: 1.4;
+    }
+    
+    .orders-table td:nth-child(3) {
+      font-size: 0.9rem;
+      color: var(--text-medium);
     }
     
     .status-badge {
@@ -644,13 +656,24 @@
       
       orders.forEach(order => {
         const orderDate = new Date(order.date_placed).toLocaleDateString();
-        const itemCount = order.products ? order.products.length : 0;
+        const itemCount = order.items ? order.items.length : 0;
+        
+        // Create product names display
+        let itemsDisplay = '';
+        if (order.items && order.items.length > 0) {
+          const productNames = order.items.map(item => 
+            `${item.name} (${item.quantity}x)`
+          );
+          itemsDisplay = productNames.join(', ');
+        } else {
+          itemsDisplay = 'No items';
+        }
         
         html += `
           <tr>
             <td><strong>${order.order_number}</strong></td>
             <td>${order.customer_fname} ${order.customer_lname}</td>
-            <td>${itemCount} items</td>
+            <td>${itemsDisplay}</td>
             <td><strong>₱${parseFloat(order.total_amount).toLocaleString()}</strong></td>
             <td>${orderDate}</td>
             <td>

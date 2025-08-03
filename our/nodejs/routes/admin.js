@@ -492,6 +492,31 @@ router.patch('/items/:itemId/status', adminOnly, async (req, res) => {
   }
 });
 
+// PATCH item status (admin only)
+router.patch('/items/:itemId/status', adminOnly, async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    const { status } = req.body;
+    
+    if (!status || !['active', 'inactive'].includes(status)) {
+      return res.status(400).json({ success: false, message: 'Invalid status. Must be "active" or "inactive"' });
+    }
+    
+    const [result] = await db.query(
+      'UPDATE item SET status = ? WHERE item_id = ?',
+      [status, itemId]
+    );
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ success: false, message: 'Item not found' });
+    }
+    
+    res.json({ success: true, message: `Item status updated to ${status}` });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to update item status', error: err.message });
+  }
+});
+
 // GET all orders with customer and item info (admin only)
 router.get('/orders', adminOnly, async (req, res) => {
   try {
@@ -557,11 +582,11 @@ router.get('/items', adminOnly, async (req, res) => {
       SELECT i.item_id, i.name, i.sku, i.sell_price, i.status, i.created_at, i.image,
              c.name AS category_name, c.category_id,
              st.quantity AS stock_quantity,
-             u.id AS seller_id, u.name AS seller_name
+             s.seller_id, s.business_name AS seller_name
       FROM item i
       LEFT JOIN categories c ON i.category_id = c.category_id
       LEFT JOIN stock st ON i.item_id = st.item_id
-      LEFT JOIN users u ON i.seller_id = u.id
+      LEFT JOIN sellers s ON i.seller_id = s.seller_id
       ORDER BY i.created_at DESC
     `);
     
@@ -587,6 +612,50 @@ router.get('/items', adminOnly, async (req, res) => {
   }
 });
 
+// GET individual item details (admin only)
+router.get('/items/:itemId', adminOnly, async (req, res) => {
+  try {
+    const { itemId } = req.params;
+    
+    const [items] = await db.query(`
+      SELECT i.item_id, i.name, i.description, i.sku, i.sell_price, i.status, i.created_at, i.image,
+             c.name AS category_name, c.category_id,
+             st.quantity AS stock_quantity,
+             s.seller_id, s.business_name AS seller_name
+      FROM item i
+      LEFT JOIN categories c ON i.category_id = c.category_id
+      LEFT JOIN stock st ON i.item_id = st.item_id
+      LEFT JOIN sellers s ON i.seller_id = s.seller_id
+      WHERE i.item_id = ?
+    `, [itemId]);
+    
+    if (items.length === 0) {
+      return res.status(404).json({ success: false, message: 'Item not found' });
+    }
+    
+    const item = items[0];
+    const processedItem = {
+      item_id: item.item_id,
+      name: item.name || 'Unknown Item',
+      description: item.description || 'No description available',
+      sku: item.sku || 'N/A',
+      sell_price: item.sell_price || 0,
+      status: item.status || 'inactive',
+      created_at: item.created_at,
+      category_name: item.category_name || 'Uncategorized',
+      category_id: item.category_id,
+      stock_quantity: item.stock_quantity || 0,
+      seller_id: item.seller_id,
+      seller_name: item.seller_name || 'Unknown Seller',
+      image: item.image || null
+    };
+    
+    res.json({ success: true, item: processedItem });
+  } catch (err) {
+    res.status(500).json({ success: false, message: 'Failed to fetch item details', error: err.message });
+  }
+});
+
 // GET all categories (admin only)
 router.get('/categories', adminOnly, async (req, res) => {
   try {
@@ -600,7 +669,7 @@ router.get('/categories', adminOnly, async (req, res) => {
 // GET all sellers (admin only)
 router.get('/sellers/all', adminOnly, async (req, res) => {
   try {
-    const [sellers] = await db.query('SELECT u.id AS seller_id, u.name AS seller_name FROM users u WHERE u.role = "seller" ORDER BY u.name');
+    const [sellers] = await db.query('SELECT seller_id, business_name AS seller_name FROM sellers ORDER BY business_name');
     res.json({ success: true, sellers });
   } catch (err) {
     res.status(500).json({ success: false, message: 'Failed to fetch sellers', error: err.message });

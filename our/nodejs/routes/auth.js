@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const jwt = require('jsonwebtoken');
+const bcrypt = require('bcrypt');
 const nodemailer = require('nodemailer');
 const multer = require('multer');
 const fs = require('fs');
@@ -91,8 +92,9 @@ router.post('/login', async (req, res) => {
         return res.json({ success: false, message: 'Your account has been deactivated by an administrator. Please contact support.' });
       }
     }
-    // Plain text password check (for demo; use hashing in production)
-    if (user.password === password) {
+    // Compare password with hashed password in database
+    const passwordMatch = await bcrypt.compare(password, user.password);
+    if (passwordMatch) {
       // Log successful login
       await logActivity(user.id, 'user_login', 'user', user.id, 'User logged in successfully', req);
       // Create JWT
@@ -127,10 +129,15 @@ router.post('/register', async (req, res) => {
     if (results.length > 0) {
       return res.json({ success: false, message: 'Email already registered' });
     }
+    
+    // Hash the password before storing
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    
     // Save user as inactive (not verified)
     const [insertResult] = await db.query(
       'INSERT INTO users (name, email, password, role, status) VALUES (?, ?, ?, ?, ?)',
-      [name, email, password, 'user', 'inactive']
+      [name, email, hashedPassword, 'user', 'inactive']
     );
     
     // Log user registration
@@ -444,8 +451,11 @@ router.post('/profile', authenticateJWT, upload.single('profile_image'), async (
       userValues.push(name);
     }
     if (password && password.length > 0) {
+      // Hash the password before updating
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
       userFields.push('password = ?');
-      userValues.push(password);
+      userValues.push(hashedPassword);
     }
     if (imagePath) {
       userFields.push('profile_image = ?');

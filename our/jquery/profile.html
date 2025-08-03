@@ -7,6 +7,8 @@
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
   <style>
     :root {
       --primary-color: #8B5C2A;
@@ -368,6 +370,69 @@
       line-height: 1.6;
     }
     
+    .upgrade-section .action-btn.secondary:hover {
+      background: var(--primary-light);
+      color: var(--text-light);
+    }
+    
+    /* Form Validation Styles */
+    .profile-form .form-group {
+      position: relative;
+      margin-bottom: 1.5rem;
+    }
+    
+    .profile-form .form-group.error input,
+    .profile-form .form-group.error textarea {
+      border-color: #e74c3c !important;
+      box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+    }
+    
+    .profile-form .form-group.success input,
+    .profile-form .form-group.success textarea {
+      border-color: #27ae60 !important;
+      box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+    }
+    
+    .profile-form .error-message {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .profile-form .form-group.error .error-message {
+      display: block;
+    }
+    
+    .profile-form .success-message {
+      color: #27ae60;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: none;
+      font-weight: 500;
+    }
+    
+    .profile-form .form-group.success .success-message {
+      display: block;
+    }
+    
+    .profile-form .validation-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+    
+    .profile-form .form-group.error .validation-icon {
+      color: #e74c3c;
+    }
+    
+    .profile-form .form-group.success .validation-icon {
+      color: #27ae60;
+    }
+    
     @media (max-width: 768px) {
       .profile-container {
         margin: 1rem;
@@ -505,41 +570,71 @@
     
     <form class="profile-form" id="profileForm" autocomplete="off">
       <div>
-        <label for="name">Name</label>
-        <input type="text" id="name" name="name" required>
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input type="text" id="name" name="name" required minlength="2" maxlength="50" pattern="^[a-zA-Z\s]+$">
+          <div class="error-message"></div>
+          <div class="success-message">✓ Valid name</div>
+          <span class="validation-icon"></span>
+        </div>
         
-        <label for="email">Email</label>
-        <input type="email" id="email" name="email" readonly>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" readonly>
+          <div class="error-message"></div>
+          <div class="success-message">✓ Valid email</div>
+          <span class="validation-icon"></span>
+        </div>
         
-        <label for="address">Address</label>
-        <input type="text" id="address" name="address">
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" maxlength="200">
+          <div class="error-message"></div>
+          <div class="success-message">✓ Valid address</div>
+          <span class="validation-icon"></span>
+        </div>
       </div>
       
       <div>
-        <label for="password">New Password</label>
-        <div class="input-group">
-          <input type="password" id="password" name="password" placeholder="Enter new password">
-          <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('password', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
+        <div class="form-group">
+          <label for="password">New Password</label>
+          <div class="input-group">
+            <input type="password" id="password" name="password" placeholder="Enter new password" minlength="8">
+            <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('password', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="error-message"></div>
+          <div class="success-message">✓ Strong password</div>
+          <span class="validation-icon"></span>
         </div>
         
-        <label for="confirm-password">Confirm Password</label>
-        <div class="input-group">
-          <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password">
-          <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('confirm-password', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-          </button>
+        <div class="form-group">
+          <label for="confirm-password">Confirm Password</label>
+          <div class="input-group">
+            <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password">
+            <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('confirm-password', this)">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+          </div>
+          <div class="error-message"></div>
+          <div class="success-message">✓ Passwords match</div>
+          <span class="validation-icon"></span>
         </div>
         
-        <label for="phone">Phone Number</label>
-        <input type="text" id="phone" name="phone">
+        <div class="form-group">
+          <label for="phone">Phone Number</label>
+          <input type="tel" id="phone" name="phone" pattern="^[0-9+\-\s\(\)]+$" maxlength="20">
+          <div class="error-message"></div>
+          <div class="success-message">✓ Valid phone number</div>
+          <span class="validation-icon"></span>
+        </div>
       </div>
       
       <div id="customerSectionWrapper"></div>
@@ -906,6 +1001,7 @@
     // Load profile on page load
     document.addEventListener('DOMContentLoaded', function() {
       loadProfile();
+      initializeFormValidation();
     });
 
     // On page load, show/hide upgrade buttons and sections based on user role
