@@ -118,7 +118,8 @@
     }
     .profile-form input[type="text"],
     .profile-form input[type="email"],
-    .profile-form input[type="password"] {
+    .profile-form input[type="password"],
+    .profile-form input[type="tel"] {
       width: 100%;
       padding: 8px 12px;
       border: 1.5px solid #c3b7a6;
@@ -329,6 +330,60 @@
       opacity: 0.3;
     }
     
+    /* Form Validation Styles */
+    .form-group {
+      position: relative;
+      margin-bottom: 1rem;
+    }
+    
+    .form-group.error input {
+      border-color: #e74c3c !important;
+      box-shadow: 0 0 0 2px rgba(231, 76, 60, 0.2);
+    }
+    
+    .form-group.success input {
+      border-color: #27ae60 !important;
+      box-shadow: 0 0 0 2px rgba(39, 174, 96, 0.2);
+    }
+    
+    .error-message {
+      color: #e74c3c;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .form-group.error .error-message {
+      display: block;
+    }
+    
+    .success-message {
+      color: #27ae60;
+      font-size: 0.85rem;
+      margin-top: 0.25rem;
+      display: none;
+    }
+    
+    .form-group.success .success-message {
+      display: block;
+    }
+    
+    .validation-icon {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+    
+    .form-group.error .validation-icon {
+      color: #e74c3c;
+    }
+    
+    .form-group.success .validation-icon {
+      color: #27ae60;
+    }
+    
     @media (max-width: 900px) {
       .profile-card-content {
         padding: 16px 2px 16px 2px;
@@ -382,35 +437,61 @@
       <div class="seller-profile-container">
         <div class="profile-left">
           <form class="profile-form">
-            <label>Name:</label>
-            <input type="text" name="name" placeholder="Seller Name" />
+            <div class="form-group">
+              <label>Name:</label>
+              <input type="text" name="name" placeholder="Seller Name" />
+              <div class="error-message"></div>
+              <div class="success-message">✓ Valid name</div>
+              <span class="validation-icon"></span>
+            </div>
+            
+            <div class="form-group">
+              <label>Email:</label>
+              <div class="email-row">
+                <input type="email" name="email" placeholder="Seller Email" readonly />
+                <span class="verify-email">Verify Email</span>
+              </div>
+              <div class="email-status">Email not verified</div>
+            </div>
+            
             <label>Change Password:</label>
-            <div class="input-group">
-              <input type="password" placeholder="" />
+            <div class="input-group form-group">
+              <input type="password" name="password" placeholder="New Password (optional)" />
               <span class="input-group-icon"><i class="fas fa-eye"></i></span>
+              <div class="error-message"></div>
+              <div class="success-message">✓ Valid password</div>
+              <span class="validation-icon"></span>
             </div>
-            <label>Confirm Password:</label>
-            <div class="input-group">
-              <input type="password" placeholder="" />
-              <span class="input-group-icon"><i class="fas fa-eye"></i></span>
-            </div>
-            <label>Email:</label>
-            <div class="email-row">
-              <input type="email" name="email" placeholder="Seller Email" />
-              <span class="verify-email">Verify Email</span>
-            </div>
-            <div class="email-status">Email not verified</div>
             <button type="submit" class="save-btn">Save Changes</button>
           </form>
         </div>
         <div class="profile-right">
           <form class="profile-form">
-            <label>Business Name:</label>
-            <input type="text" name="business_name" placeholder="" />
-            <label>Address:</label>
-            <input type="text" name="business_address" placeholder="Home Address" />
-            <label>Phone Number:</label>
-            <input type="text" name="business_phone" placeholder="" />
+            <div class="form-group">
+              <label>Business Name:</label>
+              <input type="text" name="business_name" placeholder="Business Name" />
+              <div class="error-message"></div>
+              <div class="success-message">✓ Valid business name</div>
+              <span class="validation-icon"></span>
+            </div>
+            
+            <div class="form-group">
+              <label>Business Address:</label>
+              <input type="text" name="business_address" placeholder="Business Address" />
+              <div class="error-message"></div>
+              <div class="success-message">✓ Valid address</div>
+              <span class="validation-icon"></span>
+            </div>
+            
+            <div class="form-group">
+              <label>Business Phone:</label>
+              <input type="tel" name="business_phone" placeholder="Business Phone" />
+              <div class="error-message"></div>
+              <div class="success-message">✓ Valid phone number</div>
+              <span class="validation-icon"></span>
+            </div>
+            
+            <button type="submit" class="save-btn">Save Changes</button>
           </form>
         </div>
       </div>
@@ -448,7 +529,9 @@
     // Load seller profile data
     async function loadSellerProfileForm() {
       try {
-        const res = await $.get(API_BASE + '/seller/profile');
+        // Add cache-busting parameter to ensure fresh data
+        const timestamp = new Date().getTime();
+        const res = await $.get(API_BASE + '/seller/profile', { _t: timestamp });
         const seller = res.profile;
         if (seller) {
           $('input[name="name"]').val(seller.user_name || '');
@@ -457,6 +540,16 @@
           $('input[name="business_address"]').val(seller.business_address || '');
           $('input[name="business_phone"]').val(seller.business_phone || '');
           $('#profileUserName').text(seller.user_name || 'Seller');
+          
+          // Handle email verification status
+          const isEmailVerified = seller.is_verified == 1;
+          if (isEmailVerified) {
+            $('.verify-email').text('✓ Verified').css('color', '#27ae60');
+            $('.email-status').text('Email verified').css('color', '#27ae60');
+          } else {
+            $('.verify-email').text('Verify Email').css('color', '#e74c3c');
+            $('.email-status').text('Email not verified').css('color', '#e74c3c');
+          }
           
           // Handle profile image display
           if (seller.profile_image) {
@@ -590,63 +683,245 @@
       });
     }
 
+    // Function to log form data clearly
+    function logFormData(formData) {
+      console.log('=== FORM DATA DEBUG ===');
+      for (let [key, value] of formData.entries()) {
+        console.log(`${key}: ${value}`);
+      }
+      console.log('=== END FORM DATA ===');
+    }
+
+    // Custom modal function
+    function showCustomModal(title, message) {
+      alert(`${title}: ${message}`);
+    }
+
+    // Form validation functions
+    function validateName(name) {
+      const nameRegex = /^[a-zA-Z\s]{2,50}$/;
+      return nameRegex.test(name.trim());
+    }
+    
+    function validateBusinessName(name) {
+      return name.trim().length >= 3 && name.trim().length <= 100;
+    }
+    
+    function validateAddress(address) {
+      return address.trim().length >= 10 && address.trim().length <= 200;
+    }
+    
+    function validatePhone(phone) {
+      const phoneRegex = /^[\d\s\-\+\(\)]{10,15}$/;
+      return phoneRegex.test(phone.trim());
+    }
+    
+    function validatePassword(password) {
+      return password.length >= 6;
+    }
+    
+    function showFieldError(field, message) {
+      const formGroup = field.closest('.form-group');
+      formGroup.classList.remove('success');
+      formGroup.classList.add('error');
+      const errorMsg = formGroup.querySelector('.error-message');
+      if (errorMsg) {
+        errorMsg.textContent = message;
+      }
+    }
+    
+    function showFieldSuccess(field) {
+      const formGroup = field.closest('.form-group');
+      formGroup.classList.remove('error');
+      formGroup.classList.add('success');
+    }
+    
+    function clearFieldValidation(field) {
+      const formGroup = field.closest('.form-group');
+      formGroup.classList.remove('error', 'success');
+    }
+    
+    // Add validation event listeners
+    $('input[name="name"]').on('input blur', function() {
+      const value = $(this).val();
+      if (value.trim() === '') {
+        clearFieldValidation(this);
+      } else if (!validateName(value)) {
+        showFieldError(this, 'Name must be 2-50 characters with only letters and spaces');
+      } else {
+        showFieldSuccess(this);
+      }
+    });
+    
+    $('input[name="business_name"]').on('input blur', function() {
+      const value = $(this).val();
+      if (value.trim() === '') {
+        clearFieldValidation(this);
+      } else if (!validateBusinessName(value)) {
+        showFieldError(this, 'Business name must be 3-100 characters');
+      } else {
+        showFieldSuccess(this);
+      }
+    });
+    
+    $('input[name="business_address"]').on('input blur', function() {
+      const value = $(this).val();
+      if (value.trim() === '') {
+        clearFieldValidation(this);
+      } else if (!validateAddress(value)) {
+        showFieldError(this, 'Address must be 10-200 characters');
+      } else {
+        showFieldSuccess(this);
+      }
+    });
+    
+    $('input[name="business_phone"]').on('input blur', function() {
+      const value = $(this).val();
+      if (value.trim() === '') {
+        clearFieldValidation(this);
+      } else if (!validatePhone(value)) {
+        showFieldError(this, 'Phone must be 10-15 digits with optional formatting');
+      } else {
+        showFieldSuccess(this);
+      }
+    });
+    
+    $('input[name="password"]').on('input blur', function() {
+      const value = $(this).val();
+      if (value.trim() === '') {
+        clearFieldValidation(this);
+      } else if (!validatePassword(value)) {
+        showFieldError(this, 'Password must be at least 6 characters');
+      } else {
+        showFieldSuccess(this);
+      }
+    });
+    
+    // Form submission validation
+    function validateForm() {
+      let isValid = true;
+      
+      // Check name
+      const name = $('input[name="name"]').val();
+      if (name.trim() !== '' && !validateName(name)) {
+        showFieldError($('input[name="name"]')[0], 'Name must be 2-50 characters with only letters and spaces');
+        isValid = false;
+      }
+      
+      // Check business name
+      const businessName = $('input[name="business_name"]').val();
+      if (businessName.trim() !== '' && !validateBusinessName(businessName)) {
+        showFieldError($('input[name="business_name"]')[0], 'Business name must be 3-100 characters');
+        isValid = false;
+      }
+      
+      // Check business address
+      const businessAddress = $('input[name="business_address"]').val();
+      if (businessAddress.trim() !== '' && !validateAddress(businessAddress)) {
+        showFieldError($('input[name="business_address"]')[0], 'Address must be 10-200 characters');
+        isValid = false;
+      }
+      
+      // Check business phone
+      const businessPhone = $('input[name="business_phone"]').val();
+      if (businessPhone.trim() !== '' && !validatePhone(businessPhone)) {
+        showFieldError($('input[name="business_phone"]')[0], 'Phone must be 10-15 digits with optional formatting');
+        isValid = false;
+      }
+      
+      // Check password
+      const password = $('input[name="password"]').val();
+      if (password.trim() !== '' && !validatePassword(password)) {
+        showFieldError($('input[name="password"]')[0], 'Password must be at least 6 characters');
+        isValid = false;
+      }
+      
+      return isValid;
+    }
+
     // Form submission handlers
     $('.profile-left .profile-form').on('submit', function(e) {
       e.preventDefault();
-      const data = {};
-      const name = $('input[name="name"]').val();
-      const password = $('input[type="password"]').eq(0).val();
-      const email = $('input[name="email"]').val();
       
-      if (name) data.name = name;
-      if (password) data.password = password;
-      if (email) data.email = email;
+      if (!validateForm()) {
+        showCustomModal('Error', 'Please fix the validation errors before submitting.');
+        return;
+      }
+      
+      const formData = new FormData(this);
+      const token = localStorage.getItem('jwt_token');
+      
+      console.log('Submitting profile update to:', API_BASE + '/seller/profile');
+      logFormData(formData);
       
       $.ajax({
         url: API_BASE + '/seller/profile',
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function(res) {
-          if (res.success) {
-            alert('Profile updated successfully!');
-            loadSellerProfileForm();
+        type: 'PUT',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: function(response) {
+          if (response.success) {
+            showCustomModal('Success', response.message);
+            // Trigger profile image update event
+            window.dispatchEvent(new Event('profileUpdated'));
+            // Add a small delay to ensure the database update is committed
+            setTimeout(() => {
+              loadSellerProfileForm();
+            }, 500);
           } else {
-            alert('Failed to update profile: ' + (res.message || 'Unknown error'));
+            showCustomModal('Error', response.message);
           }
         },
         error: function(xhr) {
-          alert('Failed to update profile: ' + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Server error'));
+          console.error('Profile update error:', xhr);
+          const response = xhr.responseJSON;
+          showCustomModal('Error', response ? response.message : 'Failed to update profile.');
         }
       });
     });
-
+    
     $('.profile-right .profile-form').on('submit', function(e) {
       e.preventDefault();
-      const data = {};
-      const business_name = $('input[name="business_name"]').val();
-      const business_address = $('input[name="business_address"]').val();
-      const business_phone = $('input[name="business_phone"]').val();
       
-      if (business_name) data.business_name = business_name;
-      if (business_address) data.business_address = business_address;
-      if (business_phone) data.business_phone = business_phone;
+      if (!validateForm()) {
+        showCustomModal('Error', 'Please fix the validation errors before submitting.');
+        return;
+      }
+      
+      const formData = new FormData(this);
+      const token = localStorage.getItem('jwt_token');
+      
+      console.log('Submitting right form profile update to:', API_BASE + '/seller/profile');
+      logFormData(formData);
       
       $.ajax({
         url: API_BASE + '/seller/profile',
-        method: 'PUT',
-        contentType: 'application/json',
-        data: JSON.stringify(data),
-        success: function(res) {
-          if (res.success) {
-            alert('Profile updated successfully!');
-            loadSellerProfileForm();
+        type: 'PUT',
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        success: function(response) {
+          if (response.success) {
+            showCustomModal('Success', response.message);
+            // Add a small delay to ensure the database update is committed
+            setTimeout(() => {
+              loadSellerProfileForm();
+            }, 500);
           } else {
-            alert('Failed to update profile: ' + (res.message || 'Unknown error'));
+            showCustomModal('Error', response.message);
           }
         },
         error: function(xhr) {
-          alert('Failed to update profile: ' + (xhr.responseJSON && xhr.responseJSON.message ? xhr.responseJSON.message : 'Server error'));
+          console.error('Right form profile update error:', xhr);
+          const response = xhr.responseJSON;
+          showCustomModal('Error', response ? response.message : 'Failed to update profile.');
         }
       });
     });

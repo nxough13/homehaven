@@ -511,14 +511,142 @@ router.post('/orders/place', authRequired, upload.single('gcash_receipt'), async
       // Customer email
       const [userRows] = await conn.query('SELECT email FROM users WHERE id = ?', [user_id]);
       const customerEmail = userRows[0].email;
+      
+      // Generate beautiful HTML email with order receipt
+      const orderDate = new Date(orderInfoRow.date_placed || Date.now()).toLocaleString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Order Confirmation - HomeHaven</title>
+        </head>
+        <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+          <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+            <!-- Header -->
+            <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+              <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+            </div>
+            
+            <!-- Main Content -->
+            <div style="padding: 40px;">
+              <div style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+                <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+                <h2 style="color: #155724; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">Order Confirmed!</h2>
+                <p style="color: #155724; margin: 0; font-size: 16px; line-height: 1.5;">
+                  Thank you for your order! We're excited to fulfill your purchase.
+                </p>
+              </div>
+              
+              <!-- Order Details -->
+              <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Order Information</h3>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Order Number:</span>
+                  <span style="color: #8B5C2A; font-weight: 600;">${orderInfoRow.order_number}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Date:</span>
+                  <span style="color: #8B5C2A; font-weight: 600;">${orderDate}</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Status:</span>
+                  <span style="color: #27ae60; font-weight: 600; background-color: #d5f4e6; padding: 4px 12px; border-radius: 6px;">Confirmed</span>
+                </div>
+              </div>
+              
+              <!-- Customer Information -->
+              <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Customer Information</h3>
+                <div style="margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Name:</span>
+                  <span style="color: #8B5C2A; font-weight: 600; margin-left: 10px;">${custRows[0].fname} ${custRows[0].lname}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Address:</span>
+                  <span style="color: #8B5C2A; font-weight: 600; margin-left: 10px;">${custRows[0].addressline}, ${custRows[0].town}, ${custRows[0].zipcode}</span>
+                </div>
+                <div style="margin-bottom: 10px;">
+                  <span style="color: #666; font-weight: 500;">Phone:</span>
+                  <span style="color: #8B5C2A; font-weight: 600; margin-left: 10px;">${custRows[0].phone}</span>
+                </div>
+              </div>
+              
+              <!-- Items Purchased -->
+              <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Items Purchased</h3>
+                ${orderLineRows.map(item => `
+                  <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid #e9ecef;">
+                    <div style="flex: 1;">
+                      <div style="color: #333; font-weight: 600; margin-bottom: 4px;">${item.item_name}</div>
+                      <div style="color: #666; font-size: 14px;">Quantity: ${item.quantity}</div>
+                    </div>
+                    <div style="text-align: right;">
+                      <div style="color: #8B5C2A; font-weight: 600;">₱${parseFloat(item.unit_price).toLocaleString()}</div>
+                      <div style="color: #666; font-size: 14px;">each</div>
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+              
+              <!-- Total Amount -->
+              <div style="background-color: #e8f5e8; border: 1px solid #d4edda; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <div style="display: flex; justify-content: space-between; align-items: center;">
+                  <span style="color: #155724; font-size: 18px; font-weight: 600;">Total Amount:</span>
+                  <span style="color: #155724; font-size: 24px; font-weight: 700;">₱${parseFloat(orderInfoRow.total_amount).toLocaleString()}</span>
+                </div>
+              </div>
+              
+              <!-- Next Steps -->
+              <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                <h3 style="color: #856404; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">What's Next?</h3>
+                <ul style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.6;">
+                  <li>Your order is being processed by our sellers</li>
+                  <li>You'll receive updates on your order status</li>
+                  <li>Estimated delivery time: 3-7 business days</li>
+                  <li>Contact support if you have any questions</li>
+                </ul>
+              </div>
+              
+              <!-- Action Buttons -->
+              <div style="text-align: center;">
+                <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
+              </div>
+            </div>
+            
+            <!-- Footer -->
+            <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+              <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+                Thank you for choosing HomeHaven
+              </p>
+              <div style="color: #999; font-size: 12px;">
+                <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+                <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+                <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+              </div>
+            </div>
+          </div>
+        </body>
+        </html>
+      `;
+      
       await transporter.sendMail({
-        from: 'Home Haven <your_email@gmail.com>',
+        from: 'HomeHaven <homehaven984@gmail.com>',
         to: customerEmail,
-        subject: 'Order Confirmation',
-        text: `Thank you for your order! Order Number: ${order_number}`,
+        subject: 'Order Confirmation - HomeHaven',
+        html: htmlContent,
         attachments: [
           {
-            filename: `OrderReceipt_${order_number}.pdf`,
+            filename: `OrderReceipt_${orderInfoRow.order_number}.pdf`,
             content: pdfBuffer
           }
         ]
@@ -526,11 +654,87 @@ router.post('/orders/place', authRequired, upload.single('gcash_receipt'), async
       // Seller emails
       const [sellerRows] = await conn.query('SELECT DISTINCT u.email FROM item i JOIN users u ON i.seller_id = u.id WHERE i.item_id IN (?)', [items.map(i=>i.item_id)]);
       for (const seller of sellerRows) {
+        const sellerHtmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>New Order - HomeHaven</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+              <!-- Header -->
+              <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+                <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+              </div>
+              
+              <!-- Main Content -->
+              <div style="padding: 40px;">
+                <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+                  <div style="font-size: 48px; margin-bottom: 20px;">🛍️</div>
+                  <h2 style="color: #0c5460; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">New Order Received!</h2>
+                  <p style="color: #0c5460; margin: 0; font-size: 16px; line-height: 1.5;">
+                    Congratulations! You have received a new order for your products.
+                  </p>
+                </div>
+                
+                <!-- Order Details -->
+                <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                  <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Order Information</h3>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Order Number:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${orderInfoRow.order_number}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Date:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${orderDate}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #666; font-weight: 500;">Total Amount:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">₱${parseFloat(orderInfoRow.total_amount).toLocaleString()}</span>
+                  </div>
+                </div>
+                
+                <!-- Action Required -->
+                <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                  <h3 style="color: #856404; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Action Required</h3>
+                  <ul style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.6;">
+                    <li>Please review the order details in your seller dashboard</li>
+                    <li>Prepare the items for shipping</li>
+                    <li>Update the order status when shipped</li>
+                    <li>Contact the customer if there are any issues</li>
+                  </ul>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div style="text-align: center;">
+                  <a href="http://localhost:3000/sellers/orders.html" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">View Orders</a>
+                </div>
+              </div>
+              
+              <!-- Footer -->
+              <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+                <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+                  Thank you for being a HomeHaven seller
+                </p>
+                <div style="color: #999; font-size: 12px;">
+                  <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+                  <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+                  <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
+        
         await transporter.sendMail({
-          from: 'Home Haven <your_email@gmail.com>',
+          from: 'HomeHaven <homehaven984@gmail.com>',
           to: seller.email,
-          subject: 'New Order Received',
-          text: `You have a new order. Order Number: ${order_number}`
+          subject: 'New Order Received - HomeHaven',
+          html: sellerHtmlContent
         });
       }
     } catch (emailErr) {

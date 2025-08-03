@@ -404,19 +404,170 @@ router.patch('/seller/orders/:orderinfo_id/status', authenticateJWT, requireSell
           pass: process.env.EMAIL_PASS || 'nfiopcrbahrmxvru'
         }
       });
-      let subject = '', text = '';
+      
+      let subject = '', htmlContent = '';
+      const orderNumber = orderInfo[0].order_number;
+      const currentDate = new Date().toLocaleDateString('en-US', { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+      
       if (status === 'cancelled') {
-        subject = 'Order Cancelled';
-        text = `Your order ${orderInfo[0].order_number} has been cancelled by the seller.`;
+        subject = 'Order Cancelled - HomeHaven';
+        htmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Order Cancelled</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+              <!-- Header -->
+              <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+                <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+              </div>
+              
+              <!-- Main Content -->
+              <div style="padding: 40px; text-align: center;">
+                <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+                  <div style="font-size: 48px; margin-bottom: 20px;">❌</div>
+                  <h2 style="color: #856404; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">Order Cancelled</h2>
+                  <p style="color: #856404; margin: 0; font-size: 16px; line-height: 1.5;">
+                    We're sorry to inform you that your order has been cancelled by the seller.
+                  </p>
+                </div>
+                
+                <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px; text-align: left;">
+                  <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Order Details</h3>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Order Number:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${orderNumber}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Status:</span>
+                    <span style="color: #e74c3c; font-weight: 600; background-color: #fadbd8; padding: 4px 12px; border-radius: 6px;">Cancelled</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #666; font-weight: 500;">Date:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${currentDate}</span>
+                  </div>
+                </div>
+                
+                <div style="background-color: #e8f5e8; border: 1px solid #d4edda; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                  <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">What's Next?</h3>
+                  <ul style="color: #155724; margin: 0; padding-left: 20px; line-height: 1.6;">
+                    <li>If you paid for this order, a refund will be processed within 3-5 business days</li>
+                    <li>You can browse our catalog for alternative products</li>
+                    <li>Contact our support team if you have any questions</li>
+                  </ul>
+                </div>
+                
+                <div style="text-align: center;">
+                  <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
+                </div>
+              </div>
+              
+              <!-- Footer -->
+              <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+                <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+                  Thank you for choosing HomeHaven
+                </p>
+                <div style="color: #999; font-size: 12px;">
+                  <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+                  <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+                  <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
       } else if (status === 'delivered') {
-        subject = 'Order Delivered';
-        text = `Your order ${orderInfo[0].order_number} has been marked as delivered by the seller.`;
+        subject = 'Order Delivered - HomeHaven';
+        htmlContent = `
+          <!DOCTYPE html>
+          <html>
+          <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Order Delivered</title>
+          </head>
+          <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+            <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+              <!-- Header -->
+              <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+                <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+                <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+              </div>
+              
+              <!-- Main Content -->
+              <div style="padding: 40px; text-align: center;">
+                <div style="background-color: #d4edda; border: 1px solid #c3e6cb; border-radius: 12px; padding: 30px; margin-bottom: 30px;">
+                  <div style="font-size: 48px; margin-bottom: 20px;">✅</div>
+                  <h2 style="color: #155724; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">Order Delivered!</h2>
+                  <p style="color: #155724; margin: 0; font-size: 16px; line-height: 1.5;">
+                    Great news! Your order has been successfully delivered by the seller.
+                  </p>
+                </div>
+                
+                <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px; text-align: left;">
+                  <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Order Details</h3>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Order Number:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${orderNumber}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                    <span style="color: #666; font-weight: 500;">Status:</span>
+                    <span style="color: #27ae60; font-weight: 600; background-color: #d5f4e6; padding: 4px 12px; border-radius: 6px;">Delivered</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #666; font-weight: 500;">Date:</span>
+                    <span style="color: #8B5C2A; font-weight: 600;">${currentDate}</span>
+                  </div>
+                </div>
+                
+                <div style="background-color: #e8f5e8; border: 1px solid #d4edda; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+                  <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">What's Next?</h3>
+                  <ul style="color: #155724; margin: 0; padding-left: 20px; line-height: 1.6;">
+                    <li>Please inspect your items upon delivery</li>
+                    <li>Leave a review for the seller to help other customers</li>
+                    <li>Contact support if you have any issues with your order</li>
+                  </ul>
+                </div>
+                
+                <div style="text-align: center;">
+                  <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Shop Again</a>
+                </div>
+              </div>
+              
+              <!-- Footer -->
+              <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+                <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+                  Thank you for choosing HomeHaven
+                </p>
+                <div style="color: #999; font-size: 12px;">
+                  <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+                  <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+                  <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+                </div>
+              </div>
+            </div>
+          </body>
+          </html>
+        `;
       }
+      
       await transporter.sendMail({
-        from: 'Home Haven <your_email@gmail.com>',
+        from: 'HomeHaven <homehaven984@gmail.com>',
         to: orderInfo[0].email,
         subject,
-        text
+        html: htmlContent
       });
     }
     res.json({ success: true, message: 'Order status updated and customer notified.' });
@@ -451,7 +602,11 @@ router.get('/seller/profile', authenticateJWT, requireSellerRole, async (req, re
       LIMIT 1
     `, [req.user.id]);
     console.log('Query result:', rows);
-    if (!rows.length) return res.status(404).json({ success: false, message: 'Seller profile not found.' });
+    if (!rows.length) {
+      console.log('No seller profile found for user_id:', req.user.id);
+      return res.status(404).json({ success: false, message: 'Seller profile not found.' });
+    }
+    console.log('Returning seller profile:', rows[0]);
     res.json({ success: true, profile: rows[0] });
   } catch (err) {
     console.error('Error fetching seller profile:', err);
@@ -463,6 +618,9 @@ router.get('/seller/profile', authenticateJWT, requireSellerRole, async (req, re
 router.put('/seller/profile', authenticateJWT, requireSellerRole, upload.single('profile_image'), async (req, res) => {
   try {
     const { name, email, password, business_name, business_address, business_phone } = req.body;
+    console.log('Received profile update data:', { name, email, password: password ? '[HIDDEN]' : undefined, business_name, business_address, business_phone });
+    console.log('User ID:', req.user.id);
+    
     const conn = await db.getConnection();
     
     try {
@@ -470,6 +628,7 @@ router.put('/seller/profile', authenticateJWT, requireSellerRole, upload.single(
       
       // Update user table if name, email, or password provided
       if (name || email || password) {
+        console.log('Updating users table with:', { name, email, password: password ? '[HIDDEN]' : undefined });
         let userUpdateQuery = 'UPDATE users SET ';
         let userUpdateParams = [];
         
@@ -490,43 +649,92 @@ router.put('/seller/profile', authenticateJWT, requireSellerRole, upload.single(
         userUpdateQuery += ' WHERE id = ?';
         userUpdateParams.push(req.user.id);
         
-        await conn.query(userUpdateQuery, userUpdateParams);
+        console.log('User update query:', userUpdateQuery);
+        console.log('User update params:', userUpdateParams);
+        const [userResult] = await conn.query(userUpdateQuery, userUpdateParams);
+        console.log('Users table updated successfully. Rows affected:', userResult.affectedRows);
       }
       
-      // Update seller table if business info provided
-      if (business_name || business_address || business_phone) {
-        let sellerUpdateQuery = 'UPDATE sellers SET ';
-        let sellerUpdateParams = [];
-        
-        if (business_name) {
-          sellerUpdateQuery += 'business_name = ?, ';
-          sellerUpdateParams.push(business_name);
+      // Check if seller profile exists
+      const [sellerCheck] = await conn.query('SELECT seller_id FROM sellers WHERE user_id = ?', [req.user.id]);
+      console.log('Seller profile check result:', sellerCheck);
+      
+      if (sellerCheck.length === 0) {
+        console.log('Seller profile does not exist, creating new one...');
+        // Create seller profile if it doesn't exist
+        const [userRows] = await conn.query('SELECT name FROM users WHERE id = ?', [req.user.id]);
+        let businessName = business_name || (userRows.length > 0 ? userRows[0].name.trim() + "'s Store" : '');
+        const [insertResult] = await conn.query(
+          'INSERT INTO sellers (user_id, business_name, business_description, business_address, business_phone, business_email, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?)',
+          [req.user.id, businessName, 'Home goods and furniture', business_address || '', business_phone || '', '', 0]
+        );
+        console.log('Created new seller profile. Insert ID:', insertResult.insertId);
+      } else {
+        // Update seller table if business info provided
+        if (business_name || business_address || business_phone) {
+          console.log('Updating sellers table with:', { business_name, business_address, business_phone });
+          let sellerUpdateQuery = 'UPDATE sellers SET ';
+          let sellerUpdateParams = [];
+          
+          if (business_name) {
+            sellerUpdateQuery += 'business_name = ?, ';
+            sellerUpdateParams.push(business_name);
+          }
+          if (business_address) {
+            sellerUpdateQuery += 'business_address = ?, ';
+            sellerUpdateParams.push(business_address);
+          }
+          if (business_phone) {
+            sellerUpdateQuery += 'business_phone = ?, ';
+            sellerUpdateParams.push(business_phone);
+          }
+          
+          sellerUpdateQuery = sellerUpdateQuery.slice(0, -2); // Remove trailing comma and space
+          sellerUpdateQuery += ' WHERE user_id = ?';
+          sellerUpdateParams.push(req.user.id);
+          
+          console.log('Seller update query:', sellerUpdateQuery);
+          console.log('Seller update params:', sellerUpdateParams);
+          const [sellerResult] = await conn.query(sellerUpdateQuery, sellerUpdateParams);
+          console.log('Sellers table updated successfully. Rows affected:', sellerResult.affectedRows);
         }
-        if (business_address) {
-          sellerUpdateQuery += 'business_address = ?, ';
-          sellerUpdateParams.push(business_address);
-        }
-        if (business_phone) {
-          sellerUpdateQuery += 'business_phone = ?, ';
-          sellerUpdateParams.push(business_phone);
-        }
-        
-        sellerUpdateQuery = sellerUpdateQuery.slice(0, -2); // Remove trailing comma and space
-        sellerUpdateQuery += ' WHERE user_id = ?';
-        sellerUpdateParams.push(req.user.id);
-        
-        await conn.query(sellerUpdateQuery, sellerUpdateParams);
       }
       
       // Handle profile image upload
       if (req.file) {
+        console.log('Profile image uploaded:', req.file.filename);
         const imagePath = '/uploads/' + req.file.filename;
-        await conn.query('UPDATE users SET profile_image = ? WHERE id = ?', [imagePath, req.user.id]);
+        const [imageResult] = await conn.query('UPDATE users SET profile_image = ? WHERE id = ?', [imagePath, req.user.id]);
+        console.log('Profile image updated in users table. Rows affected:', imageResult.affectedRows);
       }
       
       await conn.commit();
+      console.log('Transaction committed successfully');
+      
+      // Verify the update by fetching the updated data
+      const [verifyRows] = await conn.query(`
+        SELECT 
+          s.seller_id,
+          s.business_name,
+          s.business_description,
+          s.business_address,
+          s.business_phone,
+          s.business_email,
+          s.is_verified,
+          u.name AS user_name,
+          u.email AS user_email,
+          u.role AS user_role,
+          u.profile_image
+        FROM sellers s
+        JOIN users u ON s.user_id = u.id
+        WHERE s.user_id = ?
+        LIMIT 1
+      `, [req.user.id]);
+      console.log('Verification query result:', verifyRows);
+      
       res.json({ success: true, message: 'Profile updated successfully.' });
     } catch (err) {
+      console.error('Error in transaction:', err);
       await conn.rollback();
       throw err;
     } finally {
@@ -703,8 +911,8 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
     
     const userId = sellerRows[0].user_id;
     
-    // Get total count
-    const [countRows] = await db.query(`
+    // Get total count of products for this seller
+    const [countResult] = await db.query(`
       SELECT COUNT(*) as total
       FROM item i
       WHERE i.seller_id = ? AND i.status = 'active'
@@ -712,7 +920,7 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
     
     res.json({ 
       success: true, 
-      total: countRows[0].total 
+      total: countResult[0].total
     });
   } catch (err) {
     console.error('Error fetching seller products count:', err);
@@ -723,87 +931,4 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
   }
 });
 
-// ----------- SELLER CATEGORIES ENDPOINT -----------
-// GET categories for seller products (public endpoint)
-router.get('/seller/categories', async (req, res) => {
-  try {
-    const [categories] = await db.query(`
-      SELECT DISTINCT c.category_id, c.name, c.description
-      FROM categories c
-      JOIN item i ON c.category_id = i.category_id
-      WHERE c.is_active = 1 AND i.status = 'active'
-      ORDER BY c.name
-    `);
-    
-    res.json({ 
-      success: true, 
-      categories: categories 
-    });
-  } catch (err) {
-    console.error('Error fetching seller categories:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Failed to fetch categories.' 
-    });
-  }
-});
-
-// ----------- MOST ORDERED PRODUCTS ENDPOINT -----------
-// GET most ordered products for this seller
-router.get('/seller/most-ordered-products', authenticateJWT, requireSellerRole, async (req, res) => {
-  try {
-    // Get all products for this seller
-    const [products] = await db.query('SELECT item_id, name FROM item WHERE seller_id = ?', [req.user.id]);
-    if (!products.length) {
-      return res.json({ success: true, mostOrderedProducts: [] });
-    }
-    
-    const itemIds = products.map(p => p.item_id);
-    
-    // Query to get most ordered products with total quantities
-    const sql = `
-      SELECT 
-        i.item_id,
-        i.name AS product_name,
-        i.sku,
-        i.sell_price,
-        SUM(ol.quantity) AS total_quantity_ordered,
-        COUNT(DISTINCT ol.orderinfo_id) AS total_orders,
-        MAX(o.date_placed) AS last_ordered_date
-      FROM item i
-      LEFT JOIN orderline ol ON i.item_id = ol.item_id
-      LEFT JOIN orderinfo o ON ol.orderinfo_id = o.orderinfo_id
-      WHERE i.item_id IN (${itemIds.map(() => '?').join(',')})
-      GROUP BY i.item_id, i.name, i.sku, i.sell_price
-      HAVING total_quantity_ordered > 0
-      ORDER BY total_quantity_ordered DESC, total_orders DESC
-      LIMIT 10
-    `;
-    
-    const [rows] = await db.query(sql, itemIds);
-    
-    // Format the response
-    const mostOrderedProducts = rows.map(row => ({
-      item_id: row.item_id,
-      product_name: row.product_name,
-      sku: row.sku,
-      sell_price: row.sell_price,
-      total_quantity_ordered: parseInt(row.total_quantity_ordered),
-      total_orders: parseInt(row.total_orders),
-      last_ordered_date: row.last_ordered_date
-    }));
-    
-    res.json({ 
-      success: true, 
-      mostOrderedProducts: mostOrderedProducts 
-    });
-  } catch (err) {
-    console.error('Error fetching most ordered products:', err);
-    res.status(500).json({ 
-      success: false, 
-      message: 'Failed to fetch most ordered products.' 
-    });
-  }
-});
-
-module.exports = router; 
+module.exports = router;

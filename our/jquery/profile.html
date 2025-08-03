@@ -27,19 +27,22 @@
     }
     
     body { 
-      background: var(--background-light); 
+      background: linear-gradient(135deg, #f6f3ef 0%, #e5d6c3 100%);
       font-family: 'Montserrat', sans-serif;
       color: var(--text-dark);
       line-height: 1.6;
+      min-height: 100vh;
+      margin: 0;
+      padding: 0;
     }
     
     .profile-container { 
-      max-width: 1100px; 
+      max-width: 900px; 
       margin: 2rem auto; 
       background: #fff; 
-      border-radius: 24px; 
+      border-radius: 20px; 
       box-shadow: var(--shadow-medium); 
-      padding: 2.5rem 3rem;
+      padding: 3rem;
       transform: translateY(20px);
       opacity: 0;
       animation: fadeInUp 0.6s ease-out forwards;
@@ -64,40 +67,32 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 8px;
+      height: 6px;
       background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
     }
     
     .profile-header { 
-      display: flex; 
-      align-items: flex-start; 
-      gap: 2rem; 
-      margin-bottom: 2rem; 
+      text-align: center;
+      margin-bottom: 3rem;
       position: relative;
     }
     
-    .profile-actions {
-      display: flex;
-      gap: 1rem;
-      margin-left: auto;
-    }
-    
     .profile-avatar { 
-      width: 160px; 
-      height: 160px; 
+      width: 120px; 
+      height: 120px; 
       border-radius: 50%; 
       background: var(--background-dark); 
       display: flex; 
       align-items: center; 
       justify-content: center; 
-      font-size: 6rem; 
+      font-size: 4rem; 
       color: var(--primary-color); 
       border: 4px solid var(--primary-light); 
       position: relative;
       transition: var(--transition-medium);
       box-shadow: var(--shadow-light);
       cursor: pointer;
-      flex-shrink: 0;
+      margin: 0 auto 1.5rem;
       overflow: hidden;
     }
     
@@ -110,12 +105,8 @@
     }
     
     .profile-avatar:hover {
-      transform: scale(1.03);
+      transform: scale(1.05);
       box-shadow: var(--shadow-medium);
-    }
-    
-    .profile-avatar:active {
-      transform: scale(0.98);
     }
     
     .profile-avatar-edit { 
@@ -125,7 +116,7 @@
       background: #fff; 
       border-radius: 50%; 
       padding: 6px;
-      border: 1px solid var(--primary-light); 
+      border: 2px solid var(--primary-light); 
       cursor: pointer;
       transition: var(--transition-fast);
       box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -142,53 +133,27 @@
       transform: scale(1.1);
     }
     
-    .profile-avatar-edit svg {
-      width: 16px;
-      height: 16px;
-      transition: var(--transition-fast);
-    }
-    
-    .profile-avatar-edit:hover svg {
-      stroke: white;
-    }
-    
     .profile-title { 
-      font-size: 2.5rem; 
+      font-size: 2.2rem; 
       font-weight: 700; 
       color: var(--text-dark); 
       font-family: 'Playfair Display', serif;
       letter-spacing: 0.5px;
       margin-bottom: 0.5rem;
-      position: relative;
-      display: inline-block;
     }
     
-    .profile-title::after {
-      content: '';
-      position: absolute;
-      bottom: -5px;
-      left: 0;
-      width: 60px;
-      height: 3px;
-      background: var(--primary-light);
-      transition: var(--transition-medium);
-    }
-    
-    .profile-title:hover::after {
-      width: 100%;
-      background: var(--primary-color);
+    .profile-role {
+      font-size: 1.1rem;
+      color: var(--primary-color);
+      font-weight: 600;
+      margin-bottom: 2rem;
     }
     
     .profile-form { 
-      display: flex; 
-      flex-wrap: wrap; 
-      gap: 2rem; 
-    }
-    
-    .profile-col { 
-      flex: 1 1 350px; 
-      min-width: 320px; 
-      padding: 0 1rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
     }
     
     .profile-form input[type="text"],
@@ -196,17 +161,18 @@
     .profile-form input[type="password"],
     .profile-form input[type="date"] {
       width: 100%;
-      padding: 0.6rem 0.8rem;
-      border: 1.5px solid #d1bfa3;
-      border-radius: 6px;
+      padding: 0.8rem 1rem;
+      border: 2px solid #e0d6c6;
+      border-radius: 12px;
       font-size: 1rem;
       background: #fff;
       color: var(--text-medium);
       outline: none;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       transition: var(--transition-fast);
       font-family: 'Montserrat', sans-serif;
-      height: 40px;
+      height: 48px;
+      box-sizing: border-box;
     }
     
     .profile-form input:focus {
@@ -224,8 +190,10 @@
       display: block;
       font-weight: 600;
       color: var(--text-medium);
-      margin-bottom: 0.8rem;
-      font-size: 1rem;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
     }
     
     .input-group {
@@ -237,8 +205,8 @@
     .input-group input[type="text"] {
       width: 100%;
       box-sizing: border-box;
-      border: 1.5px solid #d1bfa3;
-      border-radius: 6px;
+      border: 2px solid #e0d6c6;
+      border-radius: 12px;
       background: #fff;
       outline: none;
       transition: var(--transition-fast);
@@ -248,7 +216,7 @@
     
     .toggle-password {
       position: absolute;
-      right: 0.5rem;
+      right: 0.8rem;
       top: 50%;
       transform: translateY(-50%);
       background: transparent !important;
@@ -280,19 +248,21 @@
     }
     
     .customer-details-label {
-      font-size: 1.5rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--text-dark);
       font-family: 'Playfair Display', serif;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid var(--primary-light);
+      grid-column: 1 / -1;
     }
     
     .customer-fields-row {
-      display: flex;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
       gap: 2rem;
-      flex-wrap: wrap;
+      grid-column: 1 / -1;
     }
     
     .customer-fields-col {
@@ -322,41 +292,107 @@
     }
     
     .action-btn {
-      background: #a67c52;
+      background: var(--primary-color);
       color: #fff;
       border: none;
-      border-radius: 32px;
-      padding: 0.7rem 2rem;
-      font-size: 1.1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.18s, box-shadow 0.18s, color 0.18s;
-      box-shadow: 0 2px 8px 0 rgba(139,92,42,0.13);
-      margin-bottom: 0.2rem;
-      letter-spacing: 0.5px;
-      outline: none;
-      display: inline-block;
-      height: 48px;
-      padding: 0 1.5rem;
+      border-radius: 12px;
+      padding: 0.8rem 2rem;
       font-size: 1rem;
       font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      box-shadow: var(--shadow-light);
       letter-spacing: 0.5px;
-      border-radius: 8px;
+      outline: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
+      height: 48px;
+      font-family: 'Montserrat', sans-serif;
     }
+    
     .action-btn:hover, .action-btn:focus {
-      background: #8B5C2A;
-      color: #fffbe6;
-      box-shadow: 0 4px 16px 0 rgba(139,92,42,0.18);
+      background: var(--primary-dark);
+      color: #fff;
+      box-shadow: var(--shadow-medium);
+      transform: translateY(-2px);
     }
-    .pill-logout {
-      background: #b85c2a;
+    
+    .action-btn.secondary {
+      background: var(--primary-light);
+      color: var(--text-dark);
     }
-    .pill-logout:hover, .pill-logout:focus {
+    
+    .action-btn.secondary:hover {
+      background: var(--primary-color);
+      color: #fff;
+    }
+    
+    .action-btn.danger {
+      background: var(--secondary-color);
+      color: #fff;
+    }
+    
+    .action-btn.danger:hover {
       background: #a04a1a;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+    
+    .upgrade-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding: 2rem;
+      background: var(--background-light);
+      border-radius: 16px;
+      border: 2px dashed var(--primary-light);
+    }
+    
+    .upgrade-section h3 {
+      font-size: 1.4rem;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .upgrade-section p {
+      color: var(--text-medium);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+    
+    @media (max-width: 768px) {
+      .profile-container {
+        margin: 1rem;
+        padding: 2rem;
+      }
+      
+      .profile-form {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .customer-fields-row {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .button-group {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .action-btn {
+        width: 100%;
+        max-width: 300px;
+      }
     }
   </style>
 </head>
@@ -381,6 +417,34 @@
     <div style="width:100%; height:4px; background:#f0f0f0; border-radius:2px; overflow:hidden; margin-top:1rem;">
       <div id="customModalProgress" style="height:100%; background:var(--primary-color); width:100%; transition:width 3s linear;"></div>
     </div>
+  </div>
+</div>
+
+<!-- Logout Modal with Timer -->
+<div id="logoutModal" style="display:none; position:fixed; z-index:1002; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.6); align-items:center; justify-content:center; backdrop-filter: blur(4px);">
+  <div style="background:#fff; color:#2d2233; border-radius:20px; padding:3rem; min-width:400px; max-width:90vw; box-shadow:0 12px 40px rgba(0,0,0,0.25); position:relative; text-align:center; animation: modalSlideIn 0.3s ease-out;">
+    <div style="font-size:4rem; margin-bottom:1.5rem;">🔄</div>
+    <div style="font-size:1.5rem; font-weight:700; margin-bottom:1rem; color:var(--primary-color);">Account Upgraded Successfully!</div>
+    <div style="font-size:1.1rem; margin-bottom:2rem; line-height:1.5; color:#555;">You need to log in again to access your new account features.</div>
+    <div style="font-size:1.2rem; font-weight:600; margin-bottom:2rem; color:var(--secondary-color);">Logging out in <span id="logoutTimer">5</span> seconds...</div>
+    <div style="width:100%; height:6px; background:#f0f0f0; border-radius:3px; overflow:hidden; margin-bottom:2rem;">
+      <div id="logoutProgress" style="height:100%; background:var(--secondary-color); width:100%; transition:width 5s linear;"></div>
+    </div>
+    <button type="button" class="action-btn danger" id="logoutNowBtn" style="margin-right:1rem;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+        <polyline points="16,17 21,12 16,7"/>
+        <line x1="21" y1="12" x2="9" y2="12"/>
+      </svg>
+      Logout Now
+    </button>
+    <button type="button" class="action-btn secondary" id="cancelLogoutBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+        <path d="M18 6L6 18"/>
+        <path d="M6 6l12 12"/>
+      </svg>
+      Cancel
+    </button>
   </div>
 </div>
 
@@ -424,99 +488,104 @@
   }
 </script>
   <div class="profile-container">
-    <div class="profile-header" style="display:flex; align-items:flex-start; gap:1.5rem; margin-bottom:2rem;">
+    <div class="profile-header">
       <div class="profile-avatar" id="profileAvatar" tabindex="0" style="cursor:pointer;">
         <span id="profileAvatarImg">👤</span>
         <input type="file" id="avatarFileInput" accept="image/*" style="display:none;" />
-        <span class="profile-avatar-edit" id="profileAvatarEdit" title="Edit avatar"><svg viewBox="0 0 24 24" fill="none" stroke="#8B5C2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="22" height="22"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/></svg></span>
-      </div>
-      <div style="display:flex; flex-direction:column; justify-content:center; align-items:flex-start;">
-        <div style="font-size:1.2rem; color:#8B5C2A; text-align:left;" id="profileRoleLabel">User</div>
-        <div class="profile-title" id="profileName" style="font-size:2.1rem; font-weight:700; color:#3d2c1c; text-align:left;"></div>
-      </div>
-      <div class="profile-actions">
-        <button type="button" class="action-btn">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-            <line x1="3" y1="6" x2="21" y2="6"></line>
-            <path d="M16 10a4 4 0 0 1-8 0"></path>
+        <span class="profile-avatar-edit" id="profileAvatarEdit" title="Edit avatar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#8B5C2A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16">
+            <path d="M12 20h9"/>
+            <path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19.5 3 21l1.5-4L16.5 3.5z"/>
           </svg>
-          Orders
-        </button>
-        <button type="button" class="action-btn">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
-          </svg>
-          Wishlist
-        </button>
-        <button type="button" class="action-btn">
-          <svg viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"></circle>
-            <polyline points="12 6 12 12 16 14"></polyline>
-          </svg>
-          Track
-        </button>
+        </span>
       </div>
+      <div class="profile-title" id="profileName"></div>
+      <div class="profile-role" id="profileRoleLabel">User</div>
     </div>
+    
     <form class="profile-form" id="profileForm" autocomplete="off">
-      <div class="profile-col">
-        <label for="name">Name:</label>
+      <div>
+        <label for="name">Name</label>
         <input type="text" id="name" name="name" required>
-        <label for="password">Change Password:</label>
+        
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" readonly>
+        
+        <label for="address">Address</label>
+        <input type="text" id="address" name="address">
+      </div>
+      
+      <div>
+        <label for="password">New Password</label>
         <div class="input-group">
-          <input type="password" id="password" name="password" placeholder="New password">
+          <input type="password" id="password" name="password" placeholder="Enter new password">
           <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('password', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
           </button>
         </div>
-        <label for="confirm-password">Confirm Password:</label>
+        
+        <label for="confirm-password">Confirm Password</label>
         <div class="input-group">
           <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm new password">
           <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('confirm-password', this)">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
           </button>
         </div>
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email" readonly>
-      </div>
-      <div class="profile-col">
-        <label for="address">Address:</label>
-        <input type="text" id="address" name="address">
-        <label for="phone">Phone Number:</label>
+        
+        <label for="phone">Phone Number</label>
         <input type="text" id="phone" name="phone">
       </div>
-      <div style="flex-basis:100%;"></div>
+      
       <div id="customerSectionWrapper"></div>
-      <!-- Save User Details Button -->
-      <div style="display:flex; justify-content:flex-end; margin-bottom:2.2rem;">
-        <button type="button" class="action-btn" id="saveUserBtn">Save User Details</button>
+      
+      <div class="button-group">
+        <button type="button" class="action-btn" id="saveUserBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/>
+            <polyline points="17,21 17,13 7,13 7,21"/>
+            <polyline points="7,3 7,8 15,8"/>
+          </svg>
+          Save Changes
+        </button>
+        
+        <button type="button" class="action-btn danger" id="logoutBtnProfile">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+            <polyline points="16,17 21,12 16,7"/>
+            <line x1="21" y1="12" x2="9" y2="12"/>
+          </svg>
+          Logout
+        </button>
       </div>
-      <!-- Profile Section -->
-      <div class="profile-section">
-        <h2>Profile</h2>
-        <!-- Profile fields here -->
-        <!-- ... -->
-        <div id="upgradeButtons" style="margin-top:1.5rem;">
-          <button id="upgradeCustomerBtn" class="action-btn">Upgrade to Customer</button>
-          <button id="upgradeSellerBtn" class="action-btn" style="margin-left:1rem;">Upgrade to Seller</button>
-        </div>
-      </div>
-      <!-- Customer Section (hidden unless role is customer) -->
-      <div class="customer-section" style="display:none; margin-top:2rem;">
-        <h2>Customer Details</h2>
-        <!-- Customer input fields here -->
-        <!-- ... -->
-      </div>
-      <!-- Seller Section (hidden unless role is seller) -->
-      <div class="seller-section" style="display:none; margin-top:2rem;">
-        <h2>Seller Details</h2>
-        <div id="sellerPendingNote" style="color:#b85c2a; margin-bottom:1rem; display:none;">Your seller upgrade request is pending admin approval. You can edit your seller info once approved.</div>
-        <!-- Seller input fields here, disabled if not verified -->
-        <!-- ... -->
-      </div>
-      <div class="profile-message" id="profileMessage"></div>
-      <button type="button" class="action-btn pill-logout" id="logoutBtnProfile" style="width:100%; margin-top:2rem;">Logout</button>
     </form>
+    
+    <div id="upgradeSection" class="upgrade-section" style="display: none;">
+      <h3>Upgrade Your Account</h3>
+      <p>Get access to more features by upgrading your account type.</p>
+      <div class="button-group">
+        <button type="button" class="action-btn secondary" id="upgradeCustomerBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+            <circle cx="12" cy="7" r="4"/>
+          </svg>
+          Upgrade to Customer
+        </button>
+        
+        <button type="button" class="action-btn secondary" id="upgradeSellerBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="18" height="18">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9,22 9,12 15,12 15,22"/>
+          </svg>
+          Upgrade to Seller
+        </button>
+      </div>
+    </div>
   </div>
   <script>
     // Toggle password visibility
@@ -545,6 +614,64 @@
         document.body.style.overflow = 'auto';
       }, 3000);
     }
+
+    // Show logout modal with timer
+    function showLogoutModal() {
+      document.getElementById('logoutModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      
+      let seconds = 5;
+      const timerSpan = document.getElementById('logoutTimer');
+      const progressBar = document.getElementById('logoutProgress');
+      
+      timerSpan.textContent = seconds;
+      progressBar.style.width = '100%';
+      
+      // Start progress bar animation
+      setTimeout(() => {
+        progressBar.style.width = '0%';
+      }, 10);
+      
+      const interval = setInterval(() => {
+        seconds--;
+        if (seconds > 0) {
+          timerSpan.textContent = seconds;
+        } else {
+          clearInterval(interval);
+          performLogout();
+        }
+      }, 1000);
+      
+      // Store interval ID for cancellation
+      window.logoutInterval = interval;
+    }
+
+    // Perform logout
+    function performLogout() {
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('user_name');
+      localStorage.removeItem('user_role');
+      localStorage.removeItem('user_email');
+      localStorage.removeItem('login_time');
+      window.location.href = 'login.html';
+    }
+
+    // Logout now button handler
+    document.getElementById('logoutNowBtn').addEventListener('click', function() {
+      if (window.logoutInterval) {
+        clearInterval(window.logoutInterval);
+      }
+      performLogout();
+    });
+
+    // Cancel logout button handler
+    document.getElementById('cancelLogoutBtn').addEventListener('click', function() {
+      if (window.logoutInterval) {
+        clearInterval(window.logoutInterval);
+      }
+      document.getElementById('logoutModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    });
 
     // Avatar click logic
     document.getElementById('profileAvatar').addEventListener('click', function() {
@@ -587,8 +714,8 @@
       wrapper.innerHTML = '';
       if (role === 'customer' || role === 'seller' || role === 'admin') {
         wrapper.innerHTML = `
-          <div class="customer-details-label" style="margin-top:0.7rem; margin-bottom:0.7rem;">Customer Details</div>
-          <div class="customer-fields-row" style="margin-bottom:2rem;">
+          <div class="customer-details-label">Customer Details</div>
+          <div class="customer-fields-row">
             <div class="customer-fields-col">
               <label for="fname">First Name:</label>
               <input type="text" id="fname" name="fname" value="${profile.fname || ''}">
@@ -609,7 +736,8 @@
         // Re-attach save handler
         document.getElementById('saveCustomerBtn').addEventListener('click', saveCustomerDetails);
       } else if (role === 'user') {
-        wrapper.innerHTML = `<div style="display:flex; justify-content:center; margin:2rem 0;"><button type="button" class="action-btn" id="upgradeBtn">Upgrade to Customer</button></div>`;
+        // wrapper.innerHTML = `<div style="display:flex; justify-content:center; margin:2rem 0;"></div>`;
+         wrapper.innerHTML = `<div style="display:flex; justify-content:center; margin:2rem 0;"><button type="button" class="action-btn" id="upgradeBtn"></button></div>`;
         document.getElementById('upgradeBtn').addEventListener('click', function() {
           const token = localStorage.getItem('jwt_token');
           fetch('http://localhost:4000/api/v1/upgrade-to-customer', {
@@ -783,11 +911,11 @@
     // On page load, show/hide upgrade buttons and sections based on user role
     function updateProfileUI(user) {
       if (user.role === 'user') {
-        $('#upgradeButtons').show();
+        $('#upgradeSection').show();
         $('.customer-section').hide();
         $('.seller-section').hide();
       } else {
-        $('#upgradeButtons').hide();
+        $('#upgradeSection').hide();
         if (user.role === 'customer') {
           $('.customer-section').show();
           $('.seller-section').hide();
@@ -803,22 +931,40 @@
           }
         }
       }
-      // Always hide upgrade buttons for customer/seller/admin
-      if (user.role !== 'user') {
-        $('#upgradeButtons').hide();
-      }
     }
+    
     $('#upgradeCustomerBtn').on('click', function() {
-      // Show customer section for editing
-      $('.customer-section').show();
-      $('.seller-section').hide();
+      const token = localStorage.getItem('jwt_token');
+      fetch('http://localhost:4000/api/v1/upgrade-to-customer', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showLogoutModal();
+        } else {
+          showCustomModal('Error', data.message || 'Failed to upgrade', '❌');
+        }
+      })
+      .catch(() => showCustomModal('Error', 'Failed to upgrade', '❌'));
     });
+    
     $('#upgradeSellerBtn').on('click', function() {
-      // Show seller section, fields disabled, show pending note
-      $('.seller-section').show();
-      $('.customer-section').hide();
-      $('#sellerPendingNote').show();
-      $('.seller-section input, .seller-section textarea').prop('disabled', true);
+      const token = localStorage.getItem('jwt_token');
+      fetch('http://localhost:4000/api/v1/upgrade-to-seller', {
+        method: 'POST',
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          showLogoutModal();
+        } else {
+          showCustomModal('Error', data.message || 'Failed to upgrade', '❌');
+        }
+      })
+      .catch(() => showCustomModal('Error', 'Failed to upgrade', '❌'));
     });
     
     // Load footer

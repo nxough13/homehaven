@@ -139,12 +139,108 @@ router.post('/register', async (req, res) => {
     // Generate verification token
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1d' });
     const verifyUrl = `${BASE_URL}/api/v1/verify-email?token=${token}`;
-    // Send verification email
+    
+    // Send verification email with professional HTML design
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email - HomeHaven</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+            <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+          </div>
+          
+          <!-- Main Content -->
+          <div style="padding: 40px;">
+            <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 20px;">📧</div>
+              <h2 style="color: #0c5460; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">Verify Your Email Address</h2>
+              <p style="color: #0c5460; margin: 0; font-size: 16px; line-height: 1.5;">
+                Welcome to HomeHaven! Please verify your email address to complete your account setup.
+              </p>
+            </div>
+            
+            <!-- Verification Details -->
+            <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Account Information</h3>
+              <div style="margin-bottom: 10px;">
+                <span style="color: #666; font-weight: 500;">Email Address:</span>
+                <span style="color: #8B5C2A; font-weight: 600; margin-left: 10px;">${email}</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <span style="color: #666; font-weight: 500;">Account Status:</span>
+                <span style="color: #e74c3c; font-weight: 600; background-color: #fadbd8; padding: 4px 12px; border-radius: 6px; margin-left: 10px;">Pending Verification</span>
+              </div>
+            </div>
+            
+            <!-- Verification Button -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${verifyUrl}" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 18px 40px; border-radius: 8px; font-weight: 600; display: inline-block; font-size: 16px; box-shadow: 0 4px 12px rgba(139, 92, 42, 0.3);">
+                ✅ Verify Email Address
+              </a>
+            </div>
+            
+            <!-- Security Notice -->
+            <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #856404; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">🔒 Security Notice</h3>
+              <ul style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.6;">
+                <li>This verification link will expire in 24 hours</li>
+                <li>If you didn't create this account, please ignore this email</li>
+                <li>For security, never share this verification link with anyone</li>
+              </ul>
+            </div>
+            
+            <!-- Manual Link -->
+            <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #8B5C2A; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Manual Verification</h3>
+              <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
+                If the button above doesn't work, copy and paste this link into your browser:
+              </p>
+              <div style="background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px; word-break: break-all;">
+                <a href="${verifyUrl}" style="color: #8B5C2A; text-decoration: none; font-size: 12px;">${verifyUrl}</a>
+              </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div style="background-color: #e8f5e8; border: 1px solid #d4edda; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">What's Next?</h3>
+              <ul style="color: #155724; margin: 0; padding-left: 20px; line-height: 1.6;">
+                <li>Click the verification button above</li>
+                <li>You'll be redirected to our login page</li>
+                <li>Sign in with your email and password</li>
+                <li>Start exploring our amazing furniture collection!</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+            <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+              Thank you for choosing HomeHaven
+            </p>
+            <div style="color: #999; font-size: 12px;">
+              <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+              <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+              <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+    
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: 'HomeHaven <homehaven984@gmail.com>',
       to: email,
-      subject: 'Verify your Home Haven account',
-      html: `<h2>Welcome to Home Haven!</h2><p>Click the link below to verify your email:</p><a href="${verifyUrl}">${verifyUrl}</a>`
+      subject: 'Verify your HomeHaven account',
+      html: htmlContent
     });
     return res.json({ success: true, message: 'Registration successful! Please check your email to verify your account.' });
   } catch (err) {
@@ -185,12 +281,108 @@ router.post('/resend-verification', async (req, res) => {
     // Generate verification token
     const token = jwt.sign({ email }, JWT_SECRET, { expiresIn: '1d' });
     const verifyUrl = `${BASE_URL}/api/v1/verify-email?token=${token}`;
-    // Send verification email
+    
+    // Send verification email with professional HTML design
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Verify Your Email - HomeHaven</title>
+      </head>
+      <body style="margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #f4f1ed;">
+        <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; box-shadow: 0 4px 20px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <div style="background: linear-gradient(135deg, #8B5C2A, #a67c52); padding: 30px 40px; text-align: center;">
+            <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 600;">🏠 HomeHaven</h1>
+            <p style="color: #ffffff; margin: 10px 0 0 0; font-size: 16px; opacity: 0.9;">Your Home, Your Haven</p>
+          </div>
+          
+          <!-- Main Content -->
+          <div style="padding: 40px;">
+            <div style="background-color: #d1ecf1; border: 1px solid #bee5eb; border-radius: 12px; padding: 30px; margin-bottom: 30px; text-align: center;">
+              <div style="font-size: 48px; margin-bottom: 20px;">📧</div>
+              <h2 style="color: #0c5460; margin: 0 0 15px 0; font-size: 24px; font-weight: 600;">Verify Your Email Address</h2>
+              <p style="color: #0c5460; margin: 0; font-size: 16px; line-height: 1.5;">
+                Welcome to HomeHaven! Please verify your email address to complete your account setup.
+              </p>
+            </div>
+            
+            <!-- Verification Details -->
+            <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #8B5C2A; margin: 0 0 20px 0; font-size: 18px; font-weight: 600;">Account Information</h3>
+              <div style="margin-bottom: 10px;">
+                <span style="color: #666; font-weight: 500;">Email Address:</span>
+                <span style="color: #8B5C2A; font-weight: 600; margin-left: 10px;">${email}</span>
+              </div>
+              <div style="margin-bottom: 10px;">
+                <span style="color: #666; font-weight: 500;">Account Status:</span>
+                <span style="color: #e74c3c; font-weight: 600; background-color: #fadbd8; padding: 4px 12px; border-radius: 6px; margin-left: 10px;">Pending Verification</span>
+              </div>
+            </div>
+            
+            <!-- Verification Button -->
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${verifyUrl}" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 18px 40px; border-radius: 8px; font-weight: 600; display: inline-block; font-size: 16px; box-shadow: 0 4px 12px rgba(139, 92, 42, 0.3);">
+                ✅ Verify Email Address
+              </a>
+            </div>
+            
+            <!-- Security Notice -->
+            <div style="background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #856404; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">🔒 Security Notice</h3>
+              <ul style="color: #856404; margin: 0; padding-left: 20px; line-height: 1.6;">
+                <li>This verification link will expire in 24 hours</li>
+                <li>If you didn't create this account, please ignore this email</li>
+                <li>For security, never share this verification link with anyone</li>
+              </ul>
+            </div>
+            
+            <!-- Manual Link -->
+            <div style="background-color: #f8f9fa; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #8B5C2A; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">Manual Verification</h3>
+              <p style="color: #666; margin: 0 0 10px 0; font-size: 14px;">
+                If the button above doesn't work, copy and paste this link into your browser:
+              </p>
+              <div style="background-color: #ffffff; border: 1px solid #e9ecef; border-radius: 6px; padding: 12px; word-break: break-all;">
+                <a href="${verifyUrl}" style="color: #8B5C2A; text-decoration: none; font-size: 12px;">${verifyUrl}</a>
+              </div>
+            </div>
+            
+            <!-- Next Steps -->
+            <div style="background-color: #e8f5e8; border: 1px solid #d4edda; border-radius: 12px; padding: 25px; margin-bottom: 30px;">
+              <h3 style="color: #155724; margin: 0 0 15px 0; font-size: 18px; font-weight: 600;">What's Next?</h3>
+              <ul style="color: #155724; margin: 0; padding-left: 20px; line-height: 1.6;">
+                <li>Click the verification button above</li>
+                <li>You'll be redirected to our login page</li>
+                <li>Sign in with your email and password</li>
+                <li>Start exploring our amazing furniture collection!</li>
+              </ul>
+            </div>
+          </div>
+          
+          <!-- Footer -->
+          <div style="background-color: #f8f9fa; padding: 30px 40px; text-align: center; border-top: 1px solid #e9ecef;">
+            <p style="color: #666; margin: 0 0 15px 0; font-size: 14px;">
+              Thank you for choosing HomeHaven
+            </p>
+            <div style="color: #999; font-size: 12px;">
+              <p style="margin: 5px 0;">📧 support@homehaven.com</p>
+              <p style="margin: 5px 0;">📞 1-800-HOME-HAVEN</p>
+              <p style="margin: 5px 0;">🌐 www.homehaven.com</p>
+            </div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+    
     await transporter.sendMail({
-      from: process.env.EMAIL_USER,
+      from: 'HomeHaven <homehaven984@gmail.com>',
       to: email,
-      subject: 'Verify your Home Haven account',
-      html: `<h2>Welcome to Home Haven!</h2><p>Click the link below to verify your email:</p><a href="${verifyUrl}">${verifyUrl}</a>`
+      subject: 'Verify your HomeHaven account',
+      html: htmlContent
     });
     return res.json({ success: true, message: 'Verification email sent! Please check your inbox.' });
   } catch (err) {
@@ -360,6 +552,32 @@ router.post('/upgrade-to-customer', authenticateJWT, async (req, res) => {
     }
     return res.json({ success: true, message: 'Upgraded to customer.', role: 'customer' });
   } catch (err) {
+    return res.status(500).json({ success: false, message: 'Failed to upgrade role.' });
+  }
+});
+
+// POST /api/v1/upgrade-to-seller (protected)
+router.post('/upgrade-to-seller', authenticateJWT, async (req, res) => {
+  try {
+    // Update user role
+    await db.query('UPDATE users SET role = ? WHERE id = ?', ['seller', req.user.id]);
+    // Create seller row if not exists
+    const [sellerRows] = await db.query('SELECT * FROM sellers WHERE user_id = ?', [req.user.id]);
+    if (sellerRows.length === 0) {
+      // Get user's name for business name
+      const [userRows] = await db.query('SELECT name FROM users WHERE id = ?', [req.user.id]);
+      let businessName = '';
+      if (userRows.length > 0) {
+        businessName = userRows[0].name.trim() + "'s Store";
+      }
+      await db.query(
+        'INSERT INTO sellers (user_id, business_name, business_description, business_address, business_phone, business_email, is_verified) VALUES (?, ?, ?, ?, ?, ?, ?)',
+        [req.user.id, businessName, 'Home goods and furniture', '', '', '', 0]
+      );
+    }
+    return res.json({ success: true, message: 'Upgraded to seller.', role: 'seller' });
+  } catch (err) {
+    console.error('Seller upgrade error:', err);
     return res.status(500).json({ success: false, message: 'Failed to upgrade role.' });
   }
 });
