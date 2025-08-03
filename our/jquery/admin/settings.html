@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Haven - System Settings</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #8B5C2A;
+      --primary-light: #bfa77a;
+      --primary-dark: #6d4c1c;
+      --secondary-color: #b85c2a;
+      --background-light: #f6f3ef;
+      --background-dark: #e5d6c3;
+      --text-dark: #3d2c1c;
+      --text-medium: #7a5420;
+      --text-light: #fffdfa;
+      --shadow-light: 0 4px 20px rgba(139, 92, 42, 0.08);
+      --shadow-medium: 0 8px 32px rgba(139, 92, 42, 0.15);
+      --shadow-dark: 0 12px 40px rgba(139, 92, 42, 0.2);
+      --transition-fast: all 0.15s ease-out;
+      --transition-medium: all 0.3s ease-out;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+    
+    .page-header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    .controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: white;
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .search-box input {
+      border: none;
+      outline: none;
+      font-size: 1rem;
+      min-width: 250px;
+    }
+    
+    .search-box i {
+      color: var(--text-medium);
+    }
+    
+    .filter-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .filter-select {
+      padding: 0.8rem 1.2rem;
+      border: 2px solid rgba(139, 92, 42, 0.2);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+    
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(139, 92, 42, 0.1);
+    }
+    
+    .user-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 2rem;
+    }
+    
+    .user-card {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+      transition: var(--transition-medium);
+    }
+    
+    .user-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-medium);
+    }
+    
+    .user-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--background-light);
+    }
+    
+    .user-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-light);
+    }
+    
+    .user-info {
+      flex: 1;
+    }
+    
+    .user-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    
+    .user-email {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      margin-bottom: 0.5rem;
+    }
+    
+    .user-meta {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+    
+    .user-role {
+      background: var(--primary-light);
+      color: white;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .user-status {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .user-status.active {
+      background: var(--success-color);
+      color: white;
+    }
+    
+    .user-status.inactive {
+      background: var(--danger-color);
+      color: white;
+    }
+    
+    .activities-section {
+      margin-top: 1rem;
+    }
+    
+    .activities-title {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .activity-list {
+      max-height: 300px;
+      overflow-y: auto;
+    }
+    
+    .activity-item {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(139, 92, 42, 0.1);
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+    }
+    
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+    
+    .activity-icon {
+      width: 35px;
+      height: 35px;
+      border-radius: 50%;
+      background: var(--primary-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+    
+    .activity-content {
+      flex: 1;
+    }
+    
+    .activity-action {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    
+    .activity-description {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      margin-bottom: 0.5rem;
+    }
+    
+    .activity-meta {
+      display: flex;
+      gap: 1rem;
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+    
+    .no-activities {
+      text-align: center;
+      padding: 2rem;
+      color: var(--text-medium);
+      font-style: italic;
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+    }
+    
+    .loading i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .back-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .back-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .search-box input {
+        min-width: auto;
+        flex: 1;
+      }
+      
+      .filter-controls {
+        justify-content: center;
+      }
+      
+      .user-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .user-header {
+        flex-direction: column;
+        text-align: center;
+      }
+      
+      .user-meta {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-content">
+        <h1 class="page-title">
+          <i class="fas fa-chart-line"></i> System Settings
+        </h1>
+        <p class="page-subtitle">User Activity Monitoring & System Analytics</p>
+      </div>
+    </div>
+    
+    <!-- Back Button -->
+    <div style="margin-bottom: 1rem;">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+    
+    <!-- Controls -->
+    <div class="controls">
+      <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search users...">
+      </div>
+      <div class="filter-controls">
+        <select class="filter-select" id="roleFilter">
+          <option value="">All Roles</option>
+          <option value="user">User</option>
+          <option value="customer">Customer</option>
+          <option value="seller">Seller</option>
+          <option value="admin">Admin</option>
+        </select>
+        <select class="filter-select" id="statusFilter">
+          <option value="">All Status</option>
+          <option value="active">Active</option>
+          <option value="inactive">Inactive</option>
+        </select>
+      </div>
+    </div>
+    
+    <!-- User Activity Cards -->
+    <div class="user-cards" id="userCards">
+      <div class="loading">
+        <i class="fas fa-spinner"></i>
+        <p>Loading user activities...</p>
+  </div>
+    </div>
+  </div>
+  
+  <script>
+    // Check if user is admin
+    const token = localStorage.getItem('jwt_token');
+    const userRole = localStorage.getItem('user_role');
+    
+    if (!token || userRole !== 'admin') {
+      window.location.href = '../login.html?reason=unauthorized';
+    }
+    
+    let allUserActivities = [];
+    
+    // Load user activities
+    async function loadUserActivities() {
+      try {
+        const response = await fetch('http://localhost:4000/api/v1/admin/user-activities', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          allUserActivities = data.userActivities;
+          renderUserCards(allUserActivities);
+        } else {
+          console.error('Failed to load user activities:', data.message);
+          document.getElementById('userCards').innerHTML = '<div class="loading"><p>Error loading user activities</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading user activities:', error);
+        document.getElementById('userCards').innerHTML = '<div class="loading"><p>Error loading user activities</p></div>';
+      }
+    }
+    
+    // Render user cards
+    function renderUserCards(userActivities) {
+      const container = document.getElementById('userCards');
+      
+      if (userActivities.length === 0) {
+        container.innerHTML = '<div class="loading"><p>No users found</p></div>';
+        return;
+      }
+      
+      let html = '';
+      
+      userActivities.forEach(user => {
+        const initials = user.name.split(' ').map(n => n[0]).join('').toUpperCase();
+        const activityCount = user.activities.length;
+        
+        html += `
+          <div class="user-card" data-role="${user.role}" data-status="${user.status}">
+            <div class="user-header">
+              <div class="user-avatar">${initials}</div>
+              <div class="user-info">
+                <div class="user-name">${user.name}</div>
+                <div class="user-email">${user.email}</div>
+                <div class="user-meta">
+                  <span class="user-role">${user.role}</span>
+                  <span class="user-status ${user.status}">${user.status}</span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="activities-section">
+              <div class="activities-title">
+                <i class="fas fa-history"></i> Recent Activities (${activityCount})
+              </div>
+              <div class="activity-list">
+                ${renderActivities(user.activities)}
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      container.innerHTML = html;
+    }
+    
+    // Render activities for a user
+    function renderActivities(activities) {
+      if (activities.length === 0) {
+        return '<div class="no-activities">No activities recorded</div>';
+      }
+      
+      return activities.slice(0, 5).map(activity => {
+        const icon = getActivityIcon(activity.action);
+        const timeAgo = formatTimeAgo(activity.created_at);
+        
+        return `
+          <div class="activity-item">
+            <div class="activity-icon">${icon}</div>
+            <div class="activity-content">
+              <div class="activity-action">${activity.action}</div>
+              <div class="activity-description">${activity.description || 'No description'}</div>
+              <div class="activity-meta">
+                <span><i class="fas fa-clock"></i> ${timeAgo}</span>
+                <span><i class="fas fa-globe"></i> ${activity.ip_address || 'Unknown IP'}</span>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // Get activity icon based on action
+    function getActivityIcon(action) {
+      const actionLower = action.toLowerCase();
+      
+      if (actionLower.includes('login')) return '🔐';
+      if (actionLower.includes('register')) return '👤';
+      if (actionLower.includes('order')) return '📦';
+      if (actionLower.includes('product')) return '📝';
+      if (actionLower.includes('payment')) return '💰';
+      if (actionLower.includes('review')) return '⭐';
+      if (actionLower.includes('profile')) return '👤';
+      if (actionLower.includes('logout')) return '🚪';
+      
+      return '📋';
+    }
+    
+    // Format time ago
+    function formatTimeAgo(dateString) {
+      if (!dateString) return 'Unknown time';
+      
+      const date = new Date(dateString);
+      const now = new Date();
+      const diffMs = now - date;
+      const diffMins = Math.floor(diffMs / 60000);
+      const diffHours = Math.floor(diffMs / 3600000);
+      const diffDays = Math.floor(diffMs / 86400000);
+      
+      if (diffMins < 1) return 'Just now';
+      if (diffMins < 60) return `${diffMins} minutes ago`;
+      if (diffHours < 24) return `${diffHours} hours ago`;
+      if (diffDays < 7) return `${diffDays} days ago`;
+      
+      return date.toLocaleDateString();
+    }
+    
+    // Search and filter functionality
+    function filterUsers() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const roleFilter = document.getElementById('roleFilter').value;
+      const statusFilter = document.getElementById('statusFilter').value;
+      
+      const filtered = allUserActivities.filter(user => {
+        const matchesSearch = user.name.toLowerCase().includes(searchTerm) || 
+                            user.email.toLowerCase().includes(searchTerm);
+        const matchesRole = !roleFilter || user.role === roleFilter;
+        const matchesStatus = !statusFilter || user.status === statusFilter;
+        
+        return matchesSearch && matchesRole && matchesStatus;
+      });
+      
+      renderUserCards(filtered);
+    }
+    
+    // Event listeners
+    document.getElementById('searchInput').addEventListener('input', filterUsers);
+    document.getElementById('roleFilter').addEventListener('change', filterUsers);
+    document.getElementById('statusFilter').addEventListener('change', filterUsers);
+    
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadUserActivities();
+});
+</script>
+</body>
+</html> 

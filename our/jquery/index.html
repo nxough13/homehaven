@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<script>
+  // Check if user is admin and redirect to admin dashboard
+  const token = localStorage.getItem('jwt_token');
+  const userRole = localStorage.getItem('user_role');
+  
+  if (token && userRole === 'admin') {
+    window.location.href = 'admin/index.html';
+  }
+</script>
+<head>
+  <meta charset="UTF-8">
+  <title>Home Haven Landing Page</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: #f7f4f0;
+      color: #444;
+    }
+    .hero {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 40px 60px 40px 60px;
+      background: #f7f4f0;
+      /* Add the background image here: */
+      background-image: url('img/homehavenbg.png');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      position: relative;
+      min-height: 420px;
+    }
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: rgba(247,244,240,0.3); /* more transparent */
+      z-index: 0;
+    }
+    .hero > * {
+      position: relative;
+      z-index: 1;
+    }
+    .hero-art {
+      flex: 1;
+      display: flex;
+      align-items: flex-start;
+      justify-content: flex-start;
+    }
+    .hero-art img {
+      width: 420px;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.08);
+      object-fit: cover;
+    }
+    .framed-art {
+      width: 340px;
+      height: 240px;
+      object-fit: cover;
+      border: 8px solid #b89c7a;
+      border-radius: 8px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07);
+      background: #fff;
+    }
+    .hero-content {
+      flex: 2;
+      text-align: right;
+      padding-left: 60px;
+    }
+    .hero-title {
+      font-size: 4rem;
+      font-family: 'Georgia', serif;
+      color: #444;
+      margin: 0 0 10px 0;
+      line-height: 1.1;
+    }
+    .hero-desc {
+      font-size: 1.4rem;
+      color: #666;
+      margin-bottom: 32px;
+    }
+    .hero-btn {
+      font-size: 2rem;
+      padding: 16px 40px;
+      background: #d2bfa3;
+      color: #fff;
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      cursor: pointer;
+      font-family: 'Georgia', serif;
+      transition: background 0.2s;
+    }
+    .hero-btn:hover {
+      background: #b89c7a;
+    }
+    .products-section {
+      background: #f7f4f0;
+      padding: 40px 0 0 0;
+    }
+    .tabs {
+      display: flex;
+      gap: 36px;
+      font-size: 2.2rem;
+      margin-left: 80px;
+      margin-bottom: 16px;
+    }
+    .tab {
+      cursor: pointer;
+      color: #444;
+      border: none;
+      background: none;
+      font-family: 'Georgia', serif;
+      padding-bottom: 4px;
+      border-bottom: 3px solid transparent;
+      transition: border 0.2s;
+    }
+    .tab.active {
+      border-bottom: 3px solid #444;
+      font-weight: 500;
+    }
+    .product-list {
+      display: flex;
+      justify-content: center;
+      gap: 60px;
+      margin-top: 10px;
+      margin-bottom: 60px;
+    }
+    .product-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 24px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      width: 280px;
+      text-align: center;
+      transition: transform 0.2s;
+    }
+    .product-card:hover {
+      transform: translateY(-4px);
+    }
+    .product-img {
+      width: 200px;
+      height: 200px;
+      border-radius: 12px;
+      margin: 0 auto 16px auto;
+      background: #f0f0f0;
+    }
+    .product-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 8px;
+      color: #333;
+    }
+    .product-desc {
+      font-size: 1rem;
+      color: #666;
+      margin-bottom: 16px;
+      line-height: 1.4;
+    }
+    .product-price {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: #8B5C2A;
+      margin-bottom: 12px;
+    }
+    .product-rating {
+      margin-bottom: 16px;
+    }
+    .star {
+      color: #ffd700;
+      font-size: 1.2rem;
+    }
+    .product-actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+    .product-btn {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    .product-btn:first-child {
+      background: #8B5C2A;
+      color: #fff;
+    }
+    .product-btn:first-child:hover {
+      background: #6d4c1c;
+    }
+    .product-btn:last-child {
+      background: #bfa77a;
+      color: #fff;
+    }
+    .product-btn:last-child:hover {
+      background: #a67c52;
+    }
+    .loading-message, .error-message {
+      text-align: center;
+      font-size: 1.2rem;
+      color: #666;
+      padding: 40px;
+    }
+    .error-message {
+      color: #d32f2f;
+    }
+    @media (max-width: 768px) {
+      .hero {
+        flex-direction: column;
+        padding: 20px;
+        text-align: center;
+      }
+      .hero-content {
+        text-align: center;
+        padding-left: 0;
+        margin-top: 20px;
+      }
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .hero-desc {
+        font-size: 1.1rem;
+      }
+      .hero-btn {
+        font-size: 1.5rem;
+        padding: 12px 24px;
+      }
+      .tabs {
+        margin-left: 20px;
+        font-size: 1.5rem;
+        gap: 20px;
+      }
+      .product-list {
+        flex-direction: column;
+        align-items: center;
+        gap: 20px;
+      }
+      .product-card {
+        width: 90%;
+        max-width: 300px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Container -->
+  <div id="header-container"></div>
+  
+  <div class="hero">
+    <div class="hero-art">
+      <img src="img/homehavenbg.png" alt="Home Haven" class="framed-art">
+    </div>
+    <div class="hero-content">
+      <h1 class="hero-title">Welcome to Home Haven</h1>
+      <p class="hero-desc">Discover beautiful furniture and home decor that transforms your space into a sanctuary.</p>
+      <button class="hero-btn" onclick="exploreProducts()">Explore Products</button>
+    </div>
+  </div>
+  
+  <section class="products-section">
+    <div class="tabs">
+      <button class="tab active" onclick="switchTab('featured')">Featured Products</button>
+      <button class="tab" onclick="switchTab('bestsellers')">Best Sellers</button>
+    </div>
+    <div id="product-list" class="product-list">
+      <div class="loading-message">Loading products...</div>
+    </div>
+  </section>
+  <script>
+    // Function to load the shared header
+    function loadHeader() {
+      const headerContainer = document.getElementById('header-container');
+      fetch('header.html')
+        .then(response => response.text())
+        .then(html => {
+          headerContainer.innerHTML = html;
+          // Execute any scripts in the header
+          const scripts = headerContainer.querySelectorAll('script');
+          scripts.forEach(script => {
+            if (script.src) {
+              // External script
+              const newScript = document.createElement('script');
+              newScript.src = script.src;
+              document.head.appendChild(newScript);
+            } else {
+              // Inline script
+              eval(script.innerHTML);
+            }
+          });
+        })
+        .catch(error => {
+          console.error('Error loading header:', error);
+        });
+    }
+
+    // Validate authentication and clean up invalid tokens
+    function validateAuth() {
+      const token = localStorage.getItem('jwt_token');
+      if (token) {
+        // Check if token is valid by making a test request
+        fetch('http://localhost:4000/api/v1/profile', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => {
+          if (!res.ok) {
+            // Token is invalid, clear it
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_role');
+            localStorage.removeItem('user_name');
+          }
+        })
+        .catch(() => {
+          // Network error or server down, clear token
+          localStorage.removeItem('jwt_token');
+          localStorage.removeItem('user_role');
+          localStorage.removeItem('user_name');
+        });
+      }
+    }
+
+    // Explore products function
+    function exploreProducts() {
+      // All users (including guests) can view products
+      window.location.href = 'product_catalog.html';
+    }
+
+    // Tab switching functionality
+    function switchTab(tabName) {
+      // Remove active class from all tabs
+      document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Add active class to clicked tab
+      event.target.classList.add('active');
+      
+      // Load appropriate content
+      if (tabName === 'featured') {
+        loadFeaturedProducts();
+      } else if (tabName === 'bestsellers') {
+        loadBestSellers();
+      }
+    }
+
+    // Load featured products with randomization
+    function loadFeaturedProducts() {
+      const productList = document.getElementById('product-list');
+      
+      fetch('http://localhost:4000/api/v1/products/featured')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.message || 'Failed to load products');
+          }
+          
+          if (!data.products || data.products.length === 0) {
+            productList.innerHTML = '<div class="loading-message">No featured products found.</div>';
+            return;
+          }
+          
+          // Randomize the products array
+          const shuffledProducts = data.products.sort(() => Math.random() - 0.5);
+          
+          productList.innerHTML = shuffledProducts.map(product => `
+            <div class="product-card">
+              <div class="product-img" style="background-image:url('img/products/${product.image || 'default.jpg'}'); background-size:cover; background-position:center;"></div>
+              <div class="product-title">${product.name || 'Product Name'}</div>
+              <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
+              <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
+              <div class="product-rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="product-actions">
+                <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
+                <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          console.error('Error loading products:', err);
+          productList.innerHTML = '<div class="error-message">Error loading products. Please try again later.</div>';
+        });
+    }
+
+    // Load best sellers products
+    function loadBestSellers() {
+      const productList = document.getElementById('product-list');
+      
+      fetch('http://localhost:4000/api/v1/products/bestsellers')
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            // If bestsellers endpoint doesn't exist, fallback to all products
+            return fetch('http://localhost:4000/api/v1/products');
+          }
+          return res;
+        })
+        .then(res => res.json())
+        .then(data => {
+          if (!data.success) {
+            throw new Error(data.message || 'Failed to load products');
+          }
+          
+          if (!data.products || data.products.length === 0) {
+            productList.innerHTML = '<div class="loading-message">No best sellers found.</div>';
+            return;
+          }
+          
+          // Randomize the products array for best sellers too
+          const shuffledProducts = data.products.sort(() => Math.random() - 0.5);
+          
+          productList.innerHTML = shuffledProducts.map(product => `
+            <div class="product-card">
+              <div class="product-img" style="background-image:url('img/products/${product.image || 'default.jpg'}'); background-size:cover; background-position:center;"></div>
+              <div class="product-title">${product.name || 'Product Name'}</div>
+              <div class="product-desc">${product.description ? (product.description.length > 100 ? product.description.substring(0, 100) + '...' : product.description) : 'No description available'}</div>
+              <div class="product-price">₱${parseFloat(product.sell_price || 0).toFixed(2)}</div>
+              <div class="product-rating">
+                <span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span>
+              </div>
+              <div class="product-actions">
+                <button class="product-btn" onclick="addToCart(${product.item_id})">Add to Cart</button>
+                <button class="product-btn" onclick="viewProduct(${product.item_id})">View Details</button>
+              </div>
+            </div>
+          `).join('');
+        })
+        .catch(err => {
+          console.error('Error loading best sellers:', err);
+          productList.innerHTML = '<div class="error-message">Error loading best sellers. Please try again later.</div>';
+        });
+    }
+
+    // Add to cart function
+    function addToCart(itemId) {
+      const token = localStorage.getItem('jwt_token');
+      if (!token) {
+        alert('Please login to add items to cart');
+        window.location.href = 'login.html';
+        return;
+      }
+      
+      fetch('http://localhost:4000/api/v1/cart/add', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify({
+          item_id: itemId,
+          quantity: 1
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          alert('Item added to cart successfully!');
+        } else {
+          alert('Failed to add item to cart: ' + data.message);
+        }
+      })
+      .catch(err => {
+        console.error('Error adding to cart:', err);
+        alert('Error adding item to cart');
+      });
+    }
+
+    // View product function
+    function viewProduct(itemId) {
+      const userRole = localStorage.getItem('user_role');
+      if (userRole === 'customer') {
+        window.location.href = `customer/product-details.html?id=${itemId}`;
+      } else {
+        window.location.href = `product-details_catalog.html?id=${itemId}`;
+      }
+    }
+
+    // Load products when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      validateAuth(); // Clean up any invalid tokens first
+      loadHeader();
+      loadFeaturedProducts();
+      
+      // Load footer
+      $('#footer').load('customer/footer.html');
+    });
+  </script>
+  
+  <!-- Footer Container -->
+  <div id="footer"></div>
+</body>
+</html>

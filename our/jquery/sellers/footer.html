@@ -1,0 +1,415 @@
+<footer class="seller-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>🏠 Home Haven</h3>
+      <p>Your trusted platform for selling quality home furnishings</p>
+      <div class="footer-links">
+        <a href="#" onclick="showSellerSupport()">Seller Support</a>
+        <a href="#" onclick="showSellerGuidelines()">Seller Guidelines</a>
+        <a href="#" onclick="showCommissionRates()">Commission Rates</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>📦 Inventory Management</h4>
+      <div class="footer-links">
+        <a href="#" onclick="showAddProduct()">Add New Product</a>
+        <a href="#" onclick="showInventoryReport()">Inventory Report</a>
+        <a href="#" onclick="showBulkUpload()">Bulk Upload</a>
+        <a href="#" onclick="showCategoryGuide()">Category Guide</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>📊 Analytics & Reports</h4>
+      <div class="footer-links">
+        <a href="#" onclick="showSalesReport()">Sales Report</a>
+        <a href="#" onclick="showPerformanceMetrics()">Performance Metrics</a>
+        <a href="#" onclick="showCustomerInsights()">Customer Insights</a>
+        <a href="#" onclick="showRevenueAnalytics()">Revenue Analytics</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>🏪 My Store</h4>
+      <div class="seller-info">
+        <div class="info-item">
+          <span class="info-label">Store:</span>
+          <span class="info-value" id="sellerStoreName">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Products:</span>
+          <span class="info-value" id="sellerProducts">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Sales:</span>
+          <span class="info-value" id="sellerSales">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Rating:</span>
+          <span class="info-value" id="sellerRating">-</span>
+        </div>
+        <button class="footer-btn" onclick="refreshSellerInfo()">🔄 Refresh</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <div class="footer-bottom-content">
+      <p>&copy; 2024 Home Haven. All rights reserved. | Empowering sellers to grow their business</p>
+      <div class="footer-bottom-links">
+        <span id="currentTime"></span>
+        <span>|</span>
+        <a href="#" onclick="showSellerTerms()">Seller Terms</a>
+        <span>|</span>
+        <a href="#" onclick="showPayoutInfo()">Payout Info</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+.seller-footer {
+  background: linear-gradient(135deg, #8b6b3d, #a67c52);
+  color: white;
+  margin-top: 4rem;
+  border-top: 3px solid #d4b08c;
+  position: relative;
+  overflow: hidden;
+}
+
+.seller-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.footer-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 3rem 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.footer-section h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.footer-section p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+  color: white;
+  transform: translateX(5px);
+}
+
+.seller-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.info-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.footer-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  margin-top: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.footer-bottom {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.footer-bottom-links span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-bottom-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.footer-bottom-links a:hover {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1rem 1.5rem;
+  }
+  
+  .footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .footer-bottom-links {
+    justify-content: center;
+  }
+}
+</style>
+
+<script>
+// Seller footer functionality
+document.addEventListener('DOMContentLoaded', function() {
+  updateSellerInfo();
+  updateCurrentTime();
+  
+  // Update time every minute
+  setInterval(updateCurrentTime, 60000);
+});
+
+function updateSellerInfo() {
+  const sellerName = localStorage.getItem('user_name') || 'Seller';
+  const businessName = localStorage.getItem('business_name') || 'My Store';
+  document.getElementById('sellerStoreName').textContent = businessName;
+  
+  // Fetch seller data if logged in
+  const token = localStorage.getItem('jwt_token');
+  if (token) {
+    // Simulate fetching seller data
+    document.getElementById('sellerProducts').textContent = '24';
+    document.getElementById('sellerSales').textContent = '156';
+    document.getElementById('sellerRating').textContent = '4.8 ⭐';
+  } else {
+    document.getElementById('sellerProducts').textContent = '-';
+    document.getElementById('sellerSales').textContent = '-';
+    document.getElementById('sellerRating').textContent = '-';
+  }
+}
+
+function updateCurrentTime() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString();
+  document.getElementById('currentTime').textContent = timeString;
+}
+
+function refreshSellerInfo() {
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Loading...';
+  btn.disabled = true;
+  
+  updateSellerInfo();
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }, 1000);
+}
+
+// Seller footer link functions
+function showSellerSupport() {
+  const supportInfo = `
+📞 Seller Support
+
+Need help with your store or have questions?
+
+📧 Email: sellersupport@homehaven.com
+📱 Phone: +1 (555) 456-7890
+💬 Live Chat: Available 24/7
+🕒 Hours: Monday - Sunday, 8:00 AM - 10:00 PM
+
+We're here to help you succeed!
+  `;
+  alert(supportInfo);
+}
+
+function showSellerGuidelines() {
+  const guidelinesInfo = `
+📋 Seller Guidelines
+
+To maintain quality and trust:
+
+✅ Product Quality Standards
+✅ Accurate Descriptions & Photos
+✅ Prompt Order Fulfillment
+✅ Excellent Customer Service
+✅ Fair Pricing Practices
+
+Prohibited Items:
+• Counterfeit products
+• Used items (unless specified)
+• Damaged goods
+• Non-furniture items
+
+Violations may result in account suspension.
+  `;
+  alert(guidelinesInfo);
+}
+
+function showCommissionRates() {
+  const commissionInfo = `
+💰 Commission Rates
+
+Our competitive commission structure:
+
+📦 Furniture & Large Items: 8%
+🪑 Small Furniture: 10%
+💡 Lighting & Decor: 12%
+🛏️ Bedding & Textiles: 15%
+
+Bonuses:
+• Top Seller Bonus: +2% (Monthly)
+• Customer Satisfaction: +1% (4.5+ rating)
+• Fast Shipping: +1% (Same day processing)
+
+Payouts processed every 2 weeks.
+  `;
+  alert(commissionInfo);
+}
+
+function showAddProduct() {
+  alert('➕ Add New Product\n\nTo add a new product:\n\n1. Go to "Products" section\n2. Click "Add New Product"\n3. Fill in product details\n4. Upload high-quality photos\n5. Set pricing and inventory\n6. Submit for review\n\nProducts are reviewed within 24 hours.');
+}
+
+function showInventoryReport() {
+  alert('📊 Inventory Report\n\nTrack your inventory levels:\n\n• Current stock levels\n• Low stock alerts\n• Best-selling items\n• Seasonal trends\n• Reorder recommendations\n\nGenerate reports anytime from your dashboard.');
+}
+
+function showBulkUpload() {
+  alert('📤 Bulk Upload\n\nUpload multiple products at once:\n\n• Download CSV template\n• Fill in product details\n• Upload images to cloud\n• Submit for batch processing\n• Track upload progress\n\nContact support for large uploads.');
+}
+
+function showCategoryGuide() {
+  alert('📂 Category Guide\n\nChoose the right category:\n\n• Living Room: Sofas, tables, entertainment\n• Bedroom: Beds, dressers, nightstands\n• Kitchen & Dining: Tables, chairs, storage\n• Bathroom: Vanities, mirrors, accessories\n• Office: Desks, chairs, storage\n• Outdoor: Patio furniture, garden decor\n\nProper categorization improves visibility.');
+}
+
+function showSalesReport() {
+  alert('📈 Sales Report\n\nComprehensive sales analytics:\n\n• Daily, weekly, monthly sales\n• Product performance\n• Revenue trends\n• Customer demographics\n• Seasonal analysis\n\nExport data for external analysis.');
+}
+
+function showPerformanceMetrics() {
+  alert('📊 Performance Metrics\n\nTrack your store performance:\n\n• Conversion rate\n• Average order value\n• Customer retention\n• Response time\n• Rating trends\n• Return rate\n\nCompare with platform averages.');
+}
+
+function showCustomerInsights() {
+  alert('👥 Customer Insights\n\nUnderstand your customers:\n\n• Customer demographics\n• Purchase patterns\n• Search behavior\n• Wishlist items\n• Review analysis\n• Feedback trends\n\nUse insights to optimize your store.');
+}
+
+function showRevenueAnalytics() {
+  alert('💰 Revenue Analytics\n\nDetailed revenue breakdown:\n\n• Gross revenue\n• Net revenue (after commission)\n• Revenue by category\n• Revenue by time period\n• Profit margins\n• Growth trends\n\nPlan your business strategy.');
+}
+
+function showSellerTerms() {
+  alert('📋 Seller Terms\n\nBy selling on Home Haven:\n\n• Maintain product quality\n• Fulfill orders promptly\n• Provide excellent service\n• Follow pricing guidelines\n• Respect intellectual property\n• Pay applicable fees\n\nFull terms available in your seller agreement.');
+}
+
+function showPayoutInfo() {
+  const payoutInfo = `
+💳 Payout Information
+
+Get paid for your sales:
+
+📅 Payout Schedule: Every 2 weeks
+💰 Minimum Payout: $50
+🏦 Payment Methods: Bank transfer, PayPal
+⏱️ Processing Time: 2-3 business days
+
+Payout Process:
+1. Sales accumulate in your account
+2. Commission deducted automatically
+3. Payout processed on schedule
+4. Funds transferred to your account
+5. Email notification sent
+
+Contact support for payout questions.
+  `;
+  alert(payoutInfo);
+}
+</script> 

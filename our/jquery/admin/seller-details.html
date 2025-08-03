@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Seller Details - Home Haven Admin</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --primary-color: #a67c52;
+      --primary-light: #d4b08c;
+      --primary-dark: #8b6b3d;
+      --secondary-color: #c19a6b;
+      --background-light: #faf8f5;
+      --background-dark: #f0ebe6;
+      --text-dark: #5d4c3a;
+      --text-medium: #8b7355;
+      --text-light: #fffdfa;
+      --shadow-light: 0 4px 20px rgba(166, 124, 82, 0.08);
+      --shadow-medium: 0 8px 32px rgba(166, 124, 82, 0.12);
+      --shadow-dark: 0 12px 40px rgba(166, 124, 82, 0.15);
+      --transition-fast: all 0.15s ease-out;
+      --transition-medium: all 0.3s ease-out;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+    
+    body { 
+      background: var(--background-light); 
+      font-family: 'Montserrat', sans-serif; 
+      color: var(--text-dark); 
+      margin: 0; 
+      padding: 0; 
+    }
+    
+    .container { 
+      max-width: 1400px; 
+      margin: 2rem auto; 
+      background: white; 
+      border-radius: 16px; 
+      box-shadow: var(--shadow-light); 
+      padding: 2rem; 
+      border: 1px solid rgba(166, 124, 82, 0.1);
+    }
+    
+    h1, h2 { 
+      font-family: 'Playfair Display', serif; 
+      font-size: 2.5rem; 
+      font-weight: 700;
+      margin-bottom: 2rem; 
+      text-align: center;
+      position: relative;
+    }
+    
+    h2 {
+      font-size: 2rem;
+      margin-top: 3rem;
+    }
+    
+    h1::after, h2::after {
+      content: '';
+      position: absolute;
+      bottom: -10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--primary-color);
+      border-radius: 2px;
+    }
+    
+    .profile-img { 
+      width: 40px; 
+      height: 40px; 
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: 2px solid var(--primary-light);
+      box-shadow: var(--shadow-light);
+    }
+    
+    .back-btn { 
+      background: var(--primary-color); 
+      color: white; 
+      border: none; 
+      border-radius: 8px; 
+      padding: 0.75rem 1.5rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      margin-bottom: 2rem; 
+      transition: var(--transition-fast);
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .back-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+    
+    .status-btn { 
+      border: none; 
+      border-radius: 6px; 
+      padding: 0.5rem 1rem; 
+      font-weight: 500; 
+      cursor: pointer; 
+      color: white; 
+      background: var(--success-color); 
+      transition: var(--transition-fast);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+    }
+    
+    .status-btn.inactive { 
+      background: var(--danger-color); 
+    }
+    
+    .status-btn.inactive:hover {
+      box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+    }
+    
+    .action-success { 
+      color: var(--success-color); 
+      font-size: 0.95rem; 
+      margin-left: 0.5rem; 
+    }
+    
+    .action-error { 
+      color: var(--danger-color); 
+      font-size: 0.95rem; 
+      margin-left: 0.5rem; 
+    }
+    
+    #sellerInfo {
+      background: var(--background-light);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(166, 124, 82, 0.1);
+      margin-bottom: 2rem;
+      line-height: 2;
+    }
+    
+    #sellerInfo b {
+      color: var(--primary-color);
+      font-weight: 600;
+    }
+    
+    /* DataTables customization */
+    .dataTables_wrapper .dataTables_filter input {
+      border: 2px solid var(--primary-light);
+      border-radius: 8px;
+      padding: 0.5rem 1rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .dataTables_wrapper .dataTables_filter input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(166, 124, 82, 0.1);
+    }
+    
+    .dataTables_wrapper .dataTables_length select {
+      border: 2px solid var(--primary-light);
+      border-radius: 6px;
+      padding: 0.3rem 0.5rem;
+      font-family: 'Montserrat', sans-serif;
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button {
+      border: 1px solid var(--primary-light);
+      border-radius: 6px;
+      margin: 0 2px;
+      padding: 0.5rem 0.8rem;
+      font-family: 'Montserrat', sans-serif;
+      transition: var(--transition-fast);
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+      background: var(--primary-color);
+      color: white !important;
+      border-color: var(--primary-color);
+    }
+    
+    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+      background: var(--primary-color);
+      color: white !important;
+      border-color: var(--primary-color);
+    }
+    
+    @media (max-width: 700px) { 
+      .container { padding: 1rem; } 
+      h1 { font-size: 1.8rem; } 
+      h2 { font-size: 1.5rem; }
+      table { font-size: 0.9rem; } 
+    }
+  </style>
+</head>
+<body>
+  <div id="header"></div>
+  <div class="container">
+    <button class="back-btn" onclick="window.location.href='sellers.html'">&larr; Back to Sellers</button>
+    <h1>Seller Details</h1>
+    <div id="sellerInfo" style="margin-bottom:2rem;"></div>
+    <h2>Products</h2>
+    <table id="itemsTable" class="display" style="width:100%">
+      <thead>
+        <tr>
+          <th>Item ID</th>
+          <th>Name</th>
+          <th>Description</th>
+          <th>SKU</th>
+          <th>Price</th>
+          <th>Image</th>
+          <th>Status</th>
+          <th>Created At</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+  </div>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+  <script>
+    $('#header').load('../header.html');
+    // Auth check
+    const token = localStorage.getItem('jwt_token');
+    const userRole = localStorage.getItem('user_role');
+    if (!token || userRole !== 'admin') {
+      window.location.href = '../login.html?reason=unauthorized';
+    }
+    // Get sellerId from URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const sellerId = urlParams.get('sellerId');
+    if (!sellerId) {
+      alert('No seller selected.');
+      window.location.href = 'sellers.html';
+    }
+    // Fetch and display seller info
+    function loadSellerInfo() {
+      $.ajax({
+        url: `http://localhost:4000/api/v1/admin/sellers`,
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(res) {
+          if (res.success) {
+            const seller = res.sellers.find(s => s.id == sellerId);
+            if (!seller) {
+              $('#sellerInfo').html('<b>Seller not found.</b>');
+              return;
+            }
+            $('#sellerInfo').html(`
+              <b>Name:</b> ${seller.name} <br>
+              <b>Business:</b> ${seller.business_name} <br>
+              <b>Email:</b> ${seller.email} <br>
+              <b>Phone:</b> ${seller.business_phone || ''} <br>
+              <b>Verified:</b> ${seller.is_verified ? 'Yes' : 'No'}
+            `);
+          } else {
+            $('#sellerInfo').html('<b>Failed to load seller info.</b>');
+          }
+        },
+        error: function() {
+          $('#sellerInfo').html('<b>Error loading seller info.</b>');
+        }
+      });
+    }
+    // Fetch and display seller's items
+    function loadItems() {
+      $.ajax({
+        url: `http://localhost:4000/api/v1/admin/sellers/${sellerId}/items`,
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token },
+        success: function(res) {
+          if (res.success) {
+            table.clear().rows.add(res.items).draw();
+          } else {
+            alert('Failed to load items: ' + res.message);
+          }
+        },
+        error: function(xhr) {
+          alert('Error loading items: ' + (xhr.responseJSON?.message || xhr.statusText));
+        }
+      });
+    }
+    // DataTable setup
+    const table = $('#itemsTable').DataTable({
+      columns: [
+        { data: 'item_id' },
+        { data: 'name' },
+        { data: 'description' },
+        { data: 'sku' },
+        { data: 'sell_price' },
+        { data: 'image', render: renderImage },
+        { data: 'status', render: renderStatus },
+        { data: 'created_at', render: renderDate }
+      ]
+    });
+    function renderImage(data) {
+      if (!data) return '';
+      return `<img src="http://localhost:4000${data}" class="profile-img" alt="Product">`;
+    }
+    function renderStatus(data, type, row) {
+      if (type === 'display') {
+        const btnClass = data === 'active' ? '' : 'inactive';
+        const btnText = data === 'active' ? 'Active' : 'Inactive';
+        const newStatus = data === 'active' ? 'inactive' : 'active';
+        return `<button class="status-btn ${btnClass}" data-id="${row.item_id}" data-status="${data}">${btnText}</button><span class="action-success" style="display:none;">✔</span><span class="action-error" style="display:none;"></span>`;
+      }
+      return data;
+    }
+    function renderDate(data) {
+      if (!data) return '';
+      return new Date(data).toLocaleString();
+    }
+    // Handle status toggle
+    $('#itemsTable tbody').on('click', '.status-btn', function() {
+      const itemId = $(this).data('id');
+      const currentStatus = $(this).data('status');
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+      const $row = $(this).closest('td');
+      $.ajax({
+        url: `http://localhost:4000/api/v1/admin/items/${itemId}/status`,
+        method: 'PATCH',
+        headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+        data: JSON.stringify({ status: newStatus }),
+        success: function(res) {
+          if (res.success) {
+            loadItems();
+          } else {
+            $row.find('.action-error').text(res.message).show().delay(2000).fadeOut();
+          }
+        },
+        error: function(xhr) {
+          $row.find('.action-error').text(xhr.responseJSON?.message || xhr.statusText).show().delay(2000).fadeOut();
+        }
+      });
+    });
+    // Initial load
+          // Load footer with error handling
+      $('#footer').load('footer.html', function(response, status, xhr) {
+        if (status === 'error') {
+          console.error('Error loading footer:', xhr.status, xhr.statusText);
+          $('#footer').html('<p style="text-align: center; padding: 2rem; color: #666;">Footer loading failed</p>');
+        }
+      });
+    loadSellerInfo();
+    loadItems();
+  </script>
+</body>
+</html> 

@@ -1,0 +1,720 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Haven - Customer Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #8B5C2A;
+      --primary-light: #bfa77a;
+      --primary-dark: #6d4c1c;
+      --secondary-color: #b85c2a;
+      --background-light: #f6f3ef;
+      --background-dark: #e5d6c3;
+      --text-dark: #3d2c1c;
+      --text-medium: #7a5420;
+      --text-light: #fffdfa;
+      --shadow-light: 0 4px 20px rgba(139, 92, 42, 0.08);
+      --shadow-medium: 0 8px 32px rgba(139, 92, 42, 0.15);
+      --shadow-dark: 0 12px 40px rgba(139, 92, 42, 0.2);
+      --transition-fast: all 0.15s ease-out;
+      --transition-medium: all 0.3s ease-out;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Montserrat', sans-serif;
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .admin-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem;
+      text-align: center;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+    
+    .page-header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    /* Modern Dashboard Statistics */
+    .dashboard-stats {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #f8f9fa 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+    
+    .stats-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .stats-header h3 {
+      margin: 0;
+      color: var(--text-dark);
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    .stats-header i {
+      margin-right: 10px;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+    
+    .stat-item {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--primary-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-item-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      box-shadow: 0 3px 10px rgba(139, 92, 42, 0.2);
+    }
+    
+    .stat-icon i {
+      color: white;
+      font-size: 1.3rem;
+    }
+    
+    .stat-title {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      line-height: 1;
+    }
+    
+    .stat-progress {
+      width: 100%;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .stat-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    
+    .stat-description {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      line-height: 1.4;
+      margin-top: 8px;
+      text-align: center;
+    }
+    
+    /* Remove old stat cards styles */
+    .stats-cards,
+    .stat-card {
+      display: none !important;
+    }
+    
+    .customers-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--background-light);
+    }
+    
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .search-box {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--background-light);
+      padding: 0.8rem 1.2rem;
+      border-radius: 12px;
+      border: 1px solid rgba(139, 92, 42, 0.2);
+    }
+    
+    .search-box input {
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 1rem;
+      min-width: 250px;
+    }
+    
+    .search-box i {
+      color: var(--text-medium);
+    }
+    
+    .customers-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1rem;
+    }
+    
+    .customers-table th {
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      position: relative;
+    }
+    
+    .customers-table th:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    .customers-table th:last-child {
+      border-top-right-radius: 12px;
+    }
+    
+    .customers-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(139, 92, 42, 0.1);
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+    
+    .customers-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .customers-table tr:nth-child(even) {
+      background: var(--background-light);
+    }
+    
+    .customers-table tr:hover {
+      background: rgba(139, 92, 42, 0.05);
+      transition: var(--transition-fast);
+    }
+    
+    .customer-avatar {
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+      box-shadow: var(--shadow-light);
+    }
+    
+    .customer-info {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .customer-details h4 {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    
+    .customer-details p {
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+    
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-badge.active {
+      background: var(--success-color);
+      color: white;
+    }
+    
+    .status-badge.inactive {
+      background: var(--danger-color);
+      color: white;
+    }
+    
+    .back-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .back-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+    }
+    
+    .loading i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .no-customers {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+    }
+    
+    .no-customers i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--text-medium);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 1rem;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      
+      .search-box input {
+        min-width: auto;
+        flex: 1;
+      }
+      
+      .customers-table {
+        font-size: 0.8rem;
+      }
+      
+      .customers-table th,
+      .customers-table td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .customer-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-content">
+        <h1 class="page-title">
+          <i class="fas fa-users"></i> Customer Management
+        </h1>
+        <p class="page-subtitle">Manage and monitor customer accounts</p>
+      </div>
+    </div>
+    
+    <!-- Back Button -->
+    <div style="margin-bottom: 1rem;">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+      <div class="stats-header">
+        <h3><i class="fas fa-chart-bar"></i> Customer Overview</h3>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-users"></i></div>
+            <div class="stat-title">Total Customers</div>
+          </div>
+          <div class="stat-value" id="totalCustomers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="totalCustomersBar"></div>
+          </div>
+          <div class="stat-description">All registered users on the platform.</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-user-check"></i></div>
+            <div class="stat-title">Active Customers</div>
+          </div>
+          <div class="stat-value" id="activeCustomers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="activeCustomersBar"></div>
+          </div>
+          <div class="stat-description">Customers currently active and engaged.</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-user-clock"></i></div>
+            <div class="stat-title">New This Month</div>
+          </div>
+          <div class="stat-value" id="newCustomers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="newCustomersBar"></div>
+          </div>
+          <div class="stat-description">Customers who joined within the last 30 days.</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+            <div class="stat-title">Total Orders</div>
+          </div>
+          <div class="stat-value" id="totalOrders">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="totalOrdersBar"></div>
+          </div>
+          <div class="stat-description">All orders placed by customers.</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Customers Section -->
+    <div class="customers-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-list"></i> Customer List
+        </h2>
+        <div class="search-box">
+          <i class="fas fa-search"></i>
+          <input type="text" id="searchInput" placeholder="Search customers...">
+        </div>
+      </div>
+      
+      <div id="customersContent">
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>Loading customers...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Check if user is admin
+    const token = localStorage.getItem('jwt_token');
+    const userRole = localStorage.getItem('user_role');
+    
+    if (!token || userRole !== 'admin') {
+      window.location.href = '../login.html?reason=unauthorized';
+    }
+    
+    let allCustomers = [];
+    
+    // Load customers
+    async function loadCustomers() {
+      try {
+        const response = await fetch('http://localhost:4000/api/v1/admin/customers', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          allCustomers = data.customers;
+          updateStatistics(allCustomers);
+          renderCustomers(allCustomers);
+        } else {
+          console.error('Failed to load customers:', data.message);
+          document.getElementById('customersContent').innerHTML = '<div class="loading"><p>Error loading customers</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading customers:', error);
+        document.getElementById('customersContent').innerHTML = '<div class="loading"><p>Error loading customers</p></div>';
+      }
+    }
+    
+    // Update statistics
+    function updateStatistics(customers) {
+      const totalCustomers = customers.length;
+      const activeCustomers = customers.filter(c => c.status === 'active').length;
+      const newCustomers = customers.filter(c => {
+        const createdDate = new Date(c.created_at);
+        const now = new Date();
+        const diffTime = Math.abs(now - createdDate);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays <= 30;
+      }).length;
+      
+      // Calculate total orders (this would need a separate API call in a real app)
+      const totalOrders = customers.reduce((sum, customer) => {
+        // This is a placeholder - in reality you'd get this from an orders API
+        return sum + (customer.total_orders || 0);
+      }, 0);
+      
+      document.getElementById('totalCustomers').textContent = totalCustomers;
+      document.getElementById('activeCustomers').textContent = activeCustomers;
+      document.getElementById('newCustomers').textContent = newCustomers;
+      document.getElementById('totalOrders').textContent = totalOrders;
+
+      // Update progress bars
+      const totalCustomersBar = document.getElementById('totalCustomersBar');
+      const activeCustomersBar = document.getElementById('activeCustomersBar');
+      const newCustomersBar = document.getElementById('newCustomersBar');
+      const totalOrdersBar = document.getElementById('totalOrdersBar');
+
+      const maxValue = 100; // Assuming a max value for progress bars
+      totalCustomersBar.style.width = `${(totalCustomers / maxValue) * 100}%`;
+      activeCustomersBar.style.width = `${(activeCustomers / maxValue) * 100}%`;
+      newCustomersBar.style.width = `${(newCustomers / maxValue) * 100}%`;
+      totalOrdersBar.style.width = `${(totalOrders / maxValue) * 100}%`;
+    }
+    
+    // Render customers table
+    function renderCustomers(customers) {
+      const container = document.getElementById('customersContent');
+      
+      if (customers.length === 0) {
+        container.innerHTML = `
+          <div class="no-customers">
+            <i class="fas fa-users"></i>
+            <h3>No Customers Found</h3>
+            <p>There are no customers registered yet.</p>
+          </div>
+        `
+         return;
+       }
+       
+       let html = `
+         <table class="customers-table">
+           <thead>
+             <tr>
+               <th><i class="fas fa-user"></i> Customer</th>
+               <th><i class="fas fa-envelope"></i> Email</th>
+               <th><i class="fas fa-map-marker-alt"></i> Address</th>
+               <th><i class="fas fa-phone"></i> Phone</th>
+               <th><i class="fas fa-calendar"></i> Joined</th>
+               <th><i class="fas fa-toggle-on"></i> Status</th>
+             </tr>
+           </thead>
+           <tbody>
+       `;
+       
+       customers.forEach(customer => {
+         const avatar = customer.image_path 
+           ? `http://localhost:4000${customer.image_path}`
+           : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name)}&background=8B5C2A&color=fff&size=45`;
+         
+         const fullName = `${customer.fname || ''} ${customer.lname || ''}`.trim() || customer.name;
+         const address = `${customer.addressline || ''}, ${customer.town || ''} ${customer.zipcode || ''}`.trim();
+         const joinedDate = new Date(customer.created_at).toLocaleDateString();
+         
+         html += `
+           <tr>
+             <td>
+               <div class="customer-info">
+                 <img src="${avatar}" alt="${fullName}" class="customer-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(fullName)}&background=8B5C2A&color=fff&size=45'">
+                 <div class="customer-details">
+                   <h4>${fullName}</h4>
+                   <p>ID: ${customer.customer_id}</p>
+                 </div>
+               </div>
+             </td>
+             <td>${customer.email}</td>
+             <td>${address || 'Not provided'}</td>
+             <td>${customer.phone || 'Not provided'}</td>
+             <td>${joinedDate}</td>
+             <td>
+               <span class="status-badge ${customer.status}">${customer.status}</span>
+             </td>
+           </tr>
+         `;
+       });
+       
+       html += `
+           </tbody>
+         </table>
+       `;
+       
+       container.innerHTML = html;
+     }
+     
+     // Search functionality
+     function filterCustomers() {
+       const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+       
+       const filtered = allCustomers.filter(customer => {
+         const fullName = `${customer.fname || ''} ${customer.lname || ''}`.trim() || customer.name;
+         const address = `${customer.addressline || ''}, ${customer.town || ''} ${customer.zipcode || ''}`.trim();
+         
+         return fullName.toLowerCase().includes(searchTerm) ||
+                customer.email.toLowerCase().includes(searchTerm) ||
+                address.toLowerCase().includes(searchTerm) ||
+                (customer.phone && customer.phone.includes(searchTerm));
+       });
+       
+       renderCustomers(filtered);
+     }
+     
+     // Event listeners
+     document.getElementById('searchInput').addEventListener('input', filterCustomers);
+     
+     // Load data on page load
+     document.addEventListener('DOMContentLoaded', function() {
+       loadCustomers();
+       // Load footer with error handling
+      $('#footer').load('footer.html', function(response, status, xhr) {
+        if (status === 'error') {
+          console.error('Error loading footer:', xhr.status, xhr.statusText);
+          $('#footer').html('<p style="text-align: center; padding: 2rem; color: #666;">Footer loading failed</p>');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

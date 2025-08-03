@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Customer Profile - Home Haven</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #8B5C2A;
+      --secondary-color: #a67c52;
+      --accent-color: #d4b08c;
+      --background-light: #f7f4f0;
+      --text-dark: #444;
+      --text-light: #666;
+      --shadow-light: 0 2px 8px rgba(139, 92, 42, 0.1);
+      --shadow-medium: 0 4px 16px rgba(139, 92, 42, 0.15);
+      --shadow-heavy: 0 8px 32px rgba(139, 92, 42, 0.2);
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: linear-gradient(135deg, var(--background-light) 0%, #e8e0d8 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Ensure profile page content is properly displayed */
+    .profile-page {
+      min-height: 100vh;
+      background: var(--background-light);
+      padding-top: 20px; /* Reduced from 84px to minimize white space */
+      position: relative;
+      z-index: 10;
+    }
+
+    /* Force profile content to be visible */
+    .profile-container {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+      position: relative !important;
+      z-index: 100 !important;
+    }
+
+    /* Override any conflicting styles */
+    body .profile-page {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    body .profile-page .profile-container {
+      display: block !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .profile-header {
+      background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      color: white;
+      padding: 2rem 0; /* Reduced from 3rem to make it more compact */
+      text-align: center;
+      margin-bottom: 2rem; /* Reduced from 3rem */
+      box-shadow: var(--shadow-heavy);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .profile-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .profile-header-content {
+      position: relative;
+      z-index: 1;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 2rem;
+    }
+
+    .profile-avatar {
+      width: 100px; /* Reduced from 120px */
+      height: 100px; /* Reduced from 120px */
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2.5rem; /* Reduced from 3rem */
+      margin: 0 auto 1rem; /* Reduced bottom margin from 1.5rem */
+      border: 4px solid white;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      cursor: pointer;
+      transition: transform 0.2s;
+    }
+
+    .profile-avatar:hover {
+      transform: scale(1.05);
+    }
+
+    .profile-avatar-upload {
+      position: absolute;
+      bottom: 0;
+      right: 0;
+      background: var(--primary-color);
+      color: white;
+      border-radius: 50%;
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+      cursor: pointer;
+      border: 2px solid white;
+      transition: all 0.2s;
+    }
+
+    .profile-avatar-upload:hover {
+      background: var(--secondary-color);
+      transform: scale(1.1);
+    }
+
+    .profile-name {
+      font-size: 2rem; /* Reduced from 2.5rem */
+      font-weight: 700;
+      margin-bottom: 0.3rem; /* Reduced from 0.5rem */
+      font-family: Georgia, serif;
+    }
+
+    .profile-role {
+      font-size: 1rem; /* Reduced from 1.2rem */
+      opacity: 0.9;
+      margin-bottom: 0.8rem; /* Reduced from 1rem */
+    }
+
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 2rem; /* Reduced from 3rem */
+      margin-top: 1.5rem; /* Reduced from 2rem */
+    }
+
+    .stat-item {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 0.8rem 1.5rem; /* Reduced padding */
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .stat-number {
+      font-size: 1.5rem; /* Reduced from 2rem */
+      font-weight: 700;
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.8rem; /* Reduced from 0.9rem */
+      opacity: 0.8;
+    }
+
+    .profile-container {
+      max-width: 1200px;
+      margin: 0 auto 4rem auto; /* Reduced bottom margin from 8rem */
+      padding: 0 2rem;
+    }
+
+    .profile-sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 3rem;
+    }
+
+    .profile-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .profile-section:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-heavy);
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--accent-color);
+    }
+
+    .section-icon {
+      font-size: 2rem;
+      color: var(--primary-color);
+    }
+
+    .section-title {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      font-family: Georgia, serif;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      background: #fafafa;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(139, 92, 42, 0.1);
+      background: white;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem; /* Increased from 1.5rem for more spacing between text boxes */
+    }
+
+    .btn {
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 12px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-secondary {
+      background: linear-gradient(135deg, var(--accent-color), #b89c7a);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(231, 76, 60, 0.3);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .quick-actions {
+      background: white;
+      border-radius: 20px;
+      padding: 2.5rem;
+      box-shadow: var(--shadow-medium);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+      margin-bottom: 2rem;
+    }
+
+    .quick-actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .quick-action-card {
+      background: linear-gradient(135deg, #f8f5f2 0%, #f2e5d2 100%);
+      border-radius: 16px;
+      padding: 1.5rem;
+      text-align: center;
+      border: 1px solid rgba(139, 92, 42, 0.1);
+      transition: transform 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .quick-action-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .quick-action-icon {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      display: block;
+    }
+
+    .quick-action-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .quick-action-desc {
+      font-size: 0.9rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+
+    .notification {
+      padding: 1rem 1.5rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      font-weight: 500;
+    }
+
+    .notification.success {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+      color: white;
+    }
+
+    .notification.error {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .notification.info {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+    }
+
+    /* Hidden file input for profile picture upload */
+    .profile-picture-input {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .profile-sections {
+        grid-template-columns: 1fr;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+      }
+
+      .profile-stats {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .action-buttons {
+        flex-direction: column;
+      }
+
+      .quick-actions-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Footer Styles */
+    .customer-footer {
+      background: linear-gradient(135deg, #8b6b3d, #a67c52);
+      color: white;
+      margin-top: 4rem;
+      border-top: 3px solid #d4b08c;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .customer-footer::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .footer-content {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      padding: 3rem 2rem 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .footer-section h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .footer-section h4 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: #fff;
+    }
+
+    .footer-section p {
+      color: rgba(255, 255, 255, 0.8);
+      margin-bottom: 1.5rem;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .footer-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s;
+      font-size: 0.95rem;
+    }
+
+    .footer-links a:hover {
+      color: #fff;
+      text-decoration: underline;
+    }
+
+    .customer-info {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .info-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.8rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .info-item:last-child {
+      border-bottom: none;
+      margin-bottom: 0;
+    }
+
+    .info-label {
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .info-value {
+      color: #fff;
+      font-weight: 500;
+    }
+
+    .footer-btn {
+      background: linear-gradient(135deg, #d4b08c, #b89c7a);
+      color: #fff;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .footer-btn:hover {
+      background: linear-gradient(135deg, #b89c7a, #8b6b3d);
+      transform: translateY(-2px);
+    }
+
+    .footer-bottom {
+      background: rgba(0, 0, 0, 0.2);
+      padding: 1.5rem 2rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .footer-bottom-content {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      max-width: 1400px;
+      margin: 0 auto;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-bottom p {
+      color: rgba(255, 255, 255, 0.8);
+      margin: 0;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom-links {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .footer-bottom-links span {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .footer-bottom-links a {
+      color: rgba(255, 255, 255, 0.8);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .footer-bottom-links a:hover {
+      color: #fff;
+    }
+
+    @media (max-width: 768px) {
+      .footer-content {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 2rem 1rem 1rem;
+      }
+
+      .footer-bottom-content {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .footer-bottom-links {
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Container -->
+  <div id="header-container"></div>
+  
+  <!-- Profile Page Content -->
+  <div class="profile-page">
+    <!-- Profile Header -->
+    <div class="profile-header">
+      <div class="profile-header-content">
+        <div class="profile-avatar" onclick="document.getElementById('profilePictureInput').click()">
+          <img id="profilePicture" src="" alt="Profile Picture" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: none;">
+          <span id="profileAvatarText">👤</span>
+          <div class="profile-avatar-upload">📷</div>
+        </div>
+        <input type="file" id="profilePictureInput" class="profile-picture-input" accept="image/*">
+        <h1 class="profile-name" id="customerName">Loading...</h1>
+        <p class="profile-role">Customer Account</p>
+        <div class="profile-stats">
+          <div class="stat-item">
+            <span class="stat-number" id="orderCount">-</span>
+            <span class="stat-label">Orders</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="wishlistCount">-</span>
+            <span class="stat-label">Wishlist Items</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-number" id="cartCount">-</span>
+            <span class="stat-label">Cart Items</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Profile Container -->
+    <div class="profile-container">
+      <!-- Quick Actions -->
+      <div class="quick-actions">
+        <div class="section-header">
+          <span class="section-icon">⚡</span>
+          <h2 class="section-title">Quick Actions</h2>
+        </div>
+        <div class="quick-actions-grid">
+          <div class="quick-action-card" onclick="window.location.href='product_customer.html'">
+            <span class="quick-action-icon">🛍️</span>
+            <div class="quick-action-title">Browse Products</div>
+            <div class="quick-action-desc">Explore our collection of furniture and home decor</div>
+          </div>
+          <div class="quick-action-card" onclick="window.location.href='cart.html'">
+            <span class="quick-action-icon">🛒</span>
+            <div class="quick-action-title">View Cart</div>
+            <div class="quick-action-desc">Check your shopping cart and proceed to checkout</div>
+          </div>
+          <div class="quick-action-card" onclick="window.location.href='wishlist.html'">
+            <span class="quick-action-icon">❤️</span>
+            <div class="quick-action-title">My Wishlist</div>
+            <div class="quick-action-desc">View your saved items and favorites</div>
+          </div>
+          <div class="quick-action-card" onclick="window.location.href='order-history.html'">
+            <span class="quick-action-icon">📦</span>
+            <div class="quick-action-title">Order History</div>
+            <div class="quick-action-desc">Track your past orders and deliveries</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Profile Sections -->
+      <div class="profile-sections">
+        <!-- Personal Information -->
+        <div class="profile-section">
+          <div class="section-header">
+            <span class="section-icon">👤</span>
+            <h2 class="section-title">Personal Information</h2>
+          </div>
+          <form id="personalInfoForm">
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">First Name</label>
+                <input type="text" class="form-input" id="fname" name="fname" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name</label>
+                <input type="text" class="form-input" id="lname" name="lname" required>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="email" name="email" readonly style="background-color: #f5f5f5; cursor: not-allowed;">
+              <small style="color: #666; font-size: 0.8rem;">Email address cannot be changed</small>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" id="phone" name="phone">
+            </div>
+            <div class="action-buttons">
+              <button type="submit" class="btn btn-primary">
+                💾 Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Shipping Address -->
+        <div class="profile-section">
+          <div class="section-header">
+            <span class="section-icon">📍</span>
+            <h2 class="section-title">Shipping Address</h2>
+          </div>
+          <form id="addressForm">
+            <div class="form-group">
+              <label class="form-label">Street Address</label>
+              <input type="text" class="form-input" id="address" name="address" required>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label class="form-label">Town/City</label>
+                <input type="text" class="form-input" id="town" name="town" required>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Zip Code</label>
+                <input type="text" class="form-input" id="zipcode" name="zipcode" required>
+              </div>
+            </div>
+            <div class="action-buttons">
+              <button type="submit" class="btn btn-primary">
+                💾 Save Address
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Account Security -->
+      <div class="profile-section">
+        <div class="section-header">
+          <span class="section-icon">🔒</span>
+          <h2 class="section-title">Account Security</h2>
+        </div>
+        <form id="passwordForm">
+          <div class="form-group">
+            <label class="form-label">Current Password</label>
+            <input type="password" class="form-input" id="currentPassword" name="currentPassword" required>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-input" id="newPassword" name="newPassword" required>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-input" id="confirmPassword" name="confirmPassword" required>
+            </div>
+          </div>
+          <div class="action-buttons">
+            <button type="submit" class="btn btn-primary">
+              🔐 Change Password
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="customer-footer">
+    <div class="footer-content">
+      <div class="footer-section">
+        <h3>🏠 Home Haven</h3>
+        <p>Your trusted destination for quality home furnishings</p>
+        <div class="footer-links">
+          <a href="#" onclick="showCustomerSupport()">Customer Support</a>
+          <a href="#" onclick="showReturnPolicy()">Return Policy</a>
+          <a href="#" onclick="showShippingInfo()">Shipping Information</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>🛒 Shopping</h4>
+        <div class="footer-links">
+          <a href="#" onclick="showCategories()">Browse Categories</a>
+          <a href="#" onclick="showWishlist()">My Wishlist</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>📞 Help & Support</h4>
+        <div class="footer-links">
+          <a href="#" onclick="showFAQ()">Frequently Asked Questions</a>
+          <a href="#" onclick="showSizeGuide()">Size Guide</a>
+          <a href="#" onclick="showCareInstructions()">Care Instructions</a>
+          <a href="#" onclick="showContactUs()">Contact Us</a>
+        </div>
+      </div>
+      
+      <div class="footer-section">
+        <h4>👤 My Account</h4>
+        <div class="customer-info">
+          <div class="info-item">
+            <span class="info-label">Welcome:</span>
+            <span class="info-value" id="customerName">Guest</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Orders:</span>
+            <span class="info-value" id="customerOrders">-</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Wishlist:</span>
+            <span class="info-value" id="customerWishlist">-</span>
+          </div>
+          <button class="footer-btn" onclick="refreshCustomerInfo()">🔄 Refresh</button>
+        </div>
+      </div>
+    </div>
+    
+    <div class="footer-bottom">
+      <div class="footer-bottom-content">
+        <p>&copy; 2024 Home Haven. All rights reserved. | Quality furniture for every home</p>
+        <div class="footer-bottom-links">
+          <span id="currentTime"></span>
+          <span>|</span>
+          <a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a>
+          <span>|</span>
+          <a href="#" onclick="showTermsOfService()">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Load header
+    $(document).ready(function() {
+      $('#header-container').load('../header.html', function() {
+        console.log('Header loaded for profile page');
+      });
+    });
+
+    // API Base URL
+    const API_BASE = 'http://localhost:4000/api/v1';
+    const token = localStorage.getItem('jwt_token');
+
+    // Load profile data
+    async function loadProfile() {
+      if (!token) {
+        window.location.href = '../login.html';
+        return;
+      }
+
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          const profile = data.profile;
+          
+          // Update header information
+          $('#customerName').text(`${profile.fname || ''} ${profile.lname || ''}`.trim() || 'Customer');
+          
+          // Load profile picture if exists
+          if (profile.image_path || profile.profile_image) {
+            const profilePicture = document.getElementById('profilePicture');
+            const profileAvatarText = document.getElementById('profileAvatarText');
+            
+            const imageUrl = profile.image_path || profile.profile_image;
+            profilePicture.src = `http://localhost:4000${imageUrl}`;
+            profilePicture.style.display = 'block';
+            profileAvatarText.style.display = 'none';
+          }
+          
+          // Fill form fields
+          $('#fname').val(profile.fname || '');
+          $('#lname').val(profile.lname || '');
+          $('#email').val(profile.email || '');
+          $('#phone').val(profile.phone || '');
+          $('#address').val(profile.address || '');
+          $('#town').val(profile.town || '');
+          $('#zipcode').val(profile.zipcode || '');
+
+          // Load customer statistics
+          loadCustomerStats();
+        } else {
+          showNotification('Failed to load profile data', 'error');
+        }
+      } catch (error) {
+        console.error('Error loading profile:', error);
+        showNotification('Error loading profile data', 'error');
+      }
+    }
+
+    // Load customer statistics
+    async function loadCustomerStats() {
+      try {
+        // Load orders count
+        const ordersResponse = await fetch(`${API_BASE}/orders/history`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const ordersData = await ordersResponse.json();
+        if (ordersData.success) {
+          $('#orderCount').text(ordersData.orders.length || 0);
+        }
+
+        // Load wishlist count
+        const wishlistResponse = await fetch(`${API_BASE}/wishlist`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const wishlistData = await wishlistResponse.json();
+        if (wishlistData.success) {
+          $('#wishlistCount').text(wishlistData.wishlist.length || 0);
+        }
+
+        // Load cart count
+        const cartResponse = await fetch(`${API_BASE}/cart`, {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        const cartData = await cartResponse.json();
+        if (cartData.success) {
+          $('#cartCount').text(cartData.cart.length || 0);
+        }
+      } catch (error) {
+        console.error('Error loading stats:', error);
+      }
+    }
+
+    // Handle personal information form
+    $('#personalInfoForm').on('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('fname', $('#fname').val());
+      formData.append('lname', $('#lname').val());
+      formData.append('phone', $('#phone').val());
+
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          showNotification('Personal information updated successfully!', 'success');
+          $('#customerName').text(`${$('#fname').val()} ${$('#lname').val()}`.trim());
+        } else {
+          showNotification(data.message || 'Failed to update personal information', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating profile:', error);
+        showNotification('Error updating personal information', 'error');
+      }
+    });
+
+    // Handle address form
+    $('#addressForm').on('submit', async function(e) {
+      e.preventDefault();
+      
+      const formData = new FormData();
+      formData.append('address', $('#address').val());
+      formData.append('town', $('#town').val());
+      formData.append('zipcode', $('#zipcode').val());
+
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          showNotification('Shipping address updated successfully!', 'success');
+        } else {
+          showNotification(data.message || 'Failed to update address', 'error');
+        }
+      } catch (error) {
+        console.error('Error updating address:', error);
+        showNotification('Error updating shipping address', 'error');
+      }
+    });
+
+    // Handle password form
+    $('#passwordForm').on('submit', async function(e) {
+      e.preventDefault();
+      
+      const newPassword = $('#newPassword').val();
+      const confirmPassword = $('#confirmPassword').val();
+
+      if (newPassword !== confirmPassword) {
+        showNotification('New passwords do not match', 'error');
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('password', newPassword);
+
+      try {
+        const response = await fetch(`${API_BASE}/profile`, {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          showNotification('Password changed successfully!', 'success');
+          $('#passwordForm')[0].reset();
+        } else {
+          showNotification(data.message || 'Failed to change password', 'error');
+        }
+      } catch (error) {
+        console.error('Error changing password:', error);
+        showNotification('Error changing password', 'error');
+      }
+    });
+
+    // Show notification
+    function showNotification(message, type) {
+      const notification = $(`
+        <div class="notification ${type}">
+          ${message}
+        </div>
+      `);
+      
+      $('.profile-container').prepend(notification);
+      
+      setTimeout(() => {
+        notification.fadeOut(() => notification.remove());
+      }, 3000);
+    }
+
+    // Footer functionality
+    function refreshCustomerInfo() {
+      const token = localStorage.getItem('jwt_token');
+      const userName = localStorage.getItem('user_name') || 'Guest';
+      
+      // Update customer name
+      const customerNameElement = document.getElementById('customerName');
+      if (customerNameElement) {
+        customerNameElement.textContent = userName;
+      }
+      
+      // Update current time
+      const currentTimeElement = document.getElementById('currentTime');
+      if (currentTimeElement) {
+        const now = new Date();
+        currentTimeElement.textContent = now.toLocaleString();
+      }
+      
+      // Fetch customer data if logged in
+      if (token) {
+        // Fetch orders count
+        fetch('http://localhost:4000/api/v1/orders/history', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+          const ordersElement = document.getElementById('customerOrders');
+          if (ordersElement && data.success) {
+            ordersElement.textContent = data.orders.length || 0;
+          }
+        })
+        .catch(() => {
+          const ordersElement = document.getElementById('customerOrders');
+          if (ordersElement) ordersElement.textContent = '-';
+        });
+        
+        // Fetch wishlist count
+        fetch('http://localhost:4000/api/v1/wishlist', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        })
+        .then(res => res.json())
+        .then(data => {
+          const wishlistElement = document.getElementById('customerWishlist');
+          if (wishlistElement && data.success) {
+            wishlistElement.textContent = data.wishlist.length || 0;
+          }
+        })
+        .catch(() => {
+          const wishlistElement = document.getElementById('customerWishlist');
+          if (wishlistElement) wishlistElement.textContent = '-';
+        });
+      }
+    }
+
+    // Footer modal functions
+    function showCustomerSupport() {
+      alert('Customer Support: Contact us at support@homehaven.com or call 1-800-HOME-HAVEN');
+    }
+    function showReturnPolicy() {
+      alert('Return Policy: 30-day return window for unused items in original packaging');
+    }
+    function showShippingInfo() {
+      alert('Shipping Information: Free shipping on orders over ₱5,000. Standard delivery 3-5 business days');
+    }
+    function showCategories() {
+      window.location.href = 'product_customer.html';
+    }
+    function showWishlist() {
+      window.location.href = 'wishlist.html';
+    }
+    function showFAQ() {
+      alert('FAQ: Visit our help center for frequently asked questions');
+    }
+    function showSizeGuide() {
+      alert('Size Guide: Check product descriptions for detailed dimensions');
+    }
+    function showCareInstructions() {
+      alert('Care Instructions: Follow manufacturer guidelines for best results');
+    }
+    function showContactUs() {
+      alert('Contact Us: Email contact@homehaven.com or call 1-800-HOME-HAVEN');
+    }
+    function showPrivacyPolicy() {
+      alert('Privacy Policy: Your data is protected and never shared with third parties');
+    }
+    function showTermsOfService() {
+      alert('Terms of Service: By using our service, you agree to our terms and conditions');
+    }
+
+    // Handle profile picture upload
+    document.getElementById('profilePictureInput').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const profilePicture = document.getElementById('profilePicture');
+          const profileAvatarText = document.getElementById('profileAvatarText');
+          
+          profilePicture.src = e.target.result;
+          profilePicture.style.display = 'block';
+          profileAvatarText.style.display = 'none';
+          
+          // Upload to server
+          uploadProfilePicture(file);
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Upload profile picture to server
+    async function uploadProfilePicture(file) {
+      const formData = new FormData();
+      formData.append('profile_image', file); // Changed from 'profilePicture' to 'profile_image'
+
+      try {
+        const response = await fetch(`${API_BASE}/profile`, { // Changed from '/profile/upload-picture' to '/profile'
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`
+          },
+          body: formData
+        });
+        const data = await response.json();
+
+        if (data.success) {
+          showNotification('Profile picture updated successfully!', 'success');
+          // Reload profile to get updated image
+          loadProfile();
+        } else {
+          showNotification(data.message || 'Failed to upload profile picture', 'error');
+        }
+      } catch (error) {
+        console.error('Error uploading profile picture:', error);
+        showNotification('Error uploading profile picture', 'error');
+      }
+    }
+
+    // Load profile on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      console.log('Profile page loaded');
+      console.log('Profile container exists:', document.querySelector('.profile-container'));
+      console.log('Profile page div exists:', document.querySelector('.profile-page'));
+      console.log('Footer container exists:', document.querySelector('#footer'));
+      loadProfile();
+    });
+
+    // Initialize footer functionality
+    if (typeof refreshCustomerInfo === 'function') {
+      refreshCustomerInfo();
+    }
+  </script>
+</body>
+</html>

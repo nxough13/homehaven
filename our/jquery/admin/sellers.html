@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Home Haven - Seller Management</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --primary-color: #8B5C2A;
+      --primary-light: #bfa77a;
+      --primary-dark: #6d4c1c;
+      --secondary-color: #b85c2a;
+      --background-light: #f6f3ef;
+      --background-dark: #e5d6c3;
+      --text-dark: #3d2c1c;
+      --text-medium: #7a5420;
+      --text-light: #fffdfa;
+      --shadow-light: 0 4px 20px rgba(139, 92, 42, 0.08);
+      --shadow-medium: 0 8px 32px rgba(139, 92, 42, 0.15);
+      --shadow-dark: 0 12px 40px rgba(139, 92, 42, 0.2);
+      --transition-fast: all 0.15s ease-out;
+      --transition-medium: all 0.3s ease-out;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body { 
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      font-family: 'Montserrat', sans-serif; 
+      color: var(--text-dark); 
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+    
+    .admin-container {
+      max-width: 1400px; 
+      margin: 0 auto;
+      padding: 2rem; 
+    }
+    
+    .page-header {
+      background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+      color: white;
+      padding: 2rem;
+      border-radius: 20px;
+      margin-bottom: 2rem; 
+      text-align: center;
+      box-shadow: var(--shadow-medium);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .page-header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.1)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.1)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+      opacity: 0.3;
+    }
+    
+    .page-header-content {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    }
+    
+    .page-subtitle {
+      font-size: 1.1rem;
+      opacity: 0.9;
+    }
+    
+    /* Modern Dashboard Statistics */
+    .dashboard-stats {
+      background: linear-gradient(135deg, var(--bg-primary) 0%, #f8f9fa 100%);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 30px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+      border: 1px solid var(--border-color);
+    }
+    
+    .stats-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary-color);
+    }
+    
+    .stats-header h3 {
+      margin: 0;
+      color: var(--text-dark);
+      font-size: 1.4rem;
+      font-weight: 600;
+    }
+    
+    .stats-header i {
+      margin-right: 10px;
+      color: var(--primary-color);
+      font-size: 1.5rem;
+    }
+    
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+    
+    .stat-item {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 3px 15px rgba(0,0,0,0.08);
+      border-left: 5px solid var(--primary-color);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      min-height: 160px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    
+    .stat-item:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+    }
+    
+    .stat-item-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .stat-icon {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      background: var(--primary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      box-shadow: 0 3px 10px rgba(139, 92, 42, 0.2);
+    }
+    
+    .stat-icon i {
+      color: white;
+      font-size: 1.3rem;
+    }
+    
+    .stat-title {
+      font-weight: 700;
+      color: var(--text-dark);
+      font-size: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+    }
+    
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: var(--primary-color);
+      margin-bottom: 15px;
+      line-height: 1;
+    }
+    
+    .stat-progress {
+      width: 100%;
+      height: 8px;
+      background: #f0f0f0;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 10px;
+    }
+    
+    .stat-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary-color), var(--primary-dark));
+      border-radius: 4px;
+      transition: width 1s ease;
+    }
+    
+    .stat-description {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      line-height: 1.4;
+      margin-top: 8px;
+      text-align: center;
+    }
+    
+    /* Remove old stat cards styles */
+    .stats-cards,
+    .stat-card {
+      display: none !important;
+    }
+    
+    .sellers-section {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--background-light);
+    }
+    
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .filters-container {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+    
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .filter-group label {
+      font-weight: 600;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+    
+    .filter-group select {
+      padding: 0.5rem 1rem;
+      border: 1px solid rgba(139, 92, 42, 0.2);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-dark);
+      font-size: 0.9rem;
+      transition: var(--transition-fast);
+    }
+    
+    .filter-group select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 2px rgba(139, 92, 42, 0.1);
+    }
+    
+    .sellers-table {
+      width: 100%;
+      border-collapse: separate;
+      border-spacing: 0;
+      margin-top: 1rem;
+    }
+    
+    .sellers-table th {
+      background: var(--primary-color);
+      color: white;
+      padding: 1rem;
+      text-align: left;
+      font-weight: 600;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .sellers-table th:first-child {
+      border-top-left-radius: 12px;
+    }
+    
+    .sellers-table th:last-child {
+      border-top-right-radius: 12px;
+    }
+    
+    .sellers-table td {
+      padding: 1rem;
+      border-bottom: 1px solid rgba(139, 92, 42, 0.1);
+      color: var(--text-dark);
+      font-size: 0.9rem;
+    }
+    
+    .sellers-table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .sellers-table tr:nth-child(even) {
+      background: var(--background-light);
+    }
+    
+    .sellers-table tr:hover {
+      background: rgba(139, 92, 42, 0.05);
+      transition: var(--transition-fast);
+    }
+    
+    .seller-avatar {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%; 
+      object-fit: cover; 
+      border: 2px solid var(--primary-light);
+      box-shadow: var(--shadow-light);
+    }
+    
+    .seller-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    .seller-details h4 {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+    }
+    
+    .seller-details p {
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+    
+    .status-badge {
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    
+    .status-badge.verified {
+      background: var(--success-color);
+      color: white;
+    }
+    
+    .status-badge.unverified {
+      background: var(--warning-color);
+      color: white;
+    }
+    
+    .status-badge.inactive {
+      background: var(--danger-color);
+      color: white;
+    }
+    
+    .action-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      font-size: 0.8rem;
+      text-decoration: none;
+      display: inline-block;
+      margin: 0.25rem;
+    }
+    
+    .action-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(139, 92, 42, 0.3);
+    }
+    
+    .action-btn.verify {
+      background: var(--success-color);
+    }
+    
+    .action-btn.verify:hover {
+      background: #218838;
+    }
+    
+    .action-btn.deactivate {
+      background: var(--danger-color);
+    }
+    
+    .action-btn.deactivate:hover {
+      background: #c82333;
+    }
+    
+    .back-btn {
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .back-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+    
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+    }
+    
+    .loading i {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      animation: spin 1s linear infinite;
+    }
+    
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+    
+    .no-sellers {
+      text-align: center;
+      padding: 3rem;
+      color: var(--text-medium);
+    }
+    
+    .no-sellers i {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: var(--text-medium);
+    }
+    
+    @media (max-width: 768px) {
+      .admin-container {
+        padding: 1rem;
+      }
+      
+      .page-title {
+        font-size: 2rem;
+      }
+      
+      .stats-cards {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+      
+      .section-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+      
+      .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .filter-group {
+        justify-content: space-between;
+      }
+      
+      .sellers-table {
+        font-size: 0.8rem;
+      }
+      
+      .sellers-table th,
+      .sellers-table td {
+        padding: 0.75rem 0.5rem;
+      }
+      
+      .seller-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div class="page-header-content">
+        <h1 class="page-title">
+          <i class="fas fa-store"></i> Seller Management
+        </h1>
+        <p class="page-subtitle">Manage and monitor seller accounts</p>
+      </div>
+    </div>
+    
+    <!-- Back Button -->
+    <div style="margin-bottom: 1rem;">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i> Back to Dashboard
+      </a>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="dashboard-stats">
+      <div class="stats-header">
+        <h3><i class="fas fa-chart-bar"></i> Seller Overview</h3>
+      </div>
+      <div class="stats-grid">
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-store"></i></div>
+            <div class="stat-title">Total Sellers</div>
+          </div>
+          <div class="stat-value" id="totalSellers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="totalSellersBar"></div>
+          </div>
+          <div class="stat-description">Total number of registered sellers.</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+            <div class="stat-title">Verified Sellers</div>
+          </div>
+          <div class="stat-value" id="verifiedSellers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="verifiedSellersBar"></div>
+          </div>
+          <div class="stat-description">Sellers who have completed verification.</div>
+        </div>
+        
+        <div class="stat-item">
+          <div class="stat-item-header">
+            <div class="stat-icon"><i class="fas fa-clock"></i></div>
+            <div class="stat-title">Pending Verification</div>
+          </div>
+          <div class="stat-value" id="pendingSellers">0</div>
+          <div class="stat-progress">
+            <div class="stat-progress-bar" id="pendingSellersBar"></div>
+          </div>
+          <div class="stat-description">Sellers awaiting verification.</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Sellers Section -->
+    <div class="sellers-section">
+      <div class="section-header">
+        <h2 class="section-title">
+          <i class="fas fa-list"></i> Seller List
+        </h2>
+        <div class="filters-container">
+          <div class="filter-group">
+            <label for="statusFilter">Status:</label>
+            <select id="statusFilter">
+              <option value="">All Status</option>
+              <option value="verified">Verified</option>
+              <option value="unverified">Unverified</option>
+              <option value="inactive">Inactive</option>
+            </select>
+          </div>
+          <div class="filter-group">
+            <label for="verificationFilter">Verification:</label>
+            <select id="verificationFilter">
+              <option value="">All</option>
+              <option value="verified">Verified</option>
+              <option value="unverified">Unverified</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div id="sellersContent">
+        <div class="loading">
+          <i class="fas fa-spinner"></i>
+          <p>Loading sellers...</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Footer -->
+  <div id="footer"></div>
+  
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    // Check if user is admin
+    const token = localStorage.getItem('jwt_token');
+    const userRole = localStorage.getItem('user_role');
+    
+    if (!token || userRole !== 'admin') {
+      window.location.href = '../login.html?reason=unauthorized';
+    }
+    
+    let allSellers = [];
+    
+    // Load sellers
+    async function loadSellers() {
+      try {
+        const response = await fetch('http://localhost:4000/api/v1/admin/sellers', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          allSellers = data.sellers;
+          updateStatistics();
+          renderSellers(allSellers);
+        } else {
+          console.error('Failed to load sellers:', data.message);
+          document.getElementById('sellersContent').innerHTML = '<div class="loading"><p>Error loading sellers</p></div>';
+        }
+      } catch (error) {
+        console.error('Error loading sellers:', error);
+        document.getElementById('sellersContent').innerHTML = '<div class="loading"><p>Error loading sellers</p></div>';
+      }
+    }
+    
+    // Update statistics
+    function updateStatistics() {
+      const totalSellers = allSellers.length;
+      const verifiedSellers = allSellers.filter(seller => seller.is_verified === 1).length;
+      const pendingSellers = allSellers.filter(seller => seller.is_verified === 0).length;
+      
+      document.getElementById('totalSellers').textContent = totalSellers;
+      document.getElementById('verifiedSellers').textContent = verifiedSellers;
+      document.getElementById('pendingSellers').textContent = pendingSellers;
+      
+      // Update progress bars
+      const totalSellersBar = document.getElementById('totalSellersBar');
+      const verifiedSellersBar = document.getElementById('verifiedSellersBar');
+      const pendingSellersBar = document.getElementById('pendingSellersBar');
+      
+      const maxValue = Math.max(totalSellers, verifiedSellers, pendingSellers, 1);
+      
+      totalSellersBar.style.width = `${(totalSellers / maxValue) * 100}%`;
+      verifiedSellersBar.style.width = `${(verifiedSellers / maxValue) * 100}%`;
+      pendingSellersBar.style.width = `${(pendingSellers / maxValue) * 100}%`;
+    }
+    
+    // Render sellers table
+    function renderSellers(sellers) {
+      const container = document.getElementById('sellersContent');
+      
+      if (sellers.length === 0) {
+        container.innerHTML = `
+          <div class="no-sellers">
+            <i class="fas fa-store"></i>
+            <h3>No Sellers Found</h3>
+            <p>There are no sellers to display.</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = `
+        <table class="sellers-table">
+          <thead>
+            <tr>
+              <th><i class="fas fa-user"></i> Seller</th>
+              <th><i class="fas fa-building"></i> Business</th>
+              <th><i class="fas fa-envelope"></i> Email</th>
+              <th><i class="fas fa-phone"></i> Phone</th>
+              <th><i class="fas fa-map-marker-alt"></i> Address</th>
+              <th><i class="fas fa-shield-alt"></i> Status</th>
+              <th><i class="fas fa-cogs"></i> Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      sellers.forEach(seller => {
+        const avatar = seller.profile_image 
+          ? `http://localhost:4000${seller.profile_image}`
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=8B5C2A&color=fff&size=50`;
+        
+        const status = seller.is_verified === 1 ? 'verified' : 'unverified';
+        const statusText = seller.is_verified === 1 ? 'Verified' : 'Unverified';
+        
+        html += `
+          <tr>
+            <td>
+              <div class="seller-info">
+                <img src="${avatar}" alt="${seller.name}" class="seller-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=8B5C2A&color=fff&size=50'">
+                <div class="seller-details">
+                  <h4>${seller.name}</h4>
+                  <p>ID: ${seller.seller_id}</p>
+                </div>
+              </div>
+            </td>
+            <td>${seller.business_name || 'N/A'}</td>
+            <td>${seller.email}</td>
+            <td>${seller.business_phone || 'N/A'}</td>
+            <td>${seller.business_address || 'N/A'}</td>
+            <td>
+              <span class="status-badge ${status}">${statusText}</span>
+            </td>
+            <td>
+              ${seller.is_verified === 0 ? 
+                `<button class="action-btn verify" onclick="verifySeller(${seller.seller_id})">
+                  <i class="fas fa-check"></i> Verify
+                </button>` : 
+                `<button class="action-btn deactivate" onclick="deactivateSeller(${seller.seller_id})">
+                  <i class="fas fa-ban"></i> Deactivate
+                </button>`
+              }
+            </td>
+          </tr>
+        `;
+      });
+      
+      html += `
+          </tbody>
+        </table>
+      `;
+      
+      container.innerHTML = html;
+    }
+    
+    // Verify seller
+    async function verifySeller(sellerId) {
+      if (!confirm('Are you sure you want to verify this seller?')) return;
+      
+      try {
+        const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${sellerId}/verify`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_verified: 1 })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('Seller verified successfully!');
+          loadSellers();
+        } else {
+          alert('Failed to verify seller: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error verifying seller:', error);
+        alert('Error verifying seller');
+      }
+    }
+    
+    // Deactivate seller
+    async function deactivateSeller(sellerId) {
+      if (!confirm('Are you sure you want to deactivate this seller?')) return;
+      
+      try {
+        const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${sellerId}/deactivate`, {
+          method: 'PATCH',
+          headers: {
+            'Authorization': 'Bearer ' + token,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ is_verified: 0 })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          alert('Seller deactivated successfully!');
+          loadSellers();
+        } else {
+          alert('Failed to deactivate seller: ' + data.message);
+        }
+      } catch (error) {
+        console.error('Error deactivating seller:', error);
+        alert('Error deactivating seller');
+      }
+    }
+    
+    // Filter functionality
+    function filterSellers() {
+      const statusFilter = document.getElementById('statusFilter').value;
+      const verificationFilter = document.getElementById('verificationFilter').value;
+      
+      let filtered = allSellers;
+      
+      if (statusFilter) {
+        filtered = filtered.filter(seller => {
+          if (statusFilter === 'verified') return seller.is_verified === 1;
+          if (statusFilter === 'unverified') return seller.is_verified === 0;
+          if (statusFilter === 'inactive') return seller.status === 'inactive';
+          return true;
+        });
+      }
+      
+      if (verificationFilter) {
+        filtered = filtered.filter(seller => {
+          if (verificationFilter === 'verified') return seller.is_verified === 1;
+          if (verificationFilter === 'unverified') return seller.is_verified === 0;
+          return true;
+        });
+      }
+      
+      renderSellers(filtered);
+    }
+    
+    // Event listeners
+    document.getElementById('statusFilter').addEventListener('change', filterSellers);
+    document.getElementById('verificationFilter').addEventListener('change', filterSellers);
+    
+    // Load data on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadSellers();
+      // Load footer with error handling
+      $('#footer').load('footer.html', function(response, status, xhr) {
+        if (status === 'error') {
+          console.error('Error loading footer:', xhr.status, xhr.statusText);
+          $('#footer').html('<p style="text-align: center; padding: 2rem; color: #666;">Footer loading failed</p>');
+        }
+      });
+    });
+  </script>
+</body>
+</html> 

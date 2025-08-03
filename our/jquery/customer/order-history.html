@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order History - Home Haven</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #8B5C2A;
+      --primary-light: #bfa77a;
+      --primary-dark: #6d4c1c;
+      --secondary-color: #b85c2a;
+      --background-light: #f6f3ef;
+      --background-dark: #e5d6c3;
+      --text-dark: #3d2c1c;
+      --text-medium: #7a5420;
+      --text-light: #fffdfa;
+      --shadow-light: 0 4px 20px rgba(139, 92, 42, 0.08);
+      --shadow-medium: 0 8px 32px rgba(139, 92, 42, 0.15);
+      --shadow-dark: 0 12px 40px rgba(139, 92, 42, 0.2);
+      --transition-fast: all 0.15s ease-out;
+      --transition-medium: all 0.3s ease-out;
+      --transition-slow: all 0.5s ease-out;
+      --success-color: #28a745;
+      --warning-color: #ffc107;
+      --danger-color: #dc3545;
+      --info-color: #17a2b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      color: var(--text-dark);
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+
+    .page-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+    }
+
+    .page-subtitle {
+      font-size: 1.1rem;
+      color: var(--text-medium);
+      margin-bottom: 2rem;
+    }
+
+    .back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--primary-color);
+      color: white;
+      text-decoration: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 500;
+      transition: var(--transition-fast);
+      margin-bottom: 2rem;
+    }
+
+    .back-btn:hover {
+      background: var(--primary-dark);
+      transform: translateY(-2px);
+    }
+
+    .order-filters {
+      background: white;
+      border-radius: 16px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+
+    .filters-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    .filters-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--text-dark);
+    }
+
+    .filter-controls {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .filter-select {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--primary-light);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-dark);
+      font-family: 'Montserrat', sans-serif;
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .filter-select:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .search-box {
+      padding: 0.5rem 1rem;
+      border: 2px solid var(--primary-light);
+      border-radius: 8px;
+      background: white;
+      color: var(--text-dark);
+      font-family: 'Montserrat', sans-serif;
+      width: 250px;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--primary-color);
+    }
+
+    .orders-container {
+      display: grid;
+      gap: 1.5rem;
+    }
+
+    .order-card {
+      background: white;
+      border-radius: 16px;
+      padding: 2rem;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+      transition: var(--transition-medium);
+      cursor: pointer;
+    }
+
+    .order-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-medium);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid var(--background-light);
+    }
+
+    .order-info {
+      flex: 1;
+    }
+
+    .order-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .order-date {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      margin-bottom: 0.5rem;
+    }
+
+    .order-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pending {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .status-processing {
+      background: rgba(23, 162, 184, 0.1);
+      color: #0c5460;
+      border: 1px solid rgba(23, 162, 184, 0.3);
+    }
+
+    .status-shipped {
+      background: rgba(40, 167, 69, 0.1);
+      color: #155724;
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-delivered {
+      background: rgba(40, 167, 69, 0.1);
+      color: #155724;
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .status-cancelled {
+      background: rgba(220, 53, 69, 0.1);
+      color: #721c24;
+      border: 1px solid rgba(220, 53, 69, 0.3);
+    }
+
+    .order-amount {
+      text-align: right;
+    }
+
+    .amount-label {
+      font-size: 0.8rem;
+      color: var(--text-medium);
+      margin-bottom: 0.25rem;
+    }
+
+    .amount-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .order-items {
+      margin-bottom: 1.5rem;
+    }
+
+    .items-summary {
+      font-size: 0.9rem;
+      color: var(--text-medium);
+      margin-bottom: 1rem;
+    }
+
+    .items-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .item-card {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: var(--background-light);
+      border-radius: 12px;
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+
+    .item-image {
+      width: 60px;
+      height: 60px;
+      border-radius: 8px;
+      object-fit: cover;
+      border: 2px solid var(--primary-light);
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-name {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.25rem;
+      font-size: 0.9rem;
+    }
+
+    .item-quantity {
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+
+    .item-price {
+      font-weight: 600;
+      color: var(--primary-color);
+      font-size: 0.9rem;
+    }
+
+    .order-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 1rem;
+      border-top: 1px solid var(--background-light);
+    }
+
+    .payment-info {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .payment-method {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      background: var(--background-light);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      color: var(--text-medium);
+    }
+
+    .payment-status {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    .payment-paid {
+      background: rgba(40, 167, 69, 0.1);
+      color: #155724;
+      border: 1px solid rgba(40, 167, 69, 0.3);
+    }
+
+    .payment-pending {
+      background: rgba(255, 193, 7, 0.1);
+      color: #856404;
+      border: 1px solid rgba(255, 193, 7, 0.3);
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .action-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-primary {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--primary-color);
+      border: 2px solid var(--primary-color);
+    }
+
+    .btn-secondary:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: white;
+      border-radius: 16px;
+      box-shadow: var(--shadow-light);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+
+    .empty-icon {
+      font-size: 4rem;
+      color: var(--primary-light);
+      margin-bottom: 1rem;
+    }
+
+    .empty-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .empty-description {
+      color: var(--text-medium);
+      margin-bottom: 2rem;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 4rem 2rem;
+    }
+
+    .loading-spinner {
+      border: 4px solid var(--background-light);
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Modal Styles */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      backdrop-filter: blur(5px);
+    }
+
+    .modal-content {
+      background-color: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 16px;
+      width: 90%;
+      max-width: 800px;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-dark);
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 1rem;
+      top: 1rem;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: var(--text-medium);
+    }
+
+    .close:hover {
+      color: var(--text-dark);
+    }
+
+    .modal-header {
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .modal-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 0.5rem;
+    }
+
+    .modal-subtitle {
+      color: var(--text-medium);
+      font-size: 0.9rem;
+    }
+
+    .order-details-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .detail-section {
+      background: var(--background-light);
+      padding: 1.5rem;
+      border-radius: 12px;
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+
+    .detail-title {
+      font-weight: 600;
+      color: var(--text-dark);
+      margin-bottom: 1rem;
+      font-size: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .detail-label {
+      color: var(--text-medium);
+    }
+
+    .detail-value {
+      color: var(--text-dark);
+      font-weight: 500;
+    }
+
+    .receipt-image {
+      max-width: 200px;
+      border-radius: 8px;
+      border: 2px solid var(--primary-light);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .receipt-image:hover {
+      transform: scale(1.05);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+
+      .page-title {
+        font-size: 2rem;
+      }
+
+      .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .search-box {
+        width: 100%;
+      }
+
+      .order-header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .order-amount {
+        text-align: left;
+      }
+
+      .order-footer {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: stretch;
+      }
+
+      .payment-info {
+        justify-content: space-between;
+      }
+
+      .order-actions {
+        justify-content: center;
+      }
+
+      .order-details-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .modal-content {
+        width: 95%;
+        margin: 2% auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header Include -->
+  <div id="header-container"></div>
+
+  <div class="container">
+    <!-- Page Header -->
+    <div class="page-header">
+      <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+        Back to Home
+      </a>
+      <h1 class="page-title">📦 Order History</h1>
+      <p class="page-subtitle">Track your past orders and their current status</p>
+    </div>
+
+    <!-- Order Filters -->
+    <div class="order-filters">
+      <div class="filters-header">
+        <h3 class="filters-title">Filter Orders</h3>
+        <div class="filter-controls">
+          <select class="filter-select" id="statusFilter">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="processing">Processing</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+          <select class="filter-select" id="paymentFilter">
+            <option value="">All Payments</option>
+            <option value="paid">Paid</option>
+            <option value="pending">Pending Payment</option>
+          </select>
+          <input type="text" class="search-box" id="searchBox" placeholder="Search orders...">
+        </div>
+      </div>
+    </div>
+
+    <!-- Orders Container -->
+    <div class="orders-container" id="ordersContainer">
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Loading your orders...</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Order Details Modal -->
+  <div id="orderModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div id="modalContent">
+        <!-- Modal content will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Load header
+    $(document).ready(function() {
+      $('#header-container').load('../header.html', function() {
+        // Header loaded successfully
+      });
+    });
+
+    // Check authentication
+    const token = localStorage.getItem('jwt_token');
+    const userRole = localStorage.getItem('user_role');
+    
+    if (!token) {
+      window.location.href = '../login.html';
+    }
+    
+    if (userRole !== 'customer') {
+      window.location.href = '../login.html?reason=unauthorized';
+    }
+
+    let allOrders = [];
+    let filteredOrders = [];
+
+    // Load orders on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      loadOrders();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Filter event listeners
+      document.getElementById('statusFilter').addEventListener('change', filterOrders);
+      document.getElementById('paymentFilter').addEventListener('change', filterOrders);
+      document.getElementById('searchBox').addEventListener('input', filterOrders);
+    }
+
+    async function loadOrders() {
+      try {
+        const response = await fetch('http://localhost:4000/api/v1/orders/history', {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          allOrders = data.orders;
+          filteredOrders = [...allOrders];
+          renderOrders();
+        } else {
+          showEmptyState('No orders found', 'You haven\'t placed any orders yet.');
+        }
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        showEmptyState('Error loading orders', 'Please try again later.');
+      }
+    }
+
+    function renderOrders() {
+      const container = document.getElementById('ordersContainer');
+      
+      if (filteredOrders.length === 0) {
+        showEmptyState('No orders found', 'No orders match your current filters.');
+        return;
+      }
+
+      container.innerHTML = filteredOrders.map(order => `
+        <div class="order-card" onclick="viewOrderDetails(${order.orderinfo_id})">
+          <div class="order-header">
+            <div class="order-info">
+              <div class="order-number">${order.order_number}</div>
+              <div class="order-date">${formatDate(order.date_placed)}</div>
+              <div class="order-status ${getStatusClass(order.status)}">
+                <i class="fas ${getStatusIcon(order.status)}"></i>
+                ${order.status || 'Pending'}
+              </div>
+            </div>
+            <div class="order-amount">
+              <div class="amount-label">Total Amount</div>
+              <div class="amount-value">₱${parseFloat(order.total_amount).toFixed(2)}</div>
+            </div>
+          </div>
+
+          <div class="order-items">
+            <div class="items-summary">
+              <strong>${order.total_items}</strong> item${order.total_items > 1 ? 's' : ''} • 
+              ${order.items_summary || 'No items'}
+            </div>
+            <div class="items-grid">
+              ${order.items ? order.items.slice(0, 3).map(item => `
+                <div class="item-card">
+                  <img src="${item.image || '../img/logo.png'}" alt="${item.item_name}" class="item-image" onerror="this.src='../img/logo.png'">
+                  <div class="item-details">
+                    <div class="item-name">${item.item_name}</div>
+                    <div class="item-quantity">Qty: ${item.quantity}</div>
+                  </div>
+                  <div class="item-price">₱${parseFloat(item.total_price).toFixed(2)}</div>
+                </div>
+              `).join('') : ''}
+              ${order.items && order.items.length > 3 ? `
+                <div class="item-card">
+                  <div class="item-details">
+                    <div class="item-name">+${order.items.length - 3} more items</div>
+                  </div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+
+          <div class="order-footer">
+            <div class="payment-info">
+              <div class="payment-method">
+                <i class="fas ${getPaymentIcon(order.payment_method)}"></i>
+                ${order.payment_method || 'Cash'}
+              </div>
+              <div class="payment-status ${getPaymentStatusClass(order.payment_status)}">
+                <i class="fas ${getPaymentStatusIcon(order.payment_status)}"></i>
+                ${order.payment_status || 'Pending'}
+              </div>
+            </div>
+            <div class="order-actions">
+              <button class="action-btn btn-primary" onclick="event.stopPropagation(); viewOrderDetails(${order.orderinfo_id})">
+                <i class="fas fa-eye"></i>
+                View Details
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function filterOrders() {
+      const statusFilter = document.getElementById('statusFilter').value;
+      const paymentFilter = document.getElementById('paymentFilter').value;
+      const searchTerm = document.getElementById('searchBox').value.toLowerCase();
+
+      filteredOrders = allOrders.filter(order => {
+        const matchesStatus = !statusFilter || order.status === statusFilter;
+        const matchesPayment = !paymentFilter || order.payment_status === paymentFilter;
+        const matchesSearch = !searchTerm || 
+          order.order_number.toLowerCase().includes(searchTerm) ||
+          (order.items_summary && order.items_summary.toLowerCase().includes(searchTerm));
+
+        return matchesStatus && matchesPayment && matchesSearch;
+      });
+
+      renderOrders();
+    }
+
+    function showEmptyState(title, description) {
+      const container = document.getElementById('ordersContainer');
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-icon">
+            <i class="fas fa-box-open"></i>
+          </div>
+          <h3 class="empty-title">${title}</h3>
+          <p class="empty-description">${description}</p>
+          <a href="index.html" class="action-btn btn-primary">
+            <i class="fas fa-shopping-cart"></i>
+            Start Shopping
+          </a>
+        </div>
+      `;
+    }
+
+    async function viewOrderDetails(orderId) {
+      try {
+        const response = await fetch(`http://localhost:4000/api/v1/orders/${orderId}`, {
+          headers: {
+            'Authorization': 'Bearer ' + token
+          }
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          showOrderModal(data.order);
+        } else {
+          alert('Failed to load order details');
+        }
+      } catch (error) {
+        console.error('Error loading order details:', error);
+        alert('Failed to load order details');
+      }
+    }
+
+    function showOrderModal(order) {
+      const modal = document.getElementById('orderModal');
+      const modalContent = document.getElementById('modalContent');
+
+      modalContent.innerHTML = `
+        <div class="modal-header">
+          <h2 class="modal-title">${order.order_number}</h2>
+          <p class="modal-subtitle">Order placed on ${formatDate(order.date_placed)}</p>
+        </div>
+
+        <div class="order-details-grid">
+          <div class="detail-section">
+            <h3 class="detail-title">Order Information</h3>
+            <div class="detail-item">
+              <span class="detail-label">Order Number:</span>
+              <span class="detail-value">${order.order_number}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Date Placed:</span>
+              <span class="detail-value">${formatDate(order.date_placed)}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Status:</span>
+              <span class="detail-value">
+                <span class="order-status ${getStatusClass(order.status)}">
+                  ${order.status || 'Pending'}
+                </span>
+              </span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Total Amount:</span>
+              <span class="detail-value">₱${parseFloat(order.total_amount).toFixed(2)}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3 class="detail-title">Payment Information</h3>
+            <div class="detail-item">
+              <span class="detail-label">Payment Method:</span>
+              <span class="detail-value">${order.payment_method || 'Cash'}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Payment Status:</span>
+              <span class="detail-value">
+                <span class="payment-status ${getPaymentStatusClass(order.payment_status)}">
+                  ${order.payment_status || 'Pending'}
+                </span>
+              </span>
+            </div>
+            ${order.gcash_phone ? `
+              <div class="detail-item">
+                <span class="detail-label">GCash Number:</span>
+                <span class="detail-value">${order.gcash_phone}</span>
+              </div>
+            ` : ''}
+            ${order.gcash_receipt ? `
+              <div class="detail-item">
+                <span class="detail-label">Receipt:</span>
+                <span class="detail-value">
+                  <img src="${order.gcash_receipt}" alt="Payment Receipt" class="receipt-image" onclick="window.open('${order.gcash_receipt}', '_blank')">
+                </span>
+              </div>
+            ` : ''}
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="detail-title">Shipping Information</h3>
+          <div class="detail-item">
+            <span class="detail-label">Name:</span>
+            <span class="detail-value">${order.ship_fname} ${order.ship_lname}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Address:</span>
+            <span class="detail-value">${order.ship_address}, ${order.ship_town}, ${order.ship_zipcode}</span>
+          </div>
+          <div class="detail-item">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">${order.ship_phone}</span>
+          </div>
+        </div>
+
+        <div class="detail-section">
+          <h3 class="detail-title">Order Items (${order.items ? order.items.length : 0} items)</h3>
+          ${order.items ? order.items.map(item => `
+            <div class="item-card">
+              <img src="${item.image || '../img/logo.png'}" alt="${item.item_name}" class="item-image" onerror="this.src='../img/logo.png'">
+              <div class="item-details">
+                <div class="item-name">${item.item_name}</div>
+                <div class="item-quantity">SKU: ${item.sku || 'N/A'}</div>
+                ${item.description ? `<div class="item-description">${item.description}</div>` : ''}
+              </div>
+              <div class="item-price">
+                <div>Qty: ${item.quantity}</div>
+                <div>₱${parseFloat(item.unit_price).toFixed(2)} each</div>
+                <div><strong>₱${parseFloat(item.total_price).toFixed(2)}</strong></div>
+              </div>
+            </div>
+          `).join('') : '<p>No items found</p>'}
+        </div>
+      `;
+
+      modal.style.display = 'block';
+    }
+
+    function closeModal() {
+      document.getElementById('orderModal').style.display = 'none';
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('orderModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Utility functions
+    function formatDate(dateString) {
+      const date = new Date(dateString);
+      return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    }
+
+    function getStatusClass(status) {
+      const statusMap = {
+        'pending': 'status-pending',
+        'processing': 'status-processing',
+        'shipped': 'status-shipped',
+        'delivered': 'status-delivered',
+        'cancelled': 'status-cancelled'
+      };
+      return statusMap[status] || 'status-pending';
+    }
+
+    function getStatusIcon(status) {
+      const iconMap = {
+        'pending': 'fa-clock',
+        'processing': 'fa-cog',
+        'shipped': 'fa-shipping-fast',
+        'delivered': 'fa-check-circle',
+        'cancelled': 'fa-times-circle'
+      };
+      return iconMap[status] || 'fa-clock';
+    }
+
+    function getPaymentIcon(method) {
+      const iconMap = {
+        'cash': 'fa-money-bill-wave',
+        'gcash': 'fa-mobile-alt'
+      };
+      return iconMap[method] || 'fa-money-bill-wave';
+    }
+
+    function getPaymentStatusClass(status) {
+      return status === 'paid' ? 'payment-paid' : 'payment-pending';
+    }
+
+    function getPaymentStatusIcon(status) {
+      return status === 'paid' ? 'fa-check-circle' : 'fa-clock';
+    }
+  </script>
+</body>
+</html> 

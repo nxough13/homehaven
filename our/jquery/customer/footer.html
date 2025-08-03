@@ -1,0 +1,424 @@
+<footer class="customer-footer">
+  <div class="footer-content">
+    <div class="footer-section">
+      <h3>🏠 Home Haven</h3>
+      <p>Your trusted destination for quality home furnishings</p>
+      <div class="footer-links">
+        <a href="#" onclick="showCustomerSupport()">Customer Support</a>
+        <a href="#" onclick="showReturnPolicy()">Return Policy</a>
+        <a href="#" onclick="showShippingInfo()">Shipping Information</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>🛒 Shopping</h4>
+      <div class="footer-links">
+        <a href="#" onclick="showCategories()">Browse Categories</a>
+        <a href="#" onclick="showWishlist()">My Wishlist</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>📞 Help & Support</h4>
+      <div class="footer-links">
+        <a href="#" onclick="showFAQ()">Frequently Asked Questions</a>
+        <a href="#" onclick="showSizeGuide()">Size Guide</a>
+        <a href="#" onclick="showCareInstructions()">Care Instructions</a>
+        <a href="#" onclick="showContactUs()">Contact Us</a>
+      </div>
+    </div>
+    
+    <div class="footer-section">
+      <h4>👤 My Account</h4>
+      <div class="customer-info">
+        <div class="info-item">
+          <span class="info-label">Welcome:</span>
+          <span class="info-value" id="customerName">Guest</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Orders:</span>
+          <span class="info-value" id="customerOrders">-</span>
+        </div>
+        <div class="info-item">
+          <span class="info-label">Wishlist:</span>
+          <span class="info-value" id="customerWishlist">-</span>
+        </div>
+        <button class="footer-btn" onclick="refreshCustomerInfo()">🔄 Refresh</button>
+      </div>
+    </div>
+  </div>
+  
+  <div class="footer-bottom">
+    <div class="footer-bottom-content">
+      <p>&copy; 2024 Home Haven. All rights reserved. | Quality furniture for every home</p>
+      <div class="footer-bottom-links">
+        <span id="currentTime"></span>
+        <span>|</span>
+        <a href="#" onclick="showPrivacyPolicy()">Privacy Policy</a>
+        <span>|</span>
+        <a href="#" onclick="showTermsOfService()">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+.customer-footer {
+  background: linear-gradient(135deg, #8b6b3d, #a67c52);
+  color: white;
+  margin-top: 4rem;
+  border-top: 3px solid #d4b08c;
+  position: relative;
+  overflow: hidden;
+}
+
+.customer-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="25" cy="25" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="75" cy="75" r="1" fill="rgba(255,255,255,0.05)"/><circle cx="50" cy="10" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="10" cy="60" r="0.5" fill="rgba(255,255,255,0.05)"/><circle cx="90" cy="40" r="0.5" fill="rgba(255,255,255,0.05)"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+  opacity: 0.3;
+}
+
+.footer-content {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 2rem;
+  padding: 3rem 2rem 2rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footer-section h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.footer-section h4 {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  color: var(--text-light);
+}
+
+.footer-section p {
+  color: rgba(255, 255, 255, 0.8);
+  margin-bottom: 1rem;
+  line-height: 1.6;
+}
+
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.footer-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--transition-fast);
+  font-size: 0.9rem;
+}
+
+.footer-links a:hover {
+  color: white;
+  transform: translateX(5px);
+}
+
+.customer-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.25rem 0;
+}
+
+.info-label {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.info-value {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--primary-light);
+}
+
+.footer-btn {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  margin-top: 0.5rem;
+  font-family: 'Montserrat', sans-serif;
+}
+
+.footer-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+.footer-bottom {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 1rem 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-bottom-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1400px;
+  margin: 0 auto;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.footer-bottom p {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.footer-bottom-links {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+}
+
+.footer-bottom-links span {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.footer-bottom-links a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  transition: var(--transition-fast);
+}
+
+.footer-bottom-links a:hover {
+  color: white;
+}
+
+@media (max-width: 768px) {
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 2rem 1rem 1.5rem;
+  }
+  
+  .footer-bottom-content {
+    flex-direction: column;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .footer-bottom-links {
+    justify-content: center;
+  }
+}
+</style>
+
+<script>
+// Customer footer functionality
+document.addEventListener('DOMContentLoaded', function() {
+  updateCustomerInfo();
+  updateCurrentTime();
+  
+  // Update time every minute
+  setInterval(updateCurrentTime, 60000);
+});
+
+function updateCustomerInfo() {
+  const customerName = localStorage.getItem('user_name') || 'Guest';
+  document.getElementById('customerName').textContent = customerName;
+  
+  // Fetch customer data if logged in
+  const token = localStorage.getItem('jwt_token');
+  if (token) {
+    // Simulate fetching customer data
+    document.getElementById('customerOrders').textContent = '3';
+    document.getElementById('customerWishlist').textContent = '5';
+  } else {
+    document.getElementById('customerOrders').textContent = '-';
+    document.getElementById('customerWishlist').textContent = '-';
+  }
+}
+
+function updateCurrentTime() {
+  const now = new Date();
+  const timeString = now.toLocaleTimeString();
+  document.getElementById('currentTime').textContent = timeString;
+}
+
+function refreshCustomerInfo() {
+  const btn = event.target;
+  const originalText = btn.textContent;
+  btn.textContent = '⏳ Loading...';
+  btn.disabled = true;
+  
+  updateCustomerInfo();
+  
+  setTimeout(() => {
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }, 1000);
+}
+
+// Customer footer link functions
+function showCustomerSupport() {
+  const supportInfo = `
+📞 Customer Support
+
+Need help with your order or have questions?
+
+📧 Email: customersupport@homehaven.com
+📱 Phone: +1 (555) 987-6543
+💬 Live Chat: Available 24/7
+🕒 Hours: Monday - Sunday, 8:00 AM - 10:00 PM
+
+We're here to help make your shopping experience perfect!
+  `;
+  alert(supportInfo);
+}
+
+function showReturnPolicy() {
+  const returnInfo = `
+📦 Return Policy
+
+We want you to love your purchase!
+
+✅ 30-Day Return Window
+✅ Free Returns on Most Items
+✅ Full Refund or Exchange
+✅ Easy Online Return Process
+
+Return Process:
+1. Log into your account
+2. Go to "My Orders"
+3. Select the item to return
+4. Print return label
+5. Drop off at any shipping location
+
+Restrictions apply to custom items and large furniture.
+  `;
+  alert(returnInfo);
+}
+
+function showShippingInfo() {
+  const shippingInfo = `
+🚚 Shipping Information
+
+Fast and reliable shipping to your door!
+
+📦 Standard Shipping: 3-5 business days
+⚡ Express Shipping: 1-2 business days
+🏠 Free Shipping: Orders over $99
+📋 Tracking: Real-time updates
+
+Delivery Options:
+• Home Delivery
+• Curbside Delivery
+• White Glove Service (Large Items)
+
+We'll notify you every step of the way!
+  `;
+  alert(shippingInfo);
+}
+
+function showCategories() {
+  alert('Browse our categories:\n\n• Living Room\n• Bedroom\n• Kitchen & Dining\n• Bathroom\n• Office\n• Outdoor\n• Lighting\n• Storage\n\nVisit our catalog to explore!');
+}
+
+function showNewArrivals() {
+  alert('🆕 New Arrivals\n\nCheck out our latest furniture and decor items!\n\nVisit the "New Arrivals" section to see what\'s fresh this week.');
+}
+
+function showSaleItems() {
+  alert('💰 Sale Items\n\nGreat deals on quality furniture!\n\nVisit our "Sale" section for limited-time offers and clearance items.');
+}
+
+function showWishlist() {
+  alert('❤️ My Wishlist\n\nYour saved items are waiting for you!\n\nVisit your wishlist to see items you\'ve saved for later.');
+}
+
+function showFAQ() {
+  const faqInfo = `
+❓ Frequently Asked Questions
+
+Q: How do I track my order?
+A: Log into your account and go to "My Orders" for real-time tracking.
+
+Q: What if my item arrives damaged?
+A: Contact us within 48 hours and we'll arrange a replacement.
+
+Q: Do you offer assembly services?
+A: Yes! White glove delivery includes basic assembly.
+
+Q: Can I cancel my order?
+A: Orders can be cancelled within 2 hours of placement.
+
+Q: Do you ship internationally?
+A: Currently we ship to US and Canada only.
+
+For more questions, contact our support team!
+  `;
+  alert(faqInfo);
+}
+
+function showSizeGuide() {
+  alert('📏 Size Guide\n\nNot sure about dimensions?\n\n• Measure your space before ordering\n• Check product specifications\n• Use our room planner tool\n• Contact us for custom sizing');
+}
+
+function showCareInstructions() {
+  alert('🧽 Care Instructions\n\nKeep your furniture looking great!\n\n• Regular dusting with soft cloth\n• Avoid direct sunlight\n• Use appropriate cleaners\n• Follow manufacturer guidelines\n\nDetailed care instructions are included with each product.');
+}
+
+function showContactUs() {
+  const contactInfo = `
+📞 Contact Us
+
+We'd love to hear from you!
+
+📧 General Inquiries: hello@homehaven.com
+📧 Support: support@homehaven.com
+📱 Phone: +1 (555) 123-4567
+📍 Address: 123 Furniture Lane, Design City, DC 12345
+
+Social Media:
+• Facebook: @HomeHaven
+• Instagram: @HomeHavenFurniture
+• Twitter: @HomeHaven
+
+We're here to help!
+  `;
+  alert(contactInfo);
+}
+
+function showPrivacyPolicy() {
+  alert('🔒 Privacy Policy\n\nYour privacy is important to us.\n\nWe collect and use your information to:\n• Process your orders\n• Provide customer support\n• Send order updates\n• Improve our services\n\nWe never sell your personal information.\n\nFull privacy policy available on our website.');
+}
+
+function showTermsOfService() {
+  alert('📋 Terms of Service\n\nBy using Home Haven, you agree to:\n\n• Provide accurate information\n• Use the platform responsibly\n• Respect intellectual property\n• Follow our community guidelines\n\nFull terms available on our website.');
+}
+</script> 

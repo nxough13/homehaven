@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - Home Haven</title>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Georgia', 'Times New Roman', serif;
+      background: linear-gradient(135deg, #f7f4f0 0%, #e8e0d8 100%);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .container {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 2rem;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .bg-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('img/homehavenbg.png') center/cover;
+      opacity: 0.1;
+      z-index: 0;
+    }
+    
+    .left {
+      flex: 1;
+      text-align: center;
+      padding: 2rem;
+      color: #444;
+    }
+    
+    .left h1 {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin: 0 0 1rem 0;
+      line-height: 1.1;
+      color: #8B5C2A;
+    }
+    
+    .left p {
+      font-size: 1.3rem;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .login-card {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
+      padding: 3rem;
+      box-shadow: 0 8px 32px rgba(139, 92, 42, 0.15);
+      width: 400px;
+      max-width: 90vw;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .logo {
+      width: 120px;
+      height: auto;
+      margin: 0 auto 2rem auto;
+      display: block;
+    }
+    
+    .login-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      text-align: center;
+      margin-bottom: 0.5rem;
+      color: #8B5C2A;
+    }
+    
+    .login-subtitle {
+      text-align: center;
+      color: #666;
+      margin-bottom: 2rem;
+      font-size: 1.1rem;
+    }
+    
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .login-form label {
+      font-weight: 600;
+      color: #444;
+      font-size: 1rem;
+    }
+    
+    .login-form input {
+      padding: 1rem;
+      border: 2px solid #e0d6c6;
+      border-radius: 12px;
+      font-size: 1rem;
+      transition: border-color 0.3s;
+      background: #fff;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .login-form input:focus {
+      outline: none;
+      border-color: #8B5C2A;
+      box-shadow: 0 0 0 3px rgba(139, 92, 42, 0.1);
+    }
+    
+    .login-form input.error {
+      border-color: #dc3545;
+      box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.1);
+    }
+    
+    .login-form input.valid {
+      border-color: #28a745;
+      box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1);
+    }
+    
+    .input-group {
+      position: relative;
+      width: 100%;
+    }
+    
+    .input-group input {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    .toggle-password {
+      position: absolute;
+      right: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #666;
+      padding: 0;
+    }
+    
+    .toggle-password svg {
+      width: 1.5rem;
+      height: 1.5rem;
+    }
+    
+    .login-btn {
+      background: linear-gradient(135deg, #8B5C2A, #a67c52);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      padding: 1rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      margin-top: 1rem;
+    }
+    
+    .login-btn:hover {
+      transform: translateY(-2px);
+    }
+    
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+    
+    .forgot-password {
+      text-align: center;
+      margin-top: 1rem;
+      color: #8B5C2A;
+      text-decoration: none;
+      font-size: 0.9rem;
+    }
+    
+    .forgot-password:hover {
+      text-decoration: underline;
+    }
+    
+    .signup-link {
+      text-align: center;
+      margin-top: 2rem;
+      color: #666;
+    }
+    
+    .signup-link a {
+      color: #8B5C2A;
+      text-decoration: none;
+      font-weight: 600;
+    }
+    
+    .signup-link a:hover {
+      text-decoration: underline;
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 1rem;
+      color: #666;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.8);
+      border-top: 1px solid #e0d6c6;
+    }
+    
+    /* jQuery Validation Styles */
+    .error {
+      color: #dc3545;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+    
+    .valid {
+      color: #28a745;
+      font-size: 0.875rem;
+      margin-top: 0.25rem;
+      display: block;
+    }
+    
+    @media (max-width: 768px) {
+      .container {
+        flex-direction: column;
+        padding: 1rem;
+      }
+      
+      .left {
+        padding: 1rem;
+      }
+      
+      .left h1 {
+        font-size: 2.5rem;
+      }
+      
+      .login-card {
+        width: 100%;
+        max-width: 400px;
+        padding: 2rem;
+      }
+    }
+  </style>
+</head>
+<body>
+<script>
+  if (localStorage.getItem('jwt_token')) {
+    window.location.href = 'index.html';
+  }
+</script>
+  <!-- Simple header for login page -->
+  <header style="background:#f3ede5; padding:0.7rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e0d6c6; position:fixed; top:0; left:0; width:100%; box-sizing:border-box; z-index:1001; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+    <div style="display:flex; align-items:center; gap:1.2rem;">
+      <a href="index.html" style="display:flex; align-items:center; gap:1.2rem; text-decoration:none;">
+        <img src="img/logo.png" alt="Home Haven Logo" style="height:48px; width:48px;">
+        <span style="font-size:2.2rem; font-family:Georgia,serif; color:#444; font-weight:600; letter-spacing:1px;">Home Haven</span>
+      </a>
+    </div>
+    <nav style="display:flex; align-items:center; gap:1.2rem;">
+      <a href="product_catalog.html" style="background:#bfa77a; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; text-decoration:none;">Products</a>
+      <a href="signup.html" style="background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; text-decoration:none;">Sign Up</a>
+    </nav>
+  </header>
+  <div style="height:84px;"></div>
+  
+  <div class="bg-overlay"></div>
+  <div class="container">
+    <div class="left">
+      <h1>Elevate Your<br>Space</h1>
+      <p>"Where Comfort Meets Style"</p>
+    </div>
+    <div class="login-card">
+      <img src="img/TextLogo.png" alt="Home Haven Logo" class="logo">
+      <div class="login-title">Login</div>
+      <div class="login-subtitle">Welcome back! Please enter your details.</div>
+      <form class="login-form" id="loginForm" autocomplete="off">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required placeholder="Enter your email">
+        
+        <label for="password">Password:</label>
+        <div class="input-group">
+          <input type="password" id="password" name="password" required placeholder="Enter your password">
+          <button type="button" class="toggle-password" tabindex="-1" onclick="togglePassword('password', this)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+          </button>
+        </div>
+        
+        <button type="submit" class="login-btn" id="loginBtn">Log In</button>
+      </form>
+      <a href="#" class="forgot-password">Forgot Password?</a>
+      <div class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></div>
+    </div>
+  </div>
+  <div id="errorModal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); align-items:center; justify-content:center;">
+    <div style="background:#fff; color:#2d2233; border-radius:16px; padding:2rem 2.5rem; min-width:320px; max-width:90vw; box-shadow:0 8px 32px rgba(0,0,0,0.18); position:relative; text-align:center;">
+      <div id="modalMessage" style="font-size:1.1rem; margin-bottom:1.5rem;"></div>
+      <button id="modalVerifyBtn" onclick="closeModal()" style="background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.7rem 2rem; font-size:1.1rem; font-weight:600; cursor:pointer; display:none;">Verify Email</button>
+      <button onclick="closeModal()" style="background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.7rem 2rem; font-size:1.1rem; font-weight:600; cursor:pointer;">OK</button>
+    </div>
+  </div>
+  <div class="footer">© 2025 Home Haven. All rights reserved. | Quality furniture for every home</div>
+  <script>
+    // Function to load the shared header
+    function loadHeader() {
+      // Skip header loading on login page to avoid conflicts
+      return;
+    }
+
+    // Load header when page loads
+    document.addEventListener('DOMContentLoaded', function() {
+      // Don't load header on login page
+    });
+
+    // Toggle password visibility
+    function togglePassword(fieldId, btn) {
+      const input = document.getElementById(fieldId);
+      if (input.type === 'password') {
+        input.type = 'text';
+        btn.querySelector('svg').style.opacity = 0.5;
+      } else {
+        input.type = 'password';
+        btn.querySelector('svg').style.opacity = 1;
+      }
+    }
+
+    function showModal(message, showVerify, email, onSuccess) {
+      document.getElementById('modalMessage').textContent = message;
+      const verifyBtn = document.getElementById('modalVerifyBtn');
+      if (showVerify) {
+        verifyBtn.style.display = '';
+        verifyBtn.disabled = false;
+        verifyBtn.textContent = 'Verify email now';
+        verifyBtn.onclick = function() {
+          verifyBtn.disabled = true;
+          verifyBtn.textContent = 'Sending...';
+          fetch('http://localhost:4000/api/v1/resend-verification', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email })
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              verifyBtn.textContent = 'Email sent!';
+              setTimeout(() => {
+                closeModal();
+                if (onSuccess) onSuccess();
+              }, 2000);
+            } else {
+              verifyBtn.textContent = 'Failed';
+              setTimeout(() => {
+                verifyBtn.textContent = 'Try again';
+                verifyBtn.disabled = false;
+              }, 2000);
+            }
+          })
+          .catch(() => {
+            verifyBtn.textContent = 'Failed';
+            setTimeout(() => {
+              verifyBtn.textContent = 'Try again';
+              verifyBtn.disabled = false;
+            }, 2000);
+          });
+        };
+      } else {
+        verifyBtn.style.display = 'none';
+      }
+      document.getElementById('errorModal').style.display = 'flex';
+    }
+
+    function closeModal() {
+      document.getElementById('errorModal').style.display = 'none';
+    }
+
+    // jQuery Validation Setup
+    $(document).ready(function() {
+      // Initialize form validation
+      $("#loginForm").validate({
+        rules: {
+          email: {
+            required: true,
+            email: true
+          },
+          password: {
+            required: true,
+            minlength: 1
+          }
+        },
+        messages: {
+          email: {
+            required: "Please enter your email address",
+            email: "Please enter a valid email address"
+          },
+          password: {
+            required: "Please enter your password",
+            minlength: "Password is required"
+          }
+        },
+        errorPlacement: function(error, element) {
+          error.insertAfter(element);
+        },
+        highlight: function(element) {
+          $(element).addClass('error').removeClass('valid');
+        },
+        unhighlight: function(element) {
+          $(element).removeClass('error').addClass('valid');
+        },
+        submitHandler: function(form) {
+          const submitBtn = $('#loginBtn');
+          submitBtn.prop('disabled', true).text('Logging In...');
+          
+          const formData = {
+            email: $('#email').val().trim(),
+            password: $('#password').val().trim()
+          };
+          
+          fetch('http://localhost:4000/api/v1/login', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(formData)
+          })
+          .then(res => res.json())
+          .then(data => {
+            if (data.success) {
+              // Store token and user info
+              localStorage.setItem('jwt_token', data.token);
+              localStorage.setItem('user_role', data.user.role);
+              localStorage.setItem('user_name', data.user.name);
+              localStorage.setItem('user_id', data.user.id);
+              localStorage.setItem('user_email', data.user.email);
+              localStorage.setItem('login_time', new Date().toISOString());
+              
+              // Redirect immediately based on role
+              if (data.user.role === 'admin') {
+                window.location.href = 'admin/index.html';
+              } else if (data.user.role === 'seller') {
+                window.location.href = 'sellers/index-sellers.html';
+              } else if (data.user.role === 'customer') {
+                window.location.href = 'customer/index.html';
+              } else {
+                window.location.href = 'index.html';
+              }
+            } else {
+              if (data.message.includes('verify')) {
+                showModal(data.message, true, formData.email, () => {
+                  window.location.href = 'login.html';
+                });
+              } else {
+                showModal(data.message, false);
+              }
+              submitBtn.prop('disabled', false).text('Log In');
+            }
+          })
+          .catch(err => {
+            console.error('Login error:', err);
+            showModal('Network error. Please try again.', false);
+            submitBtn.prop('disabled', false).text('Log In');
+          });
+          
+          return false; // Prevent default form submission
+        }
+      });
+
+      // Real-time validation feedback
+      $('#email, #password').on('blur', function() {
+        $(this).valid();
+      });
+    });
+  </script>
+</body>
+</html>

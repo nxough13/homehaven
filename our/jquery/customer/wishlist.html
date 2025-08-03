@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Wishlist - Home Haven</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    body { 
+      background: linear-gradient(135deg, #f7f4f0 0%, #e8e0d8 100%); 
+      margin: 0; 
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+      min-height: 100vh;
+    }
+    
+    .wishlist-header {
+      background: linear-gradient(135deg, #8B5C2A 0%, #a67c52 100%);
+      color: white;
+      padding: 2rem 0;
+      text-align: center;
+      margin-bottom: 2rem;
+      box-shadow: 0 4px 20px rgba(139, 92, 42, 0.2);
+    }
+    
+    .wishlist-header h1 {
+      font-size: 2.5rem;
+      font-family: Georgia, serif;
+      margin: 0;
+      font-weight: 600;
+    }
+    
+    .wishlist-header p {
+      font-size: 1.1rem;
+      margin: 0.5rem 0 0 0;
+      opacity: 0.9;
+    }
+    
+    .wishlist-container { 
+      max-width: 1200px; 
+      margin: 0 auto 2rem auto; 
+      padding: 0 2rem; 
+    }
+    
+    .wishlist-summary {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 8px 32px rgba(139, 92, 42, 0.1);
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .wishlist-summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .summary-item {
+      text-align: center;
+      padding: 1rem;
+      background: linear-gradient(135deg, #f8f5f2 0%, #f2e5d2 100%);
+      border-radius: 12px;
+      border: 1px solid rgba(139, 92, 42, 0.1);
+    }
+    
+    .summary-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #8B5C2A;
+      margin-bottom: 0.5rem;
+    }
+    
+    .summary-label {
+      font-size: 0.9rem;
+      color: #666;
+      font-weight: 500;
+    }
+    
+    .wishlist-title { 
+      font-size: 2.2rem; 
+      font-family: Georgia, serif; 
+      color: #333; 
+      margin: 0 0 1.5rem 0; 
+      font-weight: 600; 
+      text-align: center;
+      position: relative;
+    }
+    
+    .wishlist-title::after {
+      content: '';
+      position: absolute;
+      bottom: -8px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 60px;
+      height: 3px;
+      background: linear-gradient(90deg, #8B5C2A, #a67c52);
+      border-radius: 2px;
+    }
+    
+    .wishlist-list { 
+      display: grid; 
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem; 
+      margin-top: 2rem;
+    }
+    
+    .wishlist-card { 
+      background: white; 
+      border-radius: 20px; 
+      box-shadow: 0 8px 32px rgba(139, 92, 42, 0.1);
+      border: 1px solid rgba(139, 92, 42, 0.05);
+      padding: 2rem; 
+      display: flex; 
+      flex-direction: column; 
+      align-items: center; 
+      position: relative;
+      transition: transform 0.2s, box-shadow 0.2s;
+      min-height: 400px;
+    }
+    
+    .wishlist-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(139, 92, 42, 0.15);
+    }
+    
+    .wishlist-card img { 
+      width: 180px; 
+      height: 180px; 
+      object-fit: cover; 
+      border-radius: 16px; 
+      margin-bottom: 1.5rem; 
+      background: linear-gradient(135deg, #f2e5d2 0%, #e8e0d8 100%);
+      border: 2px solid rgba(139, 92, 42, 0.1);
+      transition: transform 0.2s;
+    }
+    
+    .wishlist-card:hover img {
+      transform: scale(1.05);
+    }
+    
+    .wishlist-card-title { 
+      font-size: 1.3rem; 
+      font-family: Georgia, serif;
+      font-weight: 600; 
+      color: #333; 
+      margin-bottom: 0.8rem; 
+      text-align: center;
+      line-height: 1.3;
+    }
+    
+    .wishlist-card-description {
+      color: #666;
+      font-size: 0.95rem;
+      text-align: center;
+      margin-bottom: 1rem;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    
+    .wishlist-card-meta {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    
+    .wishlist-card-seller {
+      background: linear-gradient(135deg, #8B5C2A, #a67c52);
+      color: white;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .wishlist-card-category {
+      background: rgba(139, 92, 42, 0.1);
+      color: #8B5C2A;
+      padding: 0.4rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+    
+    .wishlist-card-price { 
+      color: #8B5C2A; 
+      font-size: 1.4rem; 
+      font-weight: 700; 
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #f8f5f2 0%, #f2e5d2 100%);
+      padding: 0.5rem 1rem;
+      border-radius: 12px;
+    }
+    
+    .wishlist-card-stock {
+      font-size: 0.9rem;
+      color: #666;
+      margin-bottom: 1rem;
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      background: rgba(139, 92, 42, 0.05);
+    }
+    
+    .wishlist-card-actions { 
+      display: flex; 
+      gap: 1rem; 
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .wishlist-card-actions button { 
+      background: linear-gradient(135deg, #8B5C2A, #a67c52);
+      color: white; 
+      border: none; 
+      border-radius: 12px; 
+      padding: 0.8rem 1.5rem; 
+      font-size: 1rem; 
+      font-weight: 600; 
+      cursor: pointer; 
+      transition: all 0.2s;
+      flex: 1;
+      max-width: 120px;
+    }
+    
+    .wishlist-card-actions button:hover { 
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(139, 92, 42, 0.3);
+    }
+    
+    .wishlist-card-actions button:last-child {
+      background: linear-gradient(135deg, #27ae60, #2ecc71);
+    }
+    
+    .wishlist-card-actions button:last-child:hover {
+      box-shadow: 0 4px 12px rgba(39, 174, 96, 0.3);
+    }
+    
+    .wishlist-remove { 
+      position: absolute; 
+      top: 1rem; 
+      right: 1rem; 
+      background: linear-gradient(135deg, #ff6b6b, #e74c3c);
+      color: white;
+      border: none; 
+      font-size: 1.2rem; 
+      cursor: pointer;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+    }
+    
+    .wishlist-remove:hover { 
+      transform: scale(1.1);
+      box-shadow: 0 4px 12px rgba(231, 76, 60, 0.3);
+    }
+    
+    .wishlist-empty { 
+      text-align: center; 
+      color: #888; 
+      font-size: 1.1rem; 
+      margin: 2.5em 0;
+      background: white;
+      border-radius: 20px;
+      padding: 4rem 2rem;
+      box-shadow: 0 8px 32px rgba(139, 92, 42, 0.1);
+    }
+    
+    .wishlist-empty-icon {
+      font-size: 4rem;
+      color: #8B5C2A;
+      margin-bottom: 1rem;
+    }
+    
+    .wishlist-empty h3 {
+      font-size: 1.8rem;
+      color: #333;
+      margin-bottom: 1rem;
+      font-family: Georgia, serif;
+    }
+    
+    .wishlist-empty p {
+      color: #666;
+      font-size: 1.1rem;
+      margin-bottom: 2rem;
+    }
+    
+    .browse-products {
+      background: linear-gradient(135deg, #8B5C2A, #a67c52);
+      color: white;
+      padding: 1rem 2rem;
+      border: none;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    
+    .browse-products:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(139, 92, 42, 0.3);
+    }
+    
+    .loading { 
+      text-align: center; 
+      color: #888; 
+      font-size: 1.1rem; 
+      margin: 2.5em 0;
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 8px 32px rgba(139, 92, 42, 0.1);
+    }
+    
+    @media (max-width: 900px) { 
+      .wishlist-header h1 { font-size: 2rem; }
+      .wishlist-container { padding: 0 1rem; }
+      .wishlist-list { 
+        grid-template-columns: 1fr; 
+        gap: 1.5rem; 
+      } 
+      .wishlist-card { 
+        min-height: 350px;
+        padding: 1.5rem;
+      }
+      .wishlist-card img {
+        width: 140px;
+        height: 140px;
+      }
+      .wishlist-summary-grid { 
+        grid-template-columns: 1fr; 
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="headerContainer"></div>
+  <script>
+    $(function() { $("#headerContainer").load("../header.html"); });
+  </script>
+  <div style="height:16px;"></div>
+  
+  <!-- Wishlist Header -->
+  <div class="wishlist-header">
+    <h1>💖 My Wishlist</h1>
+    <p>Your favorite furniture items saved for later</p>
+  </div>
+  
+  <div class="wishlist-container">
+    <!-- Wishlist Summary -->
+    <div class="wishlist-summary">
+      <div class="wishlist-summary-grid">
+        <div class="summary-item">
+          <div class="summary-value" id="totalItems">0</div>
+          <div class="summary-label">Items in Wishlist</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value" id="totalValue">₱0.00</div>
+          <div class="summary-label">Total Value</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value" id="uniqueSellers">0</div>
+          <div class="summary-label">Unique Sellers</div>
+        </div>
+        <div class="summary-item">
+          <div class="summary-value" id="categories">0</div>
+          <div class="summary-label">Categories</div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="wishlist-title">Wishlist Items</div>
+    <div id="wishlistList" class="wishlist-list"></div>
+    <div id="wishlistEmpty" class="wishlist-empty" style="display:none;">
+      <div class="wishlist-empty-icon">💖</div>
+      <h3>Your wishlist is empty</h3>
+      <p>Start adding your favorite furniture items to your wishlist!</p>
+      <a href="product_customer.html" class="browse-products">Browse Products</a>
+    </div>
+    <div id="wishlistLoading" class="loading">Loading your wishlist...</div>
+  </div>
+  <script>
+    const API_BASE = 'http://localhost:4000/api/v1';
+    
+    // Helper: Get token from localStorage
+    function getToken() {
+      return localStorage.getItem('jwt_token');
+    }
+    
+    // Helper: Check if user is logged in
+    function isLoggedIn() {
+      return !!getToken();
+    }
+    
+    // Helper: Get wishlist from localStorage (for guests)
+    function getWishlistFromStorage() {
+      return JSON.parse(localStorage.getItem('wishlist') || '[]');
+    }
+    
+    // Fetch wishlist from database (for logged-in users)
+    async function fetchWishlistFromDB() {
+      try {
+        const token = getToken();
+        const response = await fetch(`${API_BASE}/wishlist`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+        const data = await response.json();
+        if (data.success) {
+          return data.wishlist || [];
+        }
+        return [];
+      } catch (error) {
+        console.error('Error fetching wishlist from DB:', error);
+        return [];
+      }
+    }
+    
+    // Get wishlist items (from DB if logged in, localStorage if guest)
+    async function getWishlist() {
+      if (isLoggedIn()) {
+        return await fetchWishlistFromDB();
+      } else {
+        return getWishlistFromStorage();
+      }
+    }
+    
+    // Fetch product details for all wishlist items
+    async function fetchWishlistProducts(ids) {
+      if (!ids.length) return [];
+      try {
+        const res = await fetch(`${API_BASE}/products/wishlist?ids=${ids.join(',')}`);
+        const data = await res.json();
+        return data.products || [];
+      } catch (error) {
+        console.error('Error fetching wishlist products:', error);
+        return [];
+      }
+    }
+    
+    // Remove from wishlist (database or localStorage)
+    async function removeFromWishlist(itemId) {
+      if (isLoggedIn()) {
+        // Remove from database
+        try {
+          const token = getToken();
+          const response = await fetch(`${API_BASE}/wishlist/${itemId}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          const data = await response.json();
+          if (data.success) {
+            showNotification('Removed from wishlist!', 'success');
+          } else {
+            showNotification('Failed to remove from wishlist', 'error');
+          }
+        } catch (error) {
+          console.error('Error removing from wishlist:', error);
+          showNotification('Failed to remove from wishlist', 'error');
+        }
+      } else {
+        // Remove from localStorage
+        let wishlist = getWishlistFromStorage();
+        wishlist = wishlist.filter(x => x != itemId);
+        localStorage.setItem('wishlist', JSON.stringify(wishlist));
+        showNotification('Removed from wishlist!', 'success');
+      }
+      renderWishlist();
+    }
+    
+    // Show notification
+    function showNotification(message, type = 'info') {
+      // Create notification element
+      const notification = $(`<div style="position:fixed;top:20px;right:20px;padding:12px 20px;border-radius:8px;color:#fff;font-weight:600;z-index:9999;background:${type === 'success' ? '#27ae60' : type === 'error' ? '#e74c3c' : '#3498db'};">${message}</div>`);
+      $('body').append(notification);
+      
+      // Remove after 3 seconds
+      setTimeout(() => {
+        notification.fadeOut(() => notification.remove());
+      }, 3000);
+    }
+    
+    // Add to cart functionality
+    function addToCart(itemId, itemName, price) {
+      if (isLoggedIn()) {
+        // Add to database cart
+        $.ajax({
+          url: `${API_BASE}/cart/add`,
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + getToken()
+          },
+          data: {
+            item_id: itemId,
+            quantity: 1
+          },
+          success: function(res) {
+            if (res.success) {
+              showNotification('Added to cart!', 'success');
+            } else {
+              showNotification(res.error || 'Failed to add to cart', 'error');
+            }
+          },
+          error: function() {
+            showNotification('Failed to add to cart', 'error');
+          }
+        });
+      } else {
+        // Add to localStorage cart
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existingItem = cart.find(item => item.id === itemId);
+        
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({
+            id: itemId,
+            name: itemName,
+            price: price,
+            quantity: 1
+          });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        showNotification('Added to cart!', 'success');
+      }
+    }
+    
+    // Update wishlist summary
+    function updateWishlistSummary(products) {
+      if (!products.length) {
+        $('#totalItems').text('0');
+        $('#totalValue').text('₱0.00');
+        $('#uniqueSellers').text('0');
+        $('#categories').text('0');
+        return;
+      }
+      
+      const totalItems = products.length;
+      const totalValue = products.reduce((sum, p) => sum + parseFloat(p.sell_price || 0), 0);
+      const uniqueSellers = new Set(products.map(p => p.seller_name || 'Home Haven')).size;
+      const categories = new Set(products.map(p => p.category_name || 'Uncategorized')).size;
+      
+      $('#totalItems').text(totalItems);
+      $('#totalValue').text(`₱${totalValue.toLocaleString()}`);
+      $('#uniqueSellers').text(uniqueSellers);
+      $('#categories').text(categories);
+    }
+    
+    // Render wishlist
+    async function renderWishlist() {
+      $('#wishlistLoading').show();
+      $('#wishlistEmpty').hide();
+      $('#wishlistList').empty();
+      
+      const wishlist = await getWishlist();
+      
+      if (!wishlist.length) {
+        $('#wishlistList').empty();
+        $('#wishlistEmpty').show();
+        $('#wishlistLoading').hide();
+        updateWishlistSummary([]);
+        return;
+      }
+      
+      $('#wishlistEmpty').hide();
+      const products = await fetchWishlistProducts(wishlist);
+      
+      if (!products.length) {
+        $('#wishlistList').empty();
+        $('#wishlistEmpty').show();
+        $('#wishlistLoading').hide();
+        updateWishlistSummary([]);
+        return;
+      }
+      
+      // Update summary
+      updateWishlistSummary(products);
+      
+      let html = '';
+      products.forEach(p => {
+        let img = '';
+        if (Array.isArray(p.image) && p.image.length) img = p.image[0];
+        else if (typeof p.image === 'string') {
+          try { const arr = JSON.parse(p.image); img = Array.isArray(arr) && arr.length ? arr[0] : p.image; } catch { img = p.image; }
+        }
+        if (!img) img = '../img/logo.png';
+        
+        // Fix image path
+        if (img && !img.startsWith('http')) {
+          img = img.startsWith('/') ? `http://localhost:4000${img}` : `http://localhost:4000/${img}`;
+        }
+        
+        const sellerName = p.seller_name || 'Home Haven';
+        const categoryName = p.category_name || 'Uncategorized';
+        const stockQuantity = parseInt(p.stock_quantity || p.stock || 0);
+        const stockText = stockQuantity === 0 ? 'Out of Stock' : stockQuantity <= 10 ? `Only ${stockQuantity} left` : 'In Stock';
+        const stockClass = stockQuantity === 0 ? 'stock-out' : stockQuantity <= 10 ? 'stock-low' : 'stock-available';
+        
+        html += `<div class="wishlist-card">
+          <button class="wishlist-remove" data-id="${p.item_id}" title="Remove from Wishlist"><i class="fa fa-times"></i></button>
+          <img src="${img}" alt="${p.name}" onerror="this.src='../img/logo.png'">
+          <div class="wishlist-card-title">${p.name}</div>
+          <div class="wishlist-card-description">${p.description || 'No description available'}</div>
+          <div class="wishlist-card-meta">
+            <span class="wishlist-card-seller">${sellerName}</span>
+            <span class="wishlist-card-category">${categoryName}</span>
+          </div>
+          <div class="wishlist-card-price">₱${parseFloat(p.sell_price).toLocaleString()}</div>
+          <div class="wishlist-card-stock">${stockText}</div>
+          <div class="wishlist-card-actions">
+            <button onclick="window.location.href='product-details.html?id=${p.item_id}'">View Details</button>
+            <button onclick="addToCart(${p.item_id}, '${p.name.replace(/'/g, "\\'")}', ${p.sell_price})">Add to Cart</button>
+          </div>
+        </div>`;
+      });
+      
+      $('#wishlistList').html(html);
+      $('#wishlistLoading').hide();
+    }
+    
+    // Remove from wishlist event handler
+    $(document).on('click', '.wishlist-remove', function() {
+      const id = $(this).data('id');
+      removeFromWishlist(id);
+    });
+    
+    // On page load
+    $(document).ready(function() {
+      renderWishlist();
+    });
+  </script>
+  <script>
+$(function() {
+  $(document).on('click', '.add-to-cart-btn', function(e) {
+    const $row = $(this).closest('.wishlist-item');
+    const $qty = $row.find('.wishlist-qty');
+    if ($qty.length) {
+      const val = parseInt($qty.val(), 10);
+      const max = parseInt($qty.attr('max'), 10);
+      $('.wishlist-qty-error').remove();
+      if (isNaN(val) || val < 1) {
+        $qty.after('<div class="wishlist-qty-error" style="color:#c00;font-size:0.95em;margin-top:2px;">Quantity must be at least 1.</div>');
+        e.preventDefault();
+        return false;
+      } else if (max && val > max) {
+        $qty.after('<div class="wishlist-qty-error" style="color:#c00;font-size:0.95em;margin-top:2px;">Exceeds stock.</div>');
+        e.preventDefault();
+        return false;
+      }
+    }
+  });
+});
+</script>
+<!-- Footer -->
+<div id="footer"></div>
+<script>$(function() { $('#footer').load('footer.html'); });</script>
+</body>
+</html> 
