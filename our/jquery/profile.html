@@ -161,6 +161,7 @@
     .profile-form input[type="text"],
     .profile-form input[type="email"],
     .profile-form input[type="password"],
+    .profile-form input[type="tel"],
     .profile-form input[type="date"] {
       width: 100%;
       padding: 0.8rem 1rem;
@@ -683,6 +684,318 @@
     </div>
   </div>
   <script>
+    // Initialize form validation
+    function initializeFormValidation() {
+      // Name validation
+      $('#name').on('input blur', function() {
+        const name = $(this).val().trim();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!name) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Name is required').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (name.length < 2) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Name must be at least 2 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (!/^[a-zA-Z\s]+$/.test(name)) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Name can only contain letters and spaces').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Email validation (readonly but still validate format)
+      $('#email').on('input blur', function() {
+        const email = $(this).val().trim();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!email) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Email is required').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Please enter a valid email address').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Password validation
+      $('#password').on('input blur', function() {
+        const password = $(this).val();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!password) {
+          $formGroup.removeClass('error success');
+          $errorMsg.hide();
+          $successMsg.hide();
+          $validationIcon.html('');
+        } else if (password.length < 8) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Password must be at least 8 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Password must contain uppercase, lowercase, and number').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Confirm password validation
+      $('#confirm-password').on('input blur', function() {
+        const confirmPassword = $(this).val();
+        const password = $('#password').val();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!confirmPassword) {
+          $formGroup.removeClass('error success');
+          $errorMsg.hide();
+          $successMsg.hide();
+          $validationIcon.html('');
+        } else if (password && confirmPassword !== password) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Passwords do not match').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (confirmPassword === password && password) {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Address validation
+      $('#address').on('input blur', function() {
+        const address = $(this).val().trim();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!address) {
+          $formGroup.removeClass('error success');
+          $errorMsg.hide();
+          $successMsg.hide();
+          $validationIcon.html('');
+        } else if (address.length < 5) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Address must be at least 5 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (address.length > 200) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Address must be less than 200 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Phone validation
+      $('#phone').on('input blur', function() {
+        const phone = $(this).val().trim();
+        const $formGroup = $(this).closest('.form-group');
+        const $errorMsg = $formGroup.find('.error-message');
+        const $successMsg = $formGroup.find('.success-message');
+        const $validationIcon = $formGroup.find('.validation-icon');
+        
+        if (!phone) {
+          $formGroup.removeClass('error success');
+          $errorMsg.hide();
+          $successMsg.hide();
+          $validationIcon.html('');
+        } else if (!/^[0-9+\-\s\(\)]+$/.test(phone)) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Phone can only contain numbers, +, -, spaces, and ()').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (phone.length < 7) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Phone must be at least 7 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else if (phone.length > 20) {
+          $formGroup.removeClass('success').addClass('error');
+          $errorMsg.text('Phone must be less than 20 characters').show();
+          $successMsg.hide();
+          $validationIcon.html('❌');
+        } else {
+          $formGroup.removeClass('error').addClass('success');
+          $errorMsg.hide();
+          $successMsg.show();
+          $validationIcon.html('✅');
+        }
+      });
+
+      // Customer fields validation (for customer/seller roles)
+      function validateCustomerFields() {
+        // First name validation
+        $('#fname').on('input blur', function() {
+          const fname = $(this).val().trim();
+          const $formGroup = $(this).closest('.form-group');
+          const $errorMsg = $formGroup.find('.error-message');
+          const $successMsg = $formGroup.find('.success-message');
+          const $validationIcon = $formGroup.find('.validation-icon');
+          
+          if (!fname) {
+            $formGroup.removeClass('error success');
+            $errorMsg.hide();
+            $successMsg.hide();
+            $validationIcon.html('');
+          } else if (fname.length < 2) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('First name must be at least 2 characters').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else if (!/^[a-zA-Z\s]+$/.test(fname)) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('First name can only contain letters and spaces').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else {
+            $formGroup.removeClass('error').addClass('success');
+            $errorMsg.hide();
+            $successMsg.show();
+            $validationIcon.html('✅');
+          }
+        });
+
+        // Last name validation
+        $('#lname').on('input blur', function() {
+          const lname = $(this).val().trim();
+          const $formGroup = $(this).closest('.form-group');
+          const $errorMsg = $formGroup.find('.error-message');
+          const $successMsg = $formGroup.find('.success-message');
+          const $validationIcon = $formGroup.find('.validation-icon');
+          
+          if (!lname) {
+            $formGroup.removeClass('error success');
+            $errorMsg.hide();
+            $successMsg.hide();
+            $validationIcon.html('');
+          } else if (lname.length < 2) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('Last name must be at least 2 characters').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else if (!/^[a-zA-Z\s]+$/.test(lname)) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('Last name can only contain letters and spaces').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else {
+            $formGroup.removeClass('error').addClass('success');
+            $errorMsg.hide();
+            $successMsg.show();
+            $validationIcon.html('✅');
+          }
+        });
+
+        // Town validation
+        $('#town').on('input blur', function() {
+          const town = $(this).val().trim();
+          const $formGroup = $(this).closest('.form-group');
+          const $errorMsg = $formGroup.find('.error-message');
+          const $successMsg = $formGroup.find('.success-message');
+          const $validationIcon = $formGroup.find('.validation-icon');
+          
+          if (!town) {
+            $formGroup.removeClass('error success');
+            $errorMsg.hide();
+            $successMsg.hide();
+            $validationIcon.html('');
+          } else if (town.length < 2) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('Town must be at least 2 characters').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else if (!/^[a-zA-Z\s]+$/.test(town)) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('Town can only contain letters and spaces').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else {
+            $formGroup.removeClass('error').addClass('success');
+            $errorMsg.hide();
+            $successMsg.show();
+            $validationIcon.html('✅');
+          }
+        });
+
+        // Zipcode validation
+        $('#zipcode').on('input blur', function() {
+          const zipcode = $(this).val().trim();
+          const $formGroup = $(this).closest('.form-group');
+          const $errorMsg = $formGroup.find('.error-message');
+          const $successMsg = $formGroup.find('.success-message');
+          const $validationIcon = $formGroup.find('.validation-icon');
+          
+          if (!zipcode) {
+            $formGroup.removeClass('error success');
+            $errorMsg.hide();
+            $successMsg.hide();
+            $validationIcon.html('');
+          } else if (!/^\d{4}$/.test(zipcode)) {
+            $formGroup.removeClass('success').addClass('error');
+            $errorMsg.text('Zipcode must be exactly 4 digits').show();
+            $successMsg.hide();
+            $validationIcon.html('❌');
+          } else {
+            $formGroup.removeClass('error').addClass('success');
+            $errorMsg.hide();
+            $successMsg.show();
+            $validationIcon.html('✅');
+          }
+        });
+      }
+
+      // Initialize customer fields validation when they are rendered
+      $(document).on('DOMNodeInserted', '#fname, #lname, #town, #zipcode', function() {
+        validateCustomerFields();
+      });
+    }
+
     // Toggle password visibility
     function togglePassword(fieldId, btn) {
       const input = document.getElementById(fieldId);
@@ -857,12 +1170,72 @@
     function saveCustomerDetails() {
       const token = localStorage.getItem('jwt_token');
       if (!token) return;
+      
       const fname = document.getElementById('fname').value.trim();
       const lname = document.getElementById('lname').value.trim();
       const address = document.getElementById('address').value.trim();
       const phone = document.getElementById('phone').value.trim();
       const town = document.getElementById('town').value.trim();
       const zipcode = document.getElementById('zipcode').value.trim();
+
+      // Validate customer fields
+      if (fname && fname.length < 2) {
+        showCustomModal('Error', 'First name must be at least 2 characters!', '❌');
+        document.getElementById('fname').focus();
+        return;
+      }
+      if (fname && !/^[a-zA-Z\s]+$/.test(fname)) {
+        showCustomModal('Error', 'First name can only contain letters and spaces!', '❌');
+        document.getElementById('fname').focus();
+        return;
+      }
+
+      if (lname && lname.length < 2) {
+        showCustomModal('Error', 'Last name must be at least 2 characters!', '❌');
+        document.getElementById('lname').focus();
+        return;
+      }
+      if (lname && !/^[a-zA-Z\s]+$/.test(lname)) {
+        showCustomModal('Error', 'Last name can only contain letters and spaces!', '❌');
+        document.getElementById('lname').focus();
+        return;
+      }
+
+      if (town && town.length < 2) {
+        showCustomModal('Error', 'Town must be at least 2 characters!', '❌');
+        document.getElementById('town').focus();
+        return;
+      }
+      if (town && !/^[a-zA-Z\s]+$/.test(town)) {
+        showCustomModal('Error', 'Town can only contain letters and spaces!', '❌');
+        document.getElementById('town').focus();
+        return;
+      }
+
+      if (zipcode && !/^\d{4}$/.test(zipcode)) {
+        showCustomModal('Error', 'Zipcode must be exactly 4 digits!', '❌');
+        document.getElementById('zipcode').focus();
+        return;
+      }
+
+      if (phone) {
+        if (!/^[0-9+\-\s\(\)]+$/.test(phone)) {
+          showCustomModal('Error', 'Phone can only contain numbers, +, -, spaces, and ()!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
+        if (phone.length < 7) {
+          showCustomModal('Error', 'Phone must be at least 7 characters!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
+        if (phone.length > 20) {
+          showCustomModal('Error', 'Phone must be less than 20 characters!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
+      }
+
       const formData = new FormData();
       formData.append('fname', fname);
       formData.append('lname', lname);
@@ -945,13 +1318,81 @@
       const token = localStorage.getItem('jwt_token');
       if (!token) return;
 
+      // Validate all required fields before submitting
       const name = document.getElementById('name').value.trim();
       const password = document.getElementById('password').value;
       const confirmPassword = document.getElementById('confirm-password').value;
+      const address = document.getElementById('address').value.trim();
+      const phone = document.getElementById('phone').value.trim();
 
-      if (password && password !== confirmPassword) {
-        showCustomModal('Error', 'Passwords do not match!', '❌');
+      // Check for validation errors
+      let hasErrors = false;
+      
+      // Validate name
+      if (!name) {
+        showCustomModal('Error', 'Name is required!', '❌');
+        document.getElementById('name').focus();
         return;
+      }
+      if (name.length < 2) {
+        showCustomModal('Error', 'Name must be at least 2 characters!', '❌');
+        document.getElementById('name').focus();
+        return;
+      }
+      if (!/^[a-zA-Z\s]+$/.test(name)) {
+        showCustomModal('Error', 'Name can only contain letters and spaces!', '❌');
+        document.getElementById('name').focus();
+        return;
+      }
+
+      // Validate password if provided
+      if (password) {
+        if (password.length < 8) {
+          showCustomModal('Error', 'Password must be at least 8 characters!', '❌');
+          document.getElementById('password').focus();
+          return;
+        }
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+          showCustomModal('Error', 'Password must contain uppercase, lowercase, and number!', '❌');
+          document.getElementById('password').focus();
+          return;
+        }
+        if (password !== confirmPassword) {
+          showCustomModal('Error', 'Passwords do not match!', '❌');
+          document.getElementById('confirm-password').focus();
+          return;
+        }
+      }
+
+      // Validate address if provided
+      if (address && address.length < 5) {
+        showCustomModal('Error', 'Address must be at least 5 characters!', '❌');
+        document.getElementById('address').focus();
+        return;
+      }
+      if (address && address.length > 200) {
+        showCustomModal('Error', 'Address must be less than 200 characters!', '❌');
+        document.getElementById('address').focus();
+        return;
+      }
+
+      // Validate phone if provided
+      if (phone) {
+        if (!/^[0-9+\-\s\(\)]+$/.test(phone)) {
+          showCustomModal('Error', 'Phone can only contain numbers, +, -, spaces, and ()!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
+        if (phone.length < 7) {
+          showCustomModal('Error', 'Phone must be at least 7 characters!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
+        if (phone.length > 20) {
+          showCustomModal('Error', 'Phone must be less than 20 characters!', '❌');
+          document.getElementById('phone').focus();
+          return;
+        }
       }
 
       const formData = new FormData();
@@ -959,6 +1400,8 @@
       if (password) {
         formData.append('password', password);
       }
+      formData.append('address', address);
+      formData.append('phone', phone);
 
       fetch('http://localhost:4000/api/v1/profile', {
         method: 'POST',
