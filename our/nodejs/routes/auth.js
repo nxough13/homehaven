@@ -87,7 +87,7 @@ router.post('/login', async (req, res) => {
       await logActivity(user.id, 'login_failed', 'user', user.id, 'Login failed - account inactive', req);
       
       if (userStatus !== 'active') {
-        return res.json({ success: false, message: 'Please verify your email before logging in.' });
+      return res.json({ success: false, message: 'Please verify your email before logging in.' });
       } else {
         return res.json({ success: false, message: 'Your account has been deactivated by an administrator. Please contact support.' });
       }

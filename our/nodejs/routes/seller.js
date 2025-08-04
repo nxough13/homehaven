@@ -670,29 +670,29 @@ router.put('/seller/profile', authenticateJWT, requireSellerRole, upload.single(
         );
         console.log('Created new seller profile. Insert ID:', insertResult.insertId);
       } else {
-        // Update seller table if business info provided
-        if (business_name || business_address || business_phone) {
+      // Update seller table if business info provided
+      if (business_name || business_address || business_phone) {
           console.log('Updating sellers table with:', { business_name, business_address, business_phone });
-          let sellerUpdateQuery = 'UPDATE sellers SET ';
-          let sellerUpdateParams = [];
-          
-          if (business_name) {
-            sellerUpdateQuery += 'business_name = ?, ';
-            sellerUpdateParams.push(business_name);
-          }
-          if (business_address) {
-            sellerUpdateQuery += 'business_address = ?, ';
-            sellerUpdateParams.push(business_address);
-          }
-          if (business_phone) {
-            sellerUpdateQuery += 'business_phone = ?, ';
-            sellerUpdateParams.push(business_phone);
-          }
-          
-          sellerUpdateQuery = sellerUpdateQuery.slice(0, -2); // Remove trailing comma and space
-          sellerUpdateQuery += ' WHERE user_id = ?';
-          sellerUpdateParams.push(req.user.id);
-          
+        let sellerUpdateQuery = 'UPDATE sellers SET ';
+        let sellerUpdateParams = [];
+        
+        if (business_name) {
+          sellerUpdateQuery += 'business_name = ?, ';
+          sellerUpdateParams.push(business_name);
+        }
+        if (business_address) {
+          sellerUpdateQuery += 'business_address = ?, ';
+          sellerUpdateParams.push(business_address);
+        }
+        if (business_phone) {
+          sellerUpdateQuery += 'business_phone = ?, ';
+          sellerUpdateParams.push(business_phone);
+        }
+        
+        sellerUpdateQuery = sellerUpdateQuery.slice(0, -2); // Remove trailing comma and space
+        sellerUpdateQuery += ' WHERE user_id = ?';
+        sellerUpdateParams.push(req.user.id);
+        
           console.log('Seller update query:', sellerUpdateQuery);
           console.log('Seller update params:', sellerUpdateParams);
           const [sellerResult] = await conn.query(sellerUpdateQuery, sellerUpdateParams);
@@ -955,4 +955,4 @@ router.get('/sellers/:sellerId/products/count', async (req, res) => {
   }
 });
 
-module.exports = router;
+module.exports = router; 

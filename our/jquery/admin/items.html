@@ -941,9 +941,9 @@
       align-items: center;
       justify-content: center;
       z-index: 1000;
-    }
-    
-    .modal-content {
+      }
+      
+      .modal-content {
       background: white;
       border-radius: 20px;
       max-width: 800px;
@@ -1637,10 +1637,10 @@
               <div class="action-buttons">
                 <button class="action-btn view-btn" onclick="viewItem(${item.item_id})" title="View Details">
                   <i class="fas fa-eye"></i>
-                </button>
+            </button>
               </div>
-            </td>
-          </tr>
+          </td>
+        </tr>
         `;
       });
       
@@ -1774,7 +1774,7 @@
         
         if (data.success) {
           showItemModal(data.item);
-        } else {
+          } else {
           console.error('Failed to load item details:', data.message);
           alert('Failed to load item details: ' + data.message);
         }
@@ -2009,7 +2009,7 @@
       
       try {
         const response = await fetch(`http://localhost:4000/api/v1/admin/items/${itemId}/status`, {
-          method: 'PATCH',
+        method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
@@ -2025,8 +2025,8 @@
         
         if (data.success) {
           // Reload items to update the display
-          loadItems();
-        } else {
+            loadItems();
+          } else {
           alert('Failed to update item status: ' + data.message);
         }
       } catch (error) {
@@ -2053,4 +2053,4 @@
     });
   </script>
 </body>
-</html>
+</html> 

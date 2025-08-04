@@ -581,20 +581,20 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `role`, `status`, `profile_image`, `created_at`, `state`) VALUES
-(1, 'Admin User', 'admin@homehaven.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin', 'active', NULL, NULL, 'active'),
-(2, 'Neo', 'johnbagon4@gmail.com', 'passwOrd&123', 'customer', 'active', '/uploads/profile_2_1754215926590.png', '2025-07-13 01:11:02', 'active'),
-(3, 'Sample Seller', 'seller1@homehaven.com', 'password123!', 'seller', 'inactive', '/uploads/product_1753857788844_191833542.png', '2025-07-14 19:12:56', 'active'),
-(4, 'test1', 'princenatsu07@gmail.com', 'passwOrd&123', 'user', 'active', NULL, '2025-07-14 19:49:15', 'active'),
-(5, 'mari', 'neoughpch03@gmail.com', 'passwOrd&123', 'customer', 'inactive', '/uploads/profile_5_1753855792818.png', '2025-07-30 06:08:56', 'active'),
-(6, 'Maria Santos', 'mariasantos@homehaven.com', 'password123!', 'seller', 'active', '/uploads/profile_6_1754215926591.png', '2025-07-15 02:30:00', 'active'),
-(7, 'Juan Dela Cruz', 'juandelacruz@homehaven.com', 'password123!', 'seller', 'active', '/uploads/profile_7_1754215926592.png', '2025-07-16 06:20:00', 'active'),
-(8, 'Ana Reyes', 'anareyes@homehaven.com', 'password123!', 'seller', 'active', '/uploads/profile_8_1754215926593.png', '2025-07-17 01:15:00', 'active'),
-(9, 'Carlos Mendoza', 'carlosmendoza@gmail.com', 'password123!', 'customer', 'active', '/uploads/profile_9_1754215926594.png', '2025-07-18 03:45:00', 'active'),
-(10, 'Isabella Garcia', 'isabellagarcia@gmail.com', 'password123!', 'customer', 'active', '/uploads/profile_10_1754215926595.png', '2025-07-19 08:30:00', 'active'),
-(11, 'Miguel Torres', 'migueltorres@gmail.com', 'password123!', 'customer', 'active', '/uploads/profile_11_1754215926596.png', '2025-07-20 05:20:00', 'active'),
-(12, 'Sofia Rodriguez', 'sofiarodriguez@gmail.com', 'password123!', 'user', 'active', NULL, '2025-07-21 00:10:00', 'active'),
-(13, 'Diego Martinez', 'diegomartinez@gmail.com', 'password123!', 'user', 'inactive', NULL, '2025-07-22 04:25:00', 'active'),
-(14, 'Valentina Lopez', 'valentinalopez@gmail.com', 'password123!', 'user', 'active', NULL, '2025-07-23 07:40:00', 'inactive');
+(1, 'Admin User', 'admin@homehaven.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'admin', 'active', NULL, NULL, 'active'),
+(2, 'Neo', 'johnbagon4@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'customer', 'active', '/uploads/profile_2_1754215926590.png', '2025-07-13 01:11:02', 'active'),
+(3, 'Sample Seller', 'seller1@homehaven.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'seller', 'inactive', '/uploads/product_1753857788844_191833542.png', '2025-07-14 19:12:56', 'active'),
+(4, 'test1', 'princenatsu07@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'user', 'active', NULL, '2025-07-14 19:49:15', 'active'),
+(5, 'mari', 'neoughpch03@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'customer', 'inactive', '/uploads/profile_5_1753855792818.png', '2025-07-30 06:08:56', 'active'),
+(6, 'Maria Santos', 'mariasantos@homehaven.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'seller', 'active', '/uploads/profile_6_1754215926591.png', '2025-07-15 02:30:00', 'active'),
+(7, 'Juan Dela Cruz', 'juandelacruz@homehaven.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'seller', 'active', '/uploads/profile_7_1754215926592.png', '2025-07-16 06:20:00', 'active'),
+(8, 'Ana Reyes', 'anareyes@homehaven.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'seller', 'active', '/uploads/profile_8_1754215926593.png', '2025-07-17 01:15:00', 'active'),
+(9, 'Carlos Mendoza', 'carlosmendoza@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'customer', 'active', '/uploads/profile_9_1754215926594.png', '2025-07-18 03:45:00', 'active'),
+(10, 'Isabella Garcia', 'isabellagarcia@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'customer', 'active', '/uploads/profile_10_1754215926595.png', '2025-07-19 08:30:00', 'active'),
+(11, 'Miguel Torres', 'migueltorres@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'customer', 'active', '/uploads/profile_11_1754215926596.png', '2025-07-20 05:20:00', 'active'),
+(12, 'Sofia Rodriguez', 'sofiarodriguez@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'user', 'active', NULL, '2025-07-21 00:10:00', 'active'),
+(13, 'Diego Martinez', 'diegomartinez@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'user', 'inactive', NULL, '2025-07-22 04:25:00', 'active'),
+(14, 'Valentina Lopez', 'valentinalopez@gmail.com', '$2b$10$5b9O.g67rD4l5KO2J.OFieCzBl4MAB6mMjPVs0iYVAjtAS7w.B2y6', 'user', 'active', NULL, '2025-07-23 07:40:00', 'inactive');
 
 -- --------------------------------------------------------
 

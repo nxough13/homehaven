@@ -817,7 +817,7 @@
             <div class="error-message"></div>
             <div class="success-message">✓ Valid product name</div>
             <span class="validation-icon"></span>
-          </div>
+    </div>
           <div class="form-group mb-3">
             <label for="productCategory" class="form-label">Category</label>
             <select class="form-control" id="productCategory" name="category_id" required>
@@ -826,7 +826,7 @@
             <div class="error-message"></div>
             <div class="success-message">✓ Category selected</div>
             <span class="validation-icon"></span>
-          </div>
+  </div>
           <div class="form-group mb-3">
             <label for="productSKU" class="form-label">SKU</label>
             <input type="text" class="form-control" id="productSKU" name="sku" required minlength="3" maxlength="50" pattern="^[A-Za-z0-9\-_]+$">
@@ -1409,7 +1409,7 @@
         newIndex = direction;
       } else {
         // Otherwise it's a direction (-1 for prev, 1 for next)
-        const currentIndex = parseInt(currentSlide.dataset.index);
+      const currentIndex = parseInt(currentSlide.dataset.index);
         newIndex = currentIndex + direction;
       }
       

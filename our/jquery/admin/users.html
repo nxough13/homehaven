@@ -1044,7 +1044,7 @@
           allUsers = data.users;
           updateStatistics(allUsers);
           renderUsers(allUsers);
-          } else {
+            } else {
           console.error('Failed to load users:', data.message);
           document.getElementById('usersContent').innerHTML = '<div class="loading"><p>Error loading users</p></div>';
         }
@@ -1122,8 +1122,8 @@
             <td>
               ${user.role === 'user' ? 
                 `<select class="role-select" data-id="${user.id}" ${isCurrentUser ? 'disabled' : ''}>
-                  <option value="user" selected>User</option>
-                  <option value="admin">Admin</option>
+              <option value="user" selected>User</option>
+              <option value="admin">Admin</option>
                 </select><span class="action-success" style="display:none;">✔</span><span class="action-error" style="display:none;"></span>` :
                 user.role === 'seller' && user.is_verified === 0 ?
                 `<span>Seller</span> <button class='action-btn verify' onclick='verifySeller(${user.id})' ${isCurrentUser ? 'disabled' : ''}>Verify</button>` :
@@ -1191,7 +1191,7 @@
           setTimeout(() => {
             successSpan.style.display = 'none';
           }, 2000);
-            } else {
+          } else {
           const errorSpan = selectElement.parentNode.querySelector('.action-error');
           errorSpan.textContent = data.message;
           errorSpan.style.display = 'inline';
@@ -1334,7 +1334,7 @@
           closeStateChangeModal();
           loadUsers(); // Reload to update the display
           showNotification(`User ${newState === 'active' ? 'activated' : 'deactivated'} successfully! Email sent.`, 'success');
-        } else {
+            } else {
           showNotification('Failed to update user state: ' + data.message, 'error');
         }
       } catch (error) {
@@ -1396,7 +1396,7 @@
       
       try {
         const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${userId}/verify`, {
-              method: 'PATCH',
+          method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
             'Content-Type': 'application/json'
@@ -1408,8 +1408,8 @@
         
         if (data.success) {
           alert('Seller verified successfully!');
-          loadUsers();
-          } else {
+              loadUsers();
+            } else {
           alert('Failed to verify seller: ' + data.message);
         }
       } catch (error) {
@@ -1432,7 +1432,7 @@
         if (data.success) {
           const user = data.user;
           showUserModal(user);
-        } else {
+          } else {
           alert('Failed to load user details: ' + data.message);
         }
       } catch (error) {
