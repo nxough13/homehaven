@@ -56,10 +56,28 @@ function authenticateJWT(req, res, next) {
   if (!authHeader) return res.status(401).json({ success: false, message: 'No token provided.' });
   const token = authHeader.split(' ')[1];
   if (!token) return res.status(401).json({ success: false, message: 'No token provided.' });
-  jwt.verify(token, JWT_SECRET, (err, user) => {
+  
+  // First verify JWT
+  jwt.verify(token, JWT_SECRET, async (err, user) => {
     if (err) return res.status(403).json({ success: false, message: 'Invalid token.' });
-    req.user = user;
-    next();
+    
+    // Then check if token exists in users table (additional security)
+    try {
+      const [tokenResults] = await db.query(
+        'SELECT personal_access_token FROM users WHERE id = ? AND personal_access_token = ?',
+        [user.id, token]
+      );
+      
+      if (tokenResults.length === 0 || !tokenResults[0].personal_access_token) {
+        return res.status(403).json({ success: false, message: 'Token not found in database or expired.' });
+      }
+      
+      req.user = user;
+      next();
+    } catch (dbError) {
+      console.error('Token validation error:', dbError);
+      return res.status(500).json({ success: false, message: 'Token validation failed.' });
+    }
   });
 }
 
@@ -99,6 +117,17 @@ router.post('/login', async (req, res) => {
       await logActivity(user.id, 'user_login', 'user', user.id, 'User logged in successfully', req);
       // Create JWT
       const token = jwt.sign({ id: user.id, name: user.name, email: user.email, role: user.role }, JWT_SECRET, { expiresIn: '2h' });
+      
+      // ---MP6: Save token to users table (5pts)---
+      try {
+        // Update user's personal_access_token column
+        await db.query('UPDATE users SET personal_access_token = ? WHERE id = ?', [token, user.id]);
+        console.log('Token saved to users table for user ID:', user.id);
+      } catch (tokenError) {
+        console.error('Error saving token to database:', tokenError);
+        // Continue with login even if token save fails
+      }
+      
       return res.json({ success: true, token, user: { id: user.id, name: user.name, email: user.email, role: user.role } });
     } else {
       // Log failed login attempt due to wrong password
@@ -639,6 +668,22 @@ router.get('/admin/stats', authenticateJWT, async (req, res) => {
   } catch (err) {
     console.error('Admin stats error:', err);
     return res.status(500).json({ success: false, message: 'Failed to fetch admin statistics.' });
+  }
+});
+
+// POST /api/v1/logout (protected)
+router.post('/logout', authenticateJWT, async (req, res) => {
+  try {
+    // Remove token from users table
+    await db.query('UPDATE users SET personal_access_token = NULL WHERE id = ?', [req.user.id]);
+    
+    // Log logout activity
+    await logActivity(req.user.id, 'user_logout', 'user', req.user.id, 'User logged out successfully', req);
+    
+    return res.json({ success: true, message: 'Logged out successfully' });
+  } catch (err) {
+    console.error('Logout error:', err);
+    return res.status(500).json({ success: false, message: 'Failed to logout' });
   }
 });
 
