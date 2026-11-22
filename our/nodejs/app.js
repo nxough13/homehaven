@@ -22,9 +22,10 @@ const sellerRoutes = require('./routes/seller');
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:4000',
-  // Vercel deployment URL — update this after deploying the frontend
-  process.env.FRONTEND_URL || 'https://homehaven-frontend.vercel.app'
-];
+  'https://homehaven-jquery.vercel.app',
+  // fallback from env var
+  process.env.FRONTEND_URL
+].filter(Boolean);
 
 app.use(cors({
   origin: function (origin, callback) {
