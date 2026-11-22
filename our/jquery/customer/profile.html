@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -6,6 +6,7 @@
   <title>Customer Profile - Home Haven</title>
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="js/config.js"></script>
   <style>
     :root {
       --primary-color: #8B5C2A;
@@ -825,7 +826,7 @@
     });
 
     // API Base URL
-    const API_BASE = 'http://localhost:4000/api/v1';
+    const API_BASE = window.API_BASE + '/api/v1';
     const token = localStorage.getItem('jwt_token');
 
     // Load profile data
@@ -853,7 +854,7 @@
             const profileAvatarText = document.getElementById('profileAvatarText');
             
             const imageUrl = profile.image_path || profile.profile_image;
-            profilePicture.src = `http://localhost:4000${imageUrl}`;
+            profilePicture.src = `${window.API_BASE}${imageUrl}`;
             profilePicture.style.display = 'block';
             profileAvatarText.style.display = 'none';
           }
@@ -1046,7 +1047,7 @@
       // Fetch customer data if logged in
       if (token) {
         // Fetch orders count
-        fetch('http://localhost:4000/api/v1/orders/history', {
+        fetch(window.API_BASE + '/api/v1/orders/history', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
         .then(res => res.json())
@@ -1062,7 +1063,7 @@
         });
         
         // Fetch wishlist count
-        fetch('http://localhost:4000/api/v1/wishlist', {
+        fetch(window.API_BASE + '/api/v1/wishlist', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => res.json())

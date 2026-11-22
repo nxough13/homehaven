@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const db = require('../db');  // use the db.js file you made
 const jwt = require('jsonwebtoken');
@@ -644,7 +644,7 @@ router.post('/orders/place', authRequired, upload.single('gcash_receipt'), async
               
               <!-- Action Buttons -->
               <div style="text-align: center;">
-                <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
+                <a href="${process.env.FRONTEND_URL || "https://homehaven-frontend.vercel.app"}" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
               </div>
             </div>
             
@@ -735,7 +735,7 @@ router.post('/orders/place', authRequired, upload.single('gcash_receipt'), async
                 
                 <!-- Action Buttons -->
                 <div style="text-align: center;">
-                  <a href="http://localhost:3000/sellers/orders.html" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">View Orders</a>
+                  <a href="${process.env.FRONTEND_URL || "https://homehaven-frontend.vercel.app"}/sellers/orders.html" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">View Orders</a>
                 </div>
               </div>
               

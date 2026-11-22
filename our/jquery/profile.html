@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="css/style.css">
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
   <style>
@@ -1095,7 +1096,7 @@
       const token = localStorage.getItem('jwt_token');
       const formData = new FormData();
       formData.append('profile_image', file);
-      fetch('http://localhost:4000/api/v1/profile', {
+      fetch(window.API_BASE + '/api/v1/profile', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -1148,7 +1149,7 @@
          wrapper.innerHTML = `<div style="display:flex; justify-content:center; margin:2rem 0;"><button type="button" class="action-btn" id="upgradeBtn"></button></div>`;
         document.getElementById('upgradeBtn').addEventListener('click', function() {
           const token = localStorage.getItem('jwt_token');
-          fetch('http://localhost:4000/api/v1/upgrade-to-customer', {
+          fetch(window.API_BASE + '/api/v1/upgrade-to-customer', {
             method: 'POST',
             headers: { 'Authorization': `Bearer ${token}` }
           })
@@ -1243,7 +1244,7 @@
       formData.append('phone', phone);
       formData.append('town', town);
       formData.append('zipcode', zipcode);
-      fetch('http://localhost:4000/api/v1/profile', {
+      fetch(window.API_BASE + '/api/v1/profile', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` },
         body: formData
@@ -1269,7 +1270,7 @@
       
       console.log('Loading profile with token:', token);
       
-      fetch('http://localhost:4000/api/v1/profile', {
+      fetch(window.API_BASE + '/api/v1/profile', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
       .then(res => {
@@ -1403,7 +1404,7 @@
       formData.append('address', address);
       formData.append('phone', phone);
 
-      fetch('http://localhost:4000/api/v1/profile', {
+      fetch(window.API_BASE + '/api/v1/profile', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`
@@ -1474,7 +1475,7 @@
     
     $('#upgradeCustomerBtn').on('click', function() {
       const token = localStorage.getItem('jwt_token');
-      fetch('http://localhost:4000/api/v1/upgrade-to-customer', {
+      fetch(window.API_BASE + '/api/v1/upgrade-to-customer', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       })
@@ -1491,7 +1492,7 @@
     
     $('#upgradeSellerBtn').on('click', function() {
       const token = localStorage.getItem('jwt_token');
-      fetch('http://localhost:4000/api/v1/upgrade-to-seller', {
+      fetch(window.API_BASE + '/api/v1/upgrade-to-seller', {
         method: 'POST',
         headers: { 'Authorization': `Bearer ${token}` }
       })

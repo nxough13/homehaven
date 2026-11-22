@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <script>
   // Check if user is admin and redirect to admin dashboard
@@ -14,6 +14,7 @@
   <title>Home Haven Landing Page</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="js/config.js"></script>
   <style>
     body {
       margin: 0;
@@ -369,7 +370,7 @@
       const token = localStorage.getItem('jwt_token');
       if (token) {
         // Check if token is valid by making a test request
-        fetch('http://localhost:4000/api/v1/profile', {
+        fetch(window.API_BASE + '/api/v1/profile', {
           headers: { 'Authorization': `Bearer ${token}` }
         })
         .then(res => {
@@ -417,7 +418,7 @@
     function loadFeaturedProducts() {
       const productList = document.getElementById('product-list');
       
-      fetch('http://localhost:4000/api/v1/products/featured')
+      fetch(window.API_BASE + '/api/v1/products/featured')
         .then(res => res.json())
         .then(data => {
           if (!data.success) {
@@ -499,12 +500,12 @@
     function loadBestSellers() {
       const productList = document.getElementById('product-list');
       
-      fetch('http://localhost:4000/api/v1/products/bestsellers')
+      fetch(window.API_BASE + '/api/v1/products/bestsellers')
         .then(res => res.json())
         .then(data => {
           if (!data.success) {
             // If bestsellers endpoint doesn't exist, fallback to all products
-            return fetch('http://localhost:4000/api/v1/products');
+            return fetch(window.API_BASE + '/api/v1/products');
           }
           return res;
         })
@@ -594,7 +595,7 @@
         return;
       }
       
-      fetch('http://localhost:4000/api/v1/cart/add', {
+      fetch(window.API_BASE + '/api/v1/cart/add', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

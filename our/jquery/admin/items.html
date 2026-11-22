@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1326,6 +1326,7 @@
   <div id="footer"></div>
   
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/config.js"></script>
   <script>
     // Check if user is admin
     const token = localStorage.getItem('jwt_token');
@@ -1363,7 +1364,7 @@
       
       try {
         console.log('Loading items...');
-        const response = await fetch('http://localhost:4000/api/v1/admin/items', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/items', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1399,7 +1400,7 @@
     async function loadCategories() {
       try {
         console.log('Loading categories...');
-        const response = await fetch('http://localhost:4000/api/v1/admin/categories', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/categories', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1427,7 +1428,7 @@
     async function loadSellers() {
       try {
         console.log('Loading sellers...');
-        const response = await fetch('http://localhost:4000/api/v1/admin/sellers/all', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/sellers/all', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1611,7 +1612,7 @@
         if (images.length > 1) {
           imageHtml = createImageCarousel(images, item.item_id);
         } else if (images.length === 1) {
-          const imagePath = images[0].startsWith('http') ? images[0] : `http://localhost:4000${images[0]}`;
+          const imagePath = images[0].startsWith('http') ? images[0] : `${window.API_BASE}${images[0]}`;
           imageHtml = `<img src="${imagePath}" alt="${item.name}" class="item-image" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iODAiIGhlaWdodD0iODAiIHZpZXdCb3g9IjAgMCA4MCA4MCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHJlY3Qgd2lkdGg9IjgwIiBoZWlnaHQ9IjgwIiBmaWxsPSIjRjVGNUY1Ii8+CjxwYXRoIGQ9Ik00MCAyMEMyOS4wIDIwIDIwIDI5LjAgMjAgNDBDMjAgNTAuOSAyOS4wIDYwIDQwIDYwQzUwLjkgNjAgNjAgNTAuOSA2MCA0MEM2MCAyOS4wIDUwLjkgMjAgNDAgMjBaIiBmaWxsPSIjQ0NDIi8+CjxwYXRoIGQ9Ik00MCAyNEMzMS4yIDI0IDI0IDMxLjIgMjQgNDBDMjQgNDguOCAzMS4yIDU2IDQwIDU2QzQ4LjggNTYgNTYgNDguOCA1NiA0MEM1NiAzMS4yIDQ4LjggMjQgNDAgMjRaIiBmaWxsPSIjRjVGNUY1Ii8+Cjwvc3ZnPgo='">`;
         } else {
           imageHtml = `<div class="item-image-placeholder"><i class="fas fa-image"></i></div>`;
@@ -1662,7 +1663,7 @@
       `;
       
       images.forEach((image, index) => {
-        const imagePath = image.startsWith('http') ? image : `http://localhost:4000${image}`;
+        const imagePath = image.startsWith('http') ? image : `${window.API_BASE}${image}`;
         console.log(`Adding image ${index} to carousel:`, imagePath);
         carouselHtml += `
           <div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
@@ -1760,7 +1761,7 @@
     // View item details in modal
     async function viewItem(itemId) {
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/items/${itemId}`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/items/${itemId}`, {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1821,7 +1822,7 @@
       if (images.length > 1) {
         imageHtml = createModalCarousel(images, item.item_id);
       } else if (images.length === 1) {
-        const imagePath = images[0].startsWith('http') ? images[0] : `http://localhost:4000${images[0]}`;
+        const imagePath = images[0].startsWith('http') ? images[0] : `${window.API_BASE}${images[0]}`;
         imageHtml = `<img src="${imagePath}" alt="${item.name}" class="modal-item-image">`;
       } else {
         imageHtml = `<div class="modal-image-placeholder"><i class="fas fa-image"></i><p>No Image Available</p></div>`;
@@ -1902,7 +1903,7 @@
       `;
       
       images.forEach((image, index) => {
-        const imagePath = image.startsWith('http') ? image : `http://localhost:4000${image}`;
+        const imagePath = image.startsWith('http') ? image : `${window.API_BASE}${image}`;
         carouselHtml += `
           <div class="modal-carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
             <img src="${imagePath}" alt="Product Image ${index + 1}" onerror="this.src='https://via.placeholder.com/300x300?text=No+Image'">
@@ -2008,7 +2009,7 @@
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/items/${itemId}/status`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/items/${itemId}/status`, {
         method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,

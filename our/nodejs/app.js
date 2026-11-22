@@ -2,6 +2,13 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const fs = require('fs');
+
+// Ensure uploads directory exists on startup (required for Multer on Render)
+const uploadsDir = path.join(__dirname, '../uploads');
+if (!fs.existsSync(uploadsDir)) {
+  fs.mkdirSync(uploadsDir, { recursive: true });
+}
 
 const app = express();
 
@@ -12,8 +19,23 @@ const adminRoutes = require('./routes/admin');
 const sellerRoutes = require('./routes/seller');
 
 // ✅ Middleware
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:4000',
+  // Vercel deployment URL — update this after deploying the frontend
+  process.env.FRONTEND_URL || 'https://homehaven-frontend.vercel.app'
+];
+
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: function (origin, callback) {
+    // Allow requests with no origin (mobile apps, curl, Postman)
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true

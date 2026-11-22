@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -232,6 +232,7 @@
   <div id="footer"></div>
   
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../js/config.js"></script>
   <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
   <script>
     $('#header').load('../header.html');
@@ -251,7 +252,7 @@
     // Fetch and display seller info
     function loadSellerInfo() {
       $.ajax({
-        url: `http://localhost:4000/api/v1/admin/sellers`,
+        url: `${window.API_BASE}/api/v1/admin/sellers`,
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token },
         success: function(res) {
@@ -280,7 +281,7 @@
     // Fetch and display seller's items
     function loadItems() {
       $.ajax({
-        url: `http://localhost:4000/api/v1/admin/sellers/${sellerId}/items`,
+        url: `${window.API_BASE}/api/v1/admin/sellers/${sellerId}/items`,
         method: 'GET',
         headers: { 'Authorization': 'Bearer ' + token },
         success: function(res) {
@@ -332,7 +333,7 @@
       const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       const $row = $(this).closest('td');
       $.ajax({
-        url: `http://localhost:4000/api/v1/admin/items/${itemId}/status`,
+        url: `${window.API_BASE}/api/v1/admin/items/${itemId}/status`,
         method: 'PATCH',
         headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
         data: JSON.stringify({ status: newStatus }),

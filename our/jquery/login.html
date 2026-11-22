@@ -1,10 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Login - Home Haven</title>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="js/config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/additional-methods.min.js"></script>
   <style>
@@ -346,7 +347,7 @@
         verifyBtn.onclick = function() {
           verifyBtn.disabled = true;
           verifyBtn.textContent = 'Sending...';
-          fetch('http://localhost:4000/api/v1/resend-verification', {
+          fetch(window.API_BASE + '/api/v1/resend-verification', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ email: email })
@@ -427,7 +428,7 @@
             password: $('#password').val().trim()
           };
           
-          fetch('http://localhost:4000/api/v1/login', {
+          fetch(window.API_BASE + '/api/v1/login', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'

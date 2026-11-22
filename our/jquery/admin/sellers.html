@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -572,6 +572,7 @@
   <div id="footer"></div>
   
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/config.js"></script>
   <script>
     // Check if user is admin
     const token = localStorage.getItem('jwt_token');
@@ -586,7 +587,7 @@
     // Load sellers
     async function loadSellers() {
       try {
-        const response = await fetch('http://localhost:4000/api/v1/admin/sellers', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/sellers', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -662,7 +663,7 @@
       
       sellers.forEach(seller => {
         const avatar = seller.profile_image 
-          ? `http://localhost:4000${seller.profile_image}`
+          ? `${window.API_BASE}${seller.profile_image}`
           : `https://ui-avatars.com/api/?name=${encodeURIComponent(seller.name)}&background=8B5C2A&color=fff&size=50`;
         
         const status = seller.is_verified === 1 ? 'verified' : 'unverified';

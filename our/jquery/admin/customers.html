@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -543,6 +543,7 @@
   <div id="footer"></div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/config.js"></script>
   <script>
     // Check if user is admin
     const token = localStorage.getItem('jwt_token');
@@ -557,7 +558,7 @@
     // Load customers
     async function loadCustomers() {
       try {
-        const response = await fetch('http://localhost:4000/api/v1/admin/customers', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/customers', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -647,7 +648,7 @@
        
        customers.forEach(customer => {
          const avatar = customer.image_path 
-           ? `http://localhost:4000${customer.image_path}`
+           ? `${window.API_BASE}${customer.image_path}`
            : `https://ui-avatars.com/api/?name=${encodeURIComponent(customer.name)}&background=8B5C2A&color=fff&size=45`;
          
          const fullName = `${customer.fname || ''} ${customer.lname || ''}`.trim() || customer.name;

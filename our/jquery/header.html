@@ -1,4 +1,4 @@
-<header id="mainHeader" style="background:#f3ede5; padding:0.7rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e0d6c6; position:fixed; top:0; left:0; width:100%; box-sizing:border-box; z-index:1001; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
+﻿<header id="mainHeader" style="background:#f3ede5; padding:0.7rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e0d6c6; position:fixed; top:0; left:0; width:100%; box-sizing:border-box; z-index:1001; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
   <div style="display:flex; align-items:center; gap:1.2rem;">
     <a id="logoLink" href="index.html" style="display:flex; align-items:center; gap:1.2rem; text-decoration:none;">
       <img src="/our/jquery/img/logo.png" alt="Home Haven Logo" style="height:48px; width:48px;">
@@ -37,7 +37,7 @@ $(function() {
     
     try {
       console.log('Loading profile image...');
-      const response = await fetch('http://localhost:4000/api/v1/profile', {
+      const response = await fetch(window.API_BASE + '/api/v1/profile', {
         headers: {
           'Authorization': `Bearer ${token}`
         }

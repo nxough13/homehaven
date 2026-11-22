@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="/our/jquery/css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+  <script src="../js/config.js"></script>
   <style>
     body { background: #f7f4f0; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     .details-container { max-width: 1100px; margin: 18px auto; background: #fff; border-radius: 14px; box-shadow: 0 2px 12px rgba(0,0,0,0.07); padding: 18px 8px; display: flex; gap: 24px; }
@@ -135,7 +136,7 @@
     }
     // --- Wishlist logic (localStorage) ---
     let wishlist = [];
-    const API_BASE = 'http://localhost:4000/api/v1';
+    const API_BASE = window.API_BASE + '/api/v1';
     const token = localStorage.getItem('jwt_token');
     const isLoggedIn = !!token;
 
@@ -272,7 +273,7 @@
       const id = getProductId();
       if (!id) return;
       try {
-        const res = await fetch(`http://localhost:4000/api/v1/products/details/${id}`);
+        const res = await fetch(`${window.API_BASE}/api/v1/products/details/${id}`);
         const data = await res.json();
         if (!data.success) throw new Error('Product not found');
         const p = data.product;

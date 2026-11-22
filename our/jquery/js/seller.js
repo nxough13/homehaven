@@ -23,9 +23,9 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Set the correct API base and paths for a backend mounted at /api/v1
-const API_BASE = 'http://localhost:4000';
-const PRODUCTS_API = API_BASE + '/api/v1/seller/products';
-const CATEGORIES_API = API_BASE + '/api/v1/seller/categories';
+// API_BASE is defined globally in js/config.js
+const PRODUCTS_API = window.API_BASE + '/api/v1/seller/products';
+const CATEGORIES_API = window.API_BASE + '/api/v1/seller/categories';
 
 // Utility: Get JWT and check role
 function getJwt() {

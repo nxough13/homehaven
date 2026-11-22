@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -1018,6 +1018,7 @@
   <div id="footer"></div>
 
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="../js/config.js"></script>
   <script>
     // Check if user is admin
     const token = localStorage.getItem('jwt_token');
@@ -1032,7 +1033,7 @@
     // Load users
     async function loadUsers() {
       try {
-        const response = await fetch('http://localhost:4000/api/v1/admin/users', {
+        const response = await fetch(window.API_BASE + '/api/v1/admin/users', {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1100,7 +1101,7 @@
       
       users.forEach(user => {
         const avatar = user.profile_image 
-          ? `http://localhost:4000${user.profile_image}`
+          ? `${window.API_BASE}${user.profile_image}`
           : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=8B5C2A&color=fff&size=45`;
         
         const joinedDate = new Date(user.created_at).toLocaleDateString();
@@ -1174,7 +1175,7 @@
     // Update user role
     async function updateUserRole(userId, newRole, selectElement) {
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/users/${userId}/role`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/users/${userId}/role`, {
           method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -1215,7 +1216,7 @@
         const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
       
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/users/${userId}/status`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/users/${userId}/status`, {
           method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -1316,7 +1317,7 @@
       }
       
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/users/${userId}/state`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/users/${userId}/state`, {
           method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -1395,7 +1396,7 @@
       if (!confirm('Are you sure you want to verify this seller?')) return;
       
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/sellers/${userId}/verify`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/sellers/${userId}/verify`, {
           method: 'PATCH',
           headers: {
             'Authorization': 'Bearer ' + token,
@@ -1421,7 +1422,7 @@
     // View user details in modal
     async function viewUserDetails(userId) {
       try {
-        const response = await fetch(`http://localhost:4000/api/v1/admin/users/${userId}`, {
+        const response = await fetch(`${window.API_BASE}/api/v1/admin/users/${userId}`, {
           headers: {
             'Authorization': 'Bearer ' + token
           }
@@ -1456,7 +1457,7 @@
           <div class="modal-body">
             <div class="user-detail-section">
               <div class="user-avatar-large">
-                <img src="${user.profile_image ? `http://localhost:4000${user.profile_image}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=8B5C2A&color=fff&size=120`}" 
+                <img src="${user.profile_image ? `${window.API_BASE}${user.profile_image}` : `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=8B5C2A&color=fff&size=120`}" 
                      alt="${user.name}" 
                      onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=8B5C2A&color=fff&size=120'">
               </div>

@@ -1,4 +1,4 @@
-<footer class="admin-footer">
+﻿<footer class="admin-footer">
   <div class="footer-content">
     <!-- Left Panel: Home Haven -->
     <div class="footer-section home-haven-section">
@@ -431,7 +431,7 @@ function updateFooterStats() {
   if (!token) return;
   
   // Fetch quick stats
-  fetch('http://localhost:4000/api/v1/admin/stats', {
+  fetch(window.API_BASE + '/api/v1/admin/stats', {
     headers: { 'Authorization': 'Bearer ' + token }
   })
   .then(res => res.json())

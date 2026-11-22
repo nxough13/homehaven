@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const { authenticateJWT } = require('./auth');
@@ -469,7 +469,7 @@ router.patch('/seller/orders/:orderinfo_id/status', authenticateJWT, requireSell
                 </div>
                 
                 <div style="text-align: center;">
-                  <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
+                  <a href="${process.env.FRONTEND_URL || "https://homehaven-frontend.vercel.app"}" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Continue Shopping</a>
                 </div>
               </div>
               
@@ -542,7 +542,7 @@ router.patch('/seller/orders/:orderinfo_id/status', authenticateJWT, requireSell
                 </div>
                 
                 <div style="text-align: center;">
-                  <a href="http://localhost:3000" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Shop Again</a>
+                  <a href="${process.env.FRONTEND_URL || "https://homehaven-frontend.vercel.app"}" style="background: linear-gradient(135deg, #8B5C2A, #a67c52); color: #ffffff; text-decoration: none; padding: 15px 30px; border-radius: 8px; font-weight: 600; display: inline-block; margin: 10px;">Shop Again</a>
                 </div>
               </div>
               

@@ -1,4 +1,4 @@
-const express = require('express');
+﻿const express = require('express');
 const router = express.Router();
 const db = require('../db');
 const jwt = require('jsonwebtoken');
@@ -295,7 +295,7 @@ router.get('/verify-email', async (req, res) => {
     // Activate user
     await db.query('UPDATE users SET status = ? WHERE email = ?', ['active', email]);
     // Redirect to the correct login page
-    return res.redirect('http://localhost:3000/our/jquery/login.html');
+    return res.redirect('${process.env.FRONTEND_URL || "https://homehaven-frontend.vercel.app"}/our/jquery/login.html');
   } catch (err) {
     return res.status(400).send('Verification link is invalid or has expired.');
   }
