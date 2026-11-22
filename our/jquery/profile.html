@@ -1293,7 +1293,7 @@
           const imgSrc = profile.profile_image || profile.image_path;
           console.log('Image source:', imgSrc); // Debug log
           if (imgSrc && imgSrc.trim() !== '' && imgSrc !== 'null') {
-            const fullImgSrc = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
+            const fullImgSrc = imgSrc.startsWith('http') ? imgSrc : `${imgSrc.startsWith("/uploads") ? window.API_BASE+imgSrc : imgSrc.replace("/jquery/","/")}`;
             console.log('Full image source:', fullImgSrc); // Debug log
             document.getElementById('profileAvatarImg').innerHTML = `<img src="${fullImgSrc}" alt="Profile">`;
           } else {

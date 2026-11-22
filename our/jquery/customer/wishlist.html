@@ -607,7 +607,7 @@
         
         // Fix image path
         if (img && !img.startsWith('http')) {
-          img = `/our${img}`;
+          img = `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
         }
         
         const sellerName = p.seller_name || 'Home Haven';

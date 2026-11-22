@@ -556,7 +556,7 @@
           
           // Handle profile image display
           if (seller.profile_image) {
-            const imagePath = seller.profile_image.startsWith('http') ? seller.profile_image : `/our${seller.profile_image}`;
+            const imagePath = seller.profile_image.startsWith('http') ? seller.profile_image : `${seller.profile_image.startsWith("/uploads") ? window.API_BASE+seller.profile_image : seller.profile_image.replace("/jquery/","/")}`;
             $('#profileImgCircle').css('background-image', 'url(' + imagePath + ')');
             $('#profileImgCircle').css('background-size', 'cover');
             $('#profileImgIcon').css('opacity', 0);
@@ -613,7 +613,7 @@
         
         if (imgSrc) {
           // Fix image path
-          const imagePath = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
+          const imagePath = imgSrc.startsWith('http') ? imgSrc : `${imgSrc.startsWith("/uploads") ? window.API_BASE+imgSrc : imgSrc.replace("/jquery/","/")}`;
           imageHtml = `<img src="${imagePath}" alt="${product.name}" style="width:100%; height:100%; object-fit:cover;">`;
         } else {
           imageHtml = `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`;

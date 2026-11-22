@@ -457,7 +457,7 @@
           <div class="checkout-item">
             <div class="checkout-item-img">
               ${Array.isArray(product.image) && product.image[0] ?
-                `<img src="${product.image[0].startsWith('http') ? product.image[0] : `/our${product.image[0]}`}" alt="${product.name}">` :
+                `<img src="${product.image[0].startsWith('http') ? product.image[0] : `${product.image[0].startsWith("/uploads") ? window.API_BASE+product.image[0] : product.image[0].replace("/jquery/","/")}`}" alt="${product.name}">` :
                 `<div class="product-image-placeholder"><i class="fas fa-couch"></i></div>`
               }
             </div>

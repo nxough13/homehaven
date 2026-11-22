@@ -311,7 +311,7 @@
     });
     function renderImage(data) {
       if (!data) return '';
-      return `<img src="/our${data}" class="profile-img" alt="Product">`;
+      return `<img src="${data.startsWith("/uploads") ? window.API_BASE+data : data.replace("/jquery/","/")}" class="profile-img" alt="Product">`;
     }
     function renderStatus(data, type, row) {
       if (type === 'display') {

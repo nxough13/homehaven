@@ -1,0 +1,54 @@
+HomeHaven Deployment Plan
+Key Facts First
+Two important things the SQL data revealed:
+
+Product images are fine — the 20 seeded products all use paths like /jquery/img/Living Room/Coffee Table/CoffeeTable1.jpg, pointing directly to files already in the repo. ✅
+
+3 seller-uploaded products (items 21, 30, 31) reference /uploads/ paths — those image files don't exist in the repo (they were created at runtime on someone's local machine). Those 3 products will show broken images in the deployed version. The other 20 are fine. This is acceptable for a portfolio demo — you just log in and avoid clicking those 3.
+
+Profile pictures for the 2 demo customer accounts also reference /uploads/ — same situation, broken avatars for those 2 accounts. The admin and seller accounts are unaffected.
+
+The Plan
+Phase 1 — Prep the Repo (Local, no deployment yet)
+Everything that needs to change in code before anything is pushed.
+
+ 1a. Create a shared config.js in the frontend (
+config.js
+) that holds the backend URL as a single variable
+ 1b. Replace all http://localhost:4000 occurrences across all 35 HTML files with that config variable — this is the bulk of the work
+ 1c. Fix the CORS origin in app.js (currently hardcoded to http://localhost:3000) to accept your Vercel URL
+ 1d. Create a render.yaml (or at minimum document the start command) for Render to know how to run the backend
+ 1e. Create a vercel.json so Vercel knows how to serve the static frontend
+ 1f. Create a .env.example file in nodejs/ documenting every required env variable (the actual .env never gets committed)
+ 1g. Make the uploads/ directory creation automatic on server start (it already does this in Multer config, but should be verified so Render doesn't crash on boot)
+Phase 2 — Set Up the Database (Railway)
+Before deploying the backend, the DB needs to exist.
+
+ 2a. Create a Railway account → New Project → Add MySQL database
+ 2b. Connect to it via a GUI (TablePlus / DBeaver / MySQL Workbench) using Railway's provided credentials
+ 2c. Import homehaven_dbase(final3).sql — this seeds all 20 products, demo users, orders, everything
+ 2d. Copy the 5 connection values Railway gives you (HOST, USER, PASSWORD, DATABASE, PORT) — you'll need them in Phase 3
+Phase 3 — Deploy the Backend (Render)
+ 3a. Create a Render account → New Web Service → connect your GitHub repo (nxough13/homehaven)
+ 3b. Set the Root Directory to our/nodejs, Build Command to npm install, Start Command to node index.js (not nodemon — that's dev only)
+ 3c. Add all environment variables in Render's dashboard:
+DB_HOST, DB_USER, DB_PASSWORD, DB_NAME, DB_PORT (from Railway)
+JWT_SECRET (any random string)
+PORT (Render sets this automatically, but good to have)
+EMAIL_USER, EMAIL_PASS (can be dummy values since email won't be tested)
+ 3d. Deploy — Render gives you a URL like https://homehaven-api.onrender.com
+ 3e. Test it: hit https://homehaven-api.onrender.com/api/v1/test-db in a browser — should return a JSON response
+Phase 4 — Wire Frontend to Live Backend & Deploy to Vercel
+ 4a. Update config.js (from Phase 1a) with the real Render URL from Phase 3d
+ 4b. Update the CORS origin in app.js to your Vercel URL (you'll know it after the first Vercel deploy, or you can set a custom domain)
+ 4c. Redeploy backend on Render after the CORS update
+ 4d. Create a Vercel account → New Project → connect the same GitHub repo
+ 4e. Set the Root Directory to our/jquery in Vercel settings
+ 4f. Add a vercel.json that routes all requests to static files correctly
+ 4g. Deploy — Vercel gives you a URL like https://homehaven.vercel.app
+ 4h. Smoke test: open the live URL, log in with a demo account, browse products, verify images load
+Phase 5 — Final Verification (Record-ready)
+ 5a. Test all three roles: Admin, Seller, Customer
+ 5b. Confirm the 20 seeded products display correctly with images
+ 5c. Note which 3 seller-uploaded products have broken images (21, 30, 31) — avoid those in the recording
+ 5d. Record the demo video

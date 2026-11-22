@@ -547,7 +547,7 @@
               imageHtml = `<div class="product-img-carousel" data-product-id="${product.item_id}">
                 <div class="carousel-slides">`;
               images.forEach((img, index) => {
-                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                const imgPath = img.startsWith('http') ? img : `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
                 imageHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
                   <div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>
                 </div>`;
@@ -561,7 +561,7 @@
               </div>`;
             } else {
               // Single image
-              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `${images[0].startsWith("/uploads") ? window.API_BASE+images[0] : images[0].replace("/jquery/","/")}`) : '/img/logo.png';
               imageHtml = `<div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>`;
             }
             
@@ -637,7 +637,7 @@
               imageHtml = `<div class="product-img-carousel" data-product-id="${product.item_id}">
                 <div class="carousel-slides">`;
               images.forEach((img, index) => {
-                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                const imgPath = img.startsWith('http') ? img : `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
                 imageHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
                   <div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>
                 </div>`;
@@ -651,7 +651,7 @@
               </div>`;
             } else {
               // Single image
-              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `/our${images[0]}`) : '/our/jquery/img/logo.png';
+              const imgPath = images.length > 0 ? (images[0].startsWith('http') ? images[0] : `${images[0].startsWith("/uploads") ? window.API_BASE+images[0] : images[0].replace("/jquery/","/")}`) : '/img/logo.png';
               imageHtml = `<div class="product-img" style="background-image:url('${imgPath}'); background-size:cover; background-position:center;"></div>`;
             }
             

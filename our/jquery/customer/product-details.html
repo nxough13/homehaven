@@ -5,7 +5,7 @@
   <title>Product Details - Home Haven</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-  <link rel="stylesheet" href="/our/jquery/css/style.css">
+  <link rel="stylesheet" href="/css/style.css">
   <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
   <script src="../js/config.js"></script>
   <style>
@@ -296,11 +296,11 @@
           if (img.startsWith('http')) {
             return img;
           } else {
-            return `/our${img}`;
+            return `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
           }
         });
         
-        if (!images.length) images = ['/our/jquery/img/logo.png'];
+        if (!images.length) images = ['/img/logo.png'];
         currentImgIdx = 0;
         renderCarousel();
         // Title, desc, price, etc

@@ -1,7 +1,7 @@
 ﻿<header id="mainHeader" style="background:#f3ede5; padding:0.7rem 2rem; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid #e0d6c6; position:fixed; top:0; left:0; width:100%; box-sizing:border-box; z-index:1001; box-shadow:0 2px 8px rgba(0,0,0,0.07);">
   <div style="display:flex; align-items:center; gap:1.2rem;">
     <a id="logoLink" href="index.html" style="display:flex; align-items:center; gap:1.2rem; text-decoration:none;">
-      <img src="/our/jquery/img/logo.png" alt="Home Haven Logo" style="height:48px; width:48px;">
+      <img src="/img/logo.png" alt="Home Haven Logo" style="height:48px; width:48px;">
       <span style="font-size:2.2rem; font-family:Georgia,serif; color:#444; font-weight:600; letter-spacing:1px;">Home Haven</span>
     </a>
     <span id="jwtStatus" style="margin-left:1.5rem; font-size:1rem; font-weight:600;"></span>
@@ -9,7 +9,7 @@
   <nav style="display:flex; align-items:center; gap:1.2rem; position:relative;">
     <span id="profileSection" style="display:inline-flex; align-items:center; gap:0.5rem;">
       <a href="#" id="profileIcon" style="color:#8B5C2A; font-size:2rem; border:2px solid #8B5C2A; border-radius:50%; padding:0.2rem; background:#f3ede5; display:inline-flex; align-items:center; justify-content:center; text-decoration:none; width:48px; height:48px; overflow:hidden;">
-        <img id="profileImage" src="/our/jquery/img/logo.png" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;">
+        <img id="profileImage" src="/img/logo.png" alt="Profile" style="width:100%; height:100%; object-fit:cover; border-radius:50%; display:none;">
         <span id="profileDefaultIcon" style="font-size:1.7rem;">&#128100;</span>
       </a>
       <span id="roleLabel" style="font-size:1.05rem; color:#6d7a6d; font-weight:600; margin-left:0.3em;"></span>
@@ -60,7 +60,7 @@ $(function() {
           
           // Set the profile image
           const imagePath = data.profile.profile_image.startsWith('http') ? 
-            data.profile.profile_image : `/our${data.profile.profile_image}`;
+            data.profile.profile_image : `${data.profile.profile_image.startsWith("/uploads") ? window.API_BASE+data.profile.profile_image : data.profile.profile_image.replace("/jquery/","/")}`;
           
           console.log('Setting profile image to:', imagePath);
           profileImage.src = imagePath;
@@ -93,13 +93,13 @@ $(function() {
     // Set profile link based on user role
     let profileLink = '';
     if (userRole === 'seller') {
-      profileLink = '/our/jquery/sellers/profile-sellers.html';
+      profileLink = '/sellers/profile-sellers.html';
     } else if (userRole === 'customer') {
-      profileLink = '/our/jquery/customer/profile.html';
+      profileLink = '/customer/profile.html';
     } else if (userRole === 'admin') {
-      profileLink = '/our/jquery/admin/profile.html';
+      profileLink = '/admin/profile.html';
     } else {
-      profileLink = '/our/jquery/profile.html';
+      profileLink = '/profile.html';
     }
     $('#profileIcon').attr('href', profileLink);
     
@@ -122,45 +122,45 @@ $(function() {
     
     // Seller header customization
     if (userRole === 'seller') {
-      $('#logoLink').attr('href', '/our/jquery/sellers/index-sellers.html');
+      $('#logoLink').attr('href', '/sellers/index-sellers.html');
       $('#dropdownMenu').append(`
-        <a href="/our/jquery/sellers/products.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
-        <a href="/our/jquery/sellers/categories.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Categories</a>
-        <a href="/our/jquery/sellers/orders.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Orders</a>
-        <a href="/our/jquery/sellers/profile-sellers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
+        <a href="/sellers/products.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
+        <a href="/sellers/categories.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Categories</a>
+        <a href="/sellers/orders.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Orders</a>
+        <a href="/sellers/profile-sellers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
         <button id="logoutBtnDropdown" style="width:90%; margin:0.7rem 5%; background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; cursor:pointer;">Logout</button>
       `);
     }
     // Customer header customization
     else if (userRole === 'customer') {
-      $('#logoLink').attr('href', '/our/jquery/customer/index.html');
+      $('#logoLink').attr('href', '/customer/index.html');
       $('#dropdownMenu').append(`
-        <a href="/our/jquery/customer/product_customer.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
-        <a href="/our/jquery/customer/profile.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
-        <a href="/our/jquery/customer/wishlist.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Wishlist</a>
-        <a href="/our/jquery/customer/cart.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Cart</a>
-        <a href="/our/jquery/customer/order-history.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Orders</a>
+        <a href="/customer/product_customer.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
+        <a href="/customer/profile.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
+        <a href="/customer/wishlist.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Wishlist</a>
+        <a href="/customer/cart.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Cart</a>
+        <a href="/customer/order-history.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Orders</a>
         <button id="logoutBtnDropdown" style="width:90%; margin:0.7rem 5%; background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; cursor:pointer;">Logout</button>
       `);
     }
     // Admin header customization
     else if (userRole === 'admin') {
-      $('#logoLink').attr('href', '/our/jquery/admin/index.html');
+      $('#logoLink').attr('href', '/admin/index.html');
       $('#dropdownMenu').append(`
-        <a href="/our/jquery/admin/index.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Dashboard</a>
-        <a href="/our/jquery/admin/users.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Users</a>
-        <a href="/our/jquery/admin/customers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Customers</a>
-        <a href="/our/jquery/admin/sellers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Sellers</a>
-        <a href="/our/jquery/admin/items.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Items</a>
+        <a href="/admin/index.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Dashboard</a>
+        <a href="/admin/users.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Users</a>
+        <a href="/admin/customers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Customers</a>
+        <a href="/admin/sellers.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Sellers</a>
+        <a href="/admin/items.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Items</a>
         <button id="logoutBtnDropdown" style="width:90%; margin:0.7rem 5%; background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; cursor:pointer;">Logout</button>
       `);
     }
     // Regular user header customization (role: 'user')
     else if (userRole === 'user') {
-      $('#logoLink').attr('href', '/our/jquery/index.html');
+      $('#logoLink').attr('href', '/index.html');
       $('#dropdownMenu').append(`
-        <a href="/our/jquery/product_catalog.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
-        <a href="/our/jquery/profile.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
+        <a href="/product_catalog.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Products</a>
+        <a href="/profile.html" style="display:flex; align-items:center; gap:0.7rem; color:#6d7a6d; font-size:1.1rem; text-decoration:none; padding:0.7rem 1.5rem;">Profile</a>
         <button id="logoutBtnDropdown" style="width:90%; margin:0.7rem 5%; background:#8B5C2A; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; cursor:pointer;">Logout</button>
       `);
     }
@@ -177,7 +177,7 @@ $(function() {
       localStorage.removeItem('user_name');
       localStorage.removeItem('user_email');
       localStorage.removeItem('login_time');
-      window.location.href = '/our/jquery/index.html';
+      window.location.href = '/index.html';
     });
     
     // Listen for profile updates
@@ -200,15 +200,15 @@ $(function() {
     $('#roleLabel').text('');
     
     // Add Products link for guests
-    $('<a href="/our/jquery/product_catalog.html" style="background:#bfa77a; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; text-decoration:none; margin-right:0.5rem;">Products</a>').insertBefore('#loginBtn');
+    $('<a href="/product_catalog.html" style="background:#bfa77a; color:#fff; border:none; border-radius:8px; padding:0.5rem 1.3rem; font-size:1.1rem; font-weight:700; text-decoration:none; margin-right:0.5rem;">Products</a>').insertBefore('#loginBtn');
     
     // Add click handlers for login and signup buttons
     $('#loginBtn').off('click').on('click', function() {
-      window.location.href = '/our/jquery/login.html';
+      window.location.href = '/login.html';
     });
     
     $('#signupBtn').off('click').on('click', function() {
-      window.location.href = '/our/jquery/signup.html';
+      window.location.href = '/signup.html';
     });
   }
 });

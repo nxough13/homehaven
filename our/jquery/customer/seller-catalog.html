@@ -440,7 +440,7 @@
         }
         
         if (imgSrc) {
-          const imagePath = imgSrc.startsWith('http') ? imgSrc : `/our${imgSrc}`;
+          const imagePath = imgSrc.startsWith('http') ? imgSrc : `${imgSrc.startsWith("/uploads") ? window.API_BASE+imgSrc : imgSrc.replace("/jquery/","/")}`;
           imageHtml = `<img src="${imagePath}" alt="${product.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">`;
         }
       }

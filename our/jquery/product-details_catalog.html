@@ -324,11 +324,11 @@
           if (img.startsWith('http')) {
             return img;
           } else {
-            return `/our${img}`;
+            return `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
           }
         });
         
-        if (!images.length) images = ['/our/jquery/img/logo.png'];
+        if (!images.length) images = ['/img/logo.png'];
         currentImgIdx = 0;
         renderCarousel();
         // Title, desc, price, etc

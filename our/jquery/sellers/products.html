@@ -1358,7 +1358,7 @@
       if (!images || images.length === 0) return '<div class="img-thumb" style="background:#f5f3f0;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>';
       
       if (images.length === 1) {
-        const imgPath = images[0].startsWith('http') ? images[0] : `/our${images[0]}`;
+        const imgPath = images[0].startsWith('http') ? images[0] : `${images[0].startsWith("/uploads") ? window.API_BASE+images[0] : images[0].replace("/jquery/","/")}`;
         return `<img src="${imgPath}" class="img-thumb" alt="Product Image">`;
       }
       
@@ -1366,7 +1366,7 @@
       carouselHtml += '<div class="carousel-slides">';
       
       images.forEach((img, index) => {
-        const imgPath = img.startsWith('http') ? img : `/our${img}`;
+        const imgPath = img.startsWith('http') ? img : `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
         carouselHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
           <img src="${imgPath}" class="img-thumb" alt="Product Image ${index + 1}">
         </div>`;
@@ -1621,7 +1621,7 @@
       if (imageArray.length > 1) {
         imgs = createCarousel(imageArray, product.item_id);
       } else if (imageArray.length === 1) {
-        const imagePath = imageArray[0].startsWith('http') ? imageArray[0] : `/our${imageArray[0]}`;
+        const imagePath = imageArray[0].startsWith('http') ? imageArray[0] : `${imageArray[0].startsWith("/uploads") ? window.API_BASE+imageArray[0] : imageArray[0].replace("/jquery/","/")}`;
         imgs = `<img src="${imagePath}" class="img-thumb" alt="Product Image">`;
       } else {
         imgs = `<div class="img-thumb" style="background:#f5f3f0;display:flex;align-items:center;justify-content:center;color:#999;">No Image</div>`;
@@ -1869,7 +1869,7 @@
               carouselHtml += '<div class="carousel-slides">';
               
               product.image.forEach((img, index) => {
-                const imgPath = img.startsWith('http') ? img : `/our${img}`;
+                const imgPath = img.startsWith('http') ? img : `${img.startsWith("/uploads") ? window.API_BASE+img : img.replace("/jquery/","/")}`;
                 carouselHtml += `<div class="carousel-slide ${index === 0 ? 'active' : ''}" data-index="${index}">
                   <img src="${imgPath}" class="img-thumb" style="width:80px;height:80px;object-fit:cover;margin:5px;">
                   <button type="button" class="remove-image-btn" data-image-path="${img}" style="position:absolute;top:2px;right:2px;background:red;color:white;border:none;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer;">×</button>
